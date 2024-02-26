@@ -5,7 +5,7 @@ Defined in `app_types.h`:
 ```
 #include "app_types.h"
 ```
-|Data type |Naming postfix  | Description             |
+|Data type |Naming suffix  | Description             |
 |----------|----------------|-------------------------|
 |`BOOL`	   |`_b` 	    | boolean	              |
 |`U16`	   |`_U16`	    |unsigned 16-bit integer  |
@@ -84,7 +84,7 @@ F32 output_power__W__F32 = output_voltage__V__F32 * output_current__mA__F32
 					/ (F32)1000.0;
 ```
 ## Enumeration (Enums)
-When typedef-ing enum use `_enum` postfix. Each enum member has `_e` postfix. Name of each enum is in **capitals** :
+When typedef-ing enum use `_enum` suffix. Each enum member has `_e` suffix. Name of each enum is in **capitals** :
 ```
 typedef enum
 {
