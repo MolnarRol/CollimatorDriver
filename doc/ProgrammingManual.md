@@ -20,7 +20,7 @@ Defined in `app_types.h`:
 All variables must be self explanatory, ideally short but specific.
 ``` 
 (s_)(MODULE)_{name_of_the_variable}(__unit_){_VariableType}
- |	   |							   '-> If the variable is unit
+ |	   |							   							'-> If the variable is unit
  |     '---------------------------------> If the variable is global	
  '---------------------------------------> If the variable is static
 ```
@@ -35,12 +35,12 @@ your_variable_name
 ### Global variables
 If the variable is global (static included), then they should contain prefix with module name. **Local variables are without this prefix**. For example:
 ```
-U16 MODULE_some_global_variable_U16;				/* Global variable. */
+U16 MODULE_some_global_variable_U16;						/* Global variable. */
 
 void fun(void)
 {
-	U32 tmp_val_U32;								/* Local variable. */
-	static U16 s_last_index_U16;					/* Static local variable. */
+	U32 tmp_val_U32;															/* Local variable. */
+	static U16 s_last_index_U16;									/* Static local variable. */
 }
 ```
 
@@ -51,7 +51,7 @@ static U32 s_MODULE_name_of_the_variable_U32;		/* Static variable. */
 
 void fun(void)
 {
-	static U16 s_last_index_U16;					/* Static local variable. */
+	static U16 s_last_index_U16;									/* Static local variable. */
 }
 ```
 ### Variables containing units
@@ -81,7 +81,7 @@ We can also use unit prefixes:
 F32 output_voltage__V__F32 = (F32)12.3;
 F32 output_current__mA__F32 = (F32)314;
 F32 output_power__W__F32 = output_voltage__V__F32 * output_current__mA__F32 
-							/ (F32)1000.0;
+														/ (F32)1000.0;
 ```
 ## Enumeration (Enums)
 When typedef-ing enum use `_enum` postfix. Each enum member has `_e` postfix. Name of each enum is in **capitals** :
