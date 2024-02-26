@@ -137,7 +137,7 @@ Function names like variable names should be safe explanatory. It is up to you a
 |`DeInit()`	    | Not specified 	|De-initialize module 				|
 
 ## Pointers
-*__Do not use uninitialised pointers!!!__*
+*__Do not use uninitialized pointers!!!__*
 ```
 U16* data_pU16;
 *data_pU16 = (U16)0;		/* Results in undefined behaviour! */
