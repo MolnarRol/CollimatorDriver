@@ -1,17 +1,23 @@
 # Software design manual
-
+## General guildline:
+- Do not use dynamic allocation (calloc, malloc)
+- Always specify data type of variables and function return values.
+- Limit mixing math operations with multiple data types. Use casting if necessary.
+- Good comments make the code more readable.
+- Do not use magic numbers (constant literals) in code. Replace them with defines.
+- Variable that must remain constant declare as such (`const`).
 ## Data types
 Defined in `app_types.h`:
 ```
 #include "app_types.h"
 ```
-|Data type |Naming suffix  | Description             |
+|Data type |Naming postfix  | Description             |
 |----------|----------------|-------------------------|
 |`BOOL`	   |`_b` 	    | boolean	              |
 |`U16`	   |`_U16`	    |unsigned 16-bit integer  |
 |`S16`	   |`_S16`	    |signed 16-bit integer    |
 |`U32`     |`_U32`	    |unsigned 32-bit integer  |
-|`S32`     |`_S32`	    |signed 32-bit integer    |  
+|`S32`     `_S32`	    |signed 32-bit integer    |  
 |`U64`     |`_U64`	    |unsigned 64-bit integer  |
 |`S64`	   |`_S64`	    |signed 64-bit integer    |
 |`F32`     |`_F32`	    |single precision float   |
@@ -84,7 +90,7 @@ F32 output_power__W__F32 = output_voltage__V__F32 * output_current__mA__F32
 					/ (F32)1000.0;
 ```
 ## Enumeration (Enums)
-When typedef-ing enum use `_enum` suffix. Each enum member has `_e` suffix. Name of each enum is in **capitals** :
+When typedef-ing enum use `_enum` postfix. Each enum member has `_e` postfix. Name of each enum is in **capitals** :
 ```
 typedef enum
 {
@@ -95,3 +101,46 @@ typedef enum
 ```
 
 ## Functions
+Functions must do only one thing. If the control logic is complicated, then break down this logic to simpler and smaller units.
+**Function naming scheme:**
+```
+{ReturnDataType} {MODULE_}{FunctionName}(__unit__)(_ReturnDataType)()
+			                    |		'-> If the function is void, then the data type is not specified
+				            '-> Only if function's return value is unit.
+```
+**If the function has no input parameters then:**
+```
+/* Do not. Calling the function fun() with parameters does not result in error - bad. */
+void fun()		
+{
+	/* Implementation. */
+}
+
+/* Do instead. Calling the function fun() with parameters results in error - good. */
+void fun(void)			
+{
+	/* Implementation. */
+}
+```
+**Static functions** do not have `s_`  prefix.
+
+When **passing a struct** to a function it is recommended to use pointer rather than copy.
+### Naming the functions
+Function names like variable names should be safe explanatory. It is up to you as a programmer to name the function, but it is a good practice to stick to standard naming of basic functions like: For example:
+| Name  	    |Return void     	| Description 					|
+|-------------------|-------------------|-----------------------------------------------|
+|`Get(void)`	    |No 	  	|Get variable value				|
+|`Set()`	    |Yes	  	|Set variable value				|
+|`Reset(void)`	    |Yes	  	|Reset variable/struct to default value		|
+|`Calculate()`	    |Not specified	|Calculate from provided parameters new value 	|
+|`Init()`	    |Not specified 	|Initialize module 				|
+|`DeInit()`	    | Not specified 	|De-initialize module 				|
+
+## Pointers
+*__Do not use uninitialised pointers!!!__*
+```
+U16* data_pU16;
+*data_pU16 = (U16)0;		/* Results in undefined behaviour! */
+```
+
+## Defines and macros
