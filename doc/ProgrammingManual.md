@@ -137,10 +137,42 @@ Function names like variable names should be safe explanatory. It is up to you a
 |`DeInit()`	    | Not specified 	|De-initialize module 				|
 
 ## Pointers
-*__Do not use uninitialized pointers!!!__*
+Pointers are marked with `_p<DataType>` suffix:
+```
+U32* data_pU32 = (U32*)0;			/* Pointer to U32. */
+```
+|Pointer to 	|Notation 			|
+|---------------|-------------------------------|
+|data type  	| `_p<data>`			|
+|struct		| `_ps`				|
+|function	| `_pF<function return type>`	|
+
+
+*__Do not use uninitialised pointers!!!__*
 ```
 U16* data_pU16;
 *data_pU16 = (U16)0;		/* Results in undefined behaviour! */
 ```
+Limit usage of **void pointers**.
 
 ## Defines and macros
+Whenever the code needs to work with constant literals use defines and macros. All defines and macros are in capital letters with underscore for word separation:
+
+**Notation:**
+|Type		|Notation(suffix)	|
+|---------------|-----------------------|		
+|Constant define| `_d<DataType>`	|
+|Macro		| `_dM<DataType>`	|
+
+Examples:
+```
+/* Defines */
+#define GREEN_LED_PIN_dU16			( (U16)24 )
+#define W_REG_I_dF32				( (F32)12.64 )
+
+/* Macros */
+#define CALC_POWER__W__dMF32(U, I)		( (F32)(U) * (F32)(I) )
+```
+
+## Comments
+
