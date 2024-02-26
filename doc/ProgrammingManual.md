@@ -17,7 +17,7 @@ Defined in `app_types.h`:
 |`U16`	   |`_U16`	    |unsigned 16-bit integer  |
 |`S16`	   |`_S16`	    |signed 16-bit integer    |
 |`U32`     |`_U32`	    |unsigned 32-bit integer  |
-|`S32`     `_S32`	    |signed 32-bit integer    |  
+|`S32`     |`_S32`	    |signed 32-bit integer    |  
 |`U64`     |`_U64`	    |unsigned 64-bit integer  |
 |`S64`	   |`_S64`	    |signed 64-bit integer    |
 |`F32`     |`_F32`	    |single precision float   |
