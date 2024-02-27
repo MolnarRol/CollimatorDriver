@@ -65,7 +65,7 @@ void fun(void)
 For better code readability we should include physical dimension of a unit that we want to represent with a variable.
 | Unit 			  			| Variable Name | Description       |
 ----------------------------| --------------|-------------------|
-|$$\mathrm{V}$$     	  	|`__V__`	  	|Volt		      	|
+|$\mathrm{V}$     	  	|`__V__`	  	|Volt		      	|
 |$\mathrm{A}$     	  		|`__A__`        |Ampere             |
 |$\mathrm{Nm}$		  		|`__Nm__`	  	|Newton meter       |
 |$\mathrm{kg.m^2}$ 	  		|`__kgm2__`	  	|Moment of inertia  |
