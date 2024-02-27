@@ -4,7 +4,7 @@
  *  Created on: Feb 15, 2024
  *      Author: roland
  */
-#include "ll_gpio.h"
+#include <ll_gpio.h>
 
 void LL_GPIO_Init(LL_LED_struct* led_config_s)
 {

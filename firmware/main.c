@@ -12,27 +12,19 @@
  * KEM, FEI, TUKE
  * @date 27.02.2024
  */
-
-#include "mcu.h"
-#include "ll_gpio.h"
-
-int main(void)
+#include <main.h>
+#include <ll_gpio.h>
+/**
+ * @brief Main function
+ */
+void main(void)
 {
-    mcu_vInitClocks();
+    /* Initialization */
+    mcu_vInitClocks();                                          /* Initialize uC clock system. */
 
-    LL_LED_struct led_conf_s;
-
-     led_conf_s.pin = 31;
-     led_conf_s.initial_state = 0;
-     led_conf_s.pullup_enable = 0;
-
-    LL_GPIO_Init(&led_conf_s);
-
+    /* Main loop */
     while(1)
     {
-        GpioDataRegs.GPASET.bit.GPIO31 = 1;
-        DELAY_US(5E5);
-        GpioDataRegs.GPACLEAR.bit.GPIO31 = 1;
-        DELAY_US(5E5);
+
     }
 }

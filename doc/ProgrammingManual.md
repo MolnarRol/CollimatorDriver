@@ -176,10 +176,7 @@ Examples:
 ```
 
 ## Comments
-All types of comments are allowed.  Documentation after member use following line comment style:
-```
-int var; 			/**< Detailed description after the member */
-```
+All types of comments are allowed.
 
 ### File comments:
 Every `.c` and `.h` file should contain basic file description at the start:
