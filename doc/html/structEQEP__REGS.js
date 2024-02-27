@@ -1,0 +1,27 @@
+var structEQEP__REGS =
+[
+    [ "QCAPCTL", "structEQEP__REGS.html#a539ea104cb15e8d69ac8d2bac1fb366d", null ],
+    [ "QCLR", "structEQEP__REGS.html#a6482e04a0cb3fb04a1e89b34f73d4a96", null ],
+    [ "QCPRD", "structEQEP__REGS.html#aa12581f34f60bde0c350b2c000a29932", null ],
+    [ "QCPRDLAT", "structEQEP__REGS.html#a136ac838781dd90651faf246b221785a", null ],
+    [ "QCTMR", "structEQEP__REGS.html#a150f665463c7cd879c016f919588e5cf", null ],
+    [ "QCTMRLAT", "structEQEP__REGS.html#aa6cfa7c69b0ca50a2a6a810b6912aa4d", null ],
+    [ "QDECCTL", "structEQEP__REGS.html#a48d7acc3554ac9d841b74856255204d9", null ],
+    [ "QEINT", "structEQEP__REGS.html#a091ec1edadacb2039c08557d08ee3f8a", null ],
+    [ "QEPCTL", "structEQEP__REGS.html#a280eec70c94ca194896accf903988f02", null ],
+    [ "QEPSTS", "structEQEP__REGS.html#a2ecbabde95a52858bb73a244d08b136e", null ],
+    [ "QFLG", "structEQEP__REGS.html#aac8dfdc1056adfc309cccce5b3a615ef", null ],
+    [ "QFRC", "structEQEP__REGS.html#aaf9b1340c392f44d0fb555848df6a808", null ],
+    [ "QPOSCMP", "structEQEP__REGS.html#ae43a2a994a21adf106fae09b2f9f3978", null ],
+    [ "QPOSCNT", "structEQEP__REGS.html#a63d2845089d6f6ebc7e3de781613e5c4", null ],
+    [ "QPOSCTL", "structEQEP__REGS.html#a0286c91a0a0235a1b34d7b81afb6d797", null ],
+    [ "QPOSILAT", "structEQEP__REGS.html#aa08acea40eedd95234e6e0c14da6d039", null ],
+    [ "QPOSINIT", "structEQEP__REGS.html#a31c8a37bcdb8930f0f8e53b6e43c0b0c", null ],
+    [ "QPOSLAT", "structEQEP__REGS.html#ac3a65ec2511bbfb071b4105fd932b4eb", null ],
+    [ "QPOSMAX", "structEQEP__REGS.html#a790adfb299a37824a22dfd30c522d166", null ],
+    [ "QPOSSLAT", "structEQEP__REGS.html#a0719d0d8e58a6b168b1170ed1fd5c82d", null ],
+    [ "QUPRD", "structEQEP__REGS.html#a47bfca3df98ca9581a56ed86e13d1127", null ],
+    [ "QUTMR", "structEQEP__REGS.html#a154c75faaec50c358ead292667e5e05b", null ],
+    [ "QWDPRD", "structEQEP__REGS.html#a80513b24446ab7c89d4648e9621d2b92", null ],
+    [ "QWDTMR", "structEQEP__REGS.html#aa4abc32e1eb3e4d9af4bccfc9a1d2b67", null ]
+];

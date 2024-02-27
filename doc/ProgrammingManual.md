@@ -1,6 +1,6 @@
-
+[TOC]
 # Software design manual
-## General guildline:
+## General guildline
 - Do not use dynamic allocation (calloc, malloc)
 - Always specify data type of variables and function return values.
 - Limit mixing math operations with multiple data types. Use casting if necessary.
@@ -65,7 +65,7 @@ void fun(void)
 For better code readability we should include physical dimension of a unit that we want to represent with a variable.
 | Unit 			  			| Variable Name | Description       |
 ----------------------------| --------------|-------------------|
-|$\mathrm{V}$     	  	|`__V__`	  	|Volt		      	|
+|$\mathrm{V}$     	  		|`__V__`	  	|Volt		      	|
 |$\mathrm{A}$     	  		|`__A__`        |Ampere             |
 |$\mathrm{Nm}$		  		|`__Nm__`	  	|Newton meter       |
 |$\mathrm{kg.m^2}$ 	  		|`__kgm2__`	  	|Moment of inertia  |
@@ -178,7 +178,7 @@ Examples:
 ## Comments
 All types of comments are allowed.
 
-### File comments:
+### File comments
 Every `.c` and `.h` file should contain basic file description at the start:
 ```
 /**
