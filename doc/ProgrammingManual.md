@@ -14,14 +14,14 @@ Defined in `app_types.h`:
 ```
 |Data type |Naming postfix  | Description             |
 |----------|----------------|-------------------------|
-|`BOOL`	   |`_b` 	    | boolean	              |
-|`U16`	   |`_U16`	    |unsigned 16-bit integer  |
-|`S16`	   |`_S16`	    |signed 16-bit integer    |
-|`U32`     |`_U32`	    |unsigned 32-bit integer  |
-|`S32`     |`_S32`	    |signed 32-bit integer    |  
-|`U64`     |`_U64`	    |unsigned 64-bit integer  |
-|`S64`	   |`_S64`	    |signed 64-bit integer    |
-|`F32`     |`_F32`	    |single precision float   |
+|`BOOL`	   |`_b` 	    	| boolean	              |
+|`U16`	   |`_U16`	    	|unsigned 16-bit integer  |
+|`S16`	   |`_S16`	    	|signed 16-bit integer    |
+|`U32`     |`_U32`	    	|unsigned 32-bit integer  |
+|`S32`     |`_S32`	    	|signed 32-bit integer    |  
+|`U64`     |`_U64`	    	|unsigned 64-bit integer  |
+|`S64`	   |`_S64`	    	|signed 64-bit integer    |
+|`F32`     |`_F32`	    	|single precision float   |
 
 ## Variables
 All variables must be self explanatory, ideally short but specific.
@@ -63,25 +63,25 @@ void fun(void)
 ```
 ### Variables containing units
 For better code readability we should include physical dimension of a unit that we want to represent with a variable.
-| Unit 			  | Variable Name | Description       |
---------------------------| --------------|-------------------|
-|$\mathrm{V}$     	  |`__V__`	  |Volt		      |
-|$\mathrm{A}$     	  |`__A__`        |Ampere             |
-|$\mathrm{Nm}$		  |`__Nm__`	  |Newton meter       |
-|$\mathrm{kg.m^2}$ 	  |`__kgm2__`	  |Moment of inertia  |
-|$\mathrm{rad.s^{-1}}$	  |`__rad_s1__`   |Angular velocity   |
-|%     			  |`__per_cent__` |percent	      |
-|‰     			  |`__pro_mile__` |promile	      |
+| Unit 			  			| Variable Name | Description       |
+----------------------------| --------------|-------------------|
+|$$\mathrm{V}$$     	  	|`__V__`	  	|Volt		      	|
+|$\mathrm{A}$     	  		|`__A__`        |Ampere             |
+|$\mathrm{Nm}$		  		|`__Nm__`	  	|Newton meter       |
+|$\mathrm{kg.m^2}$ 	  		|`__kgm2__`	  	|Moment of inertia  |
+|$\mathrm{rad.s^{-1}}$	  	|`__rad_s1__`   |Angular velocity   |
+|%     			  			|`__per_cent__` |percent	      	|
+|‰     			  			|`__pro_mile__` |promile	      	|
 
 We can also use unit prefixes:
-| Unit 			| Variable Name | Description 	|
+| Unit 					| Variable Name | Description 	|
 ------------------------| --------------|---------------|
-|$\mathrm{M}$		|`__M<unit>__`  | Mega		|
-|$\mathrm{k}$		|`__k<unit>__`  | kilo	   	|
-|$\mathrm{m}$     	|`__m<unit>__`	| milli		|
+|$\mathrm{M}$			|`__M<unit>__`  | Mega			|
+|$\mathrm{k}$			|`__k<unit>__`  | kilo	   		|	
+|$\mathrm{m}$     		|`__m<unit>__`	| milli			|
 |$\mathrm{\mu}$     	|`__u<unit>__`  | micro       	|
-|$\mathrm{n}$		|`__n<unit>__`	| nano		|
-|$\mathrm{p}$		|`__p<unit>__`	| pico		|
+|$\mathrm{n}$			|`__n<unit>__`	| nano			|
+|$\mathrm{p}$			|`__p<unit>__`	| pico			|
 
 **Example:**
 ```
@@ -128,25 +128,25 @@ void fun(void)
 When **passing a struct** to a function it is recommended to use pointer rather than copy.
 ### Naming the functions
 Function names like variable names should be safe explanatory. It is up to you as a programmer to name the function, but it is a good practice to stick to standard naming of basic functions like: For example:
-| Name  	    |Return void     	| Description 					|
+| Name  	    	|Return void     	| Description 									|
 |-------------------|-------------------|-----------------------------------------------|
-|`Get(void)`	    |No 	  	|Get variable value				|
-|`Set()`	    |Yes	  	|Set variable value				|
-|`Reset(void)`	    |Yes	  	|Reset variable/struct to default value		|
-|`Calculate()`	    |Not specified	|Calculate from provided parameters new value 	|
-|`Init()`	    |Not specified 	|Initialize module 				|
-|`DeInit()`	    | Not specified 	|De-initialize module 				|
+|`Get(void)`	    |No 	  			|Get variable value								|
+|`Set()`	    	|Yes	  			|Set variable value								|
+|`Reset(void)`	    |Yes	  			|Reset variable/struct to default value			|
+|`Calculate()`	    |Not specified		|Calculate from provided parameters new value 	|
+|`Init()`	    	|Not specified 		|Initialize module 								|
+|`DeInit()`	    	| Not specified 	|De-initialize module 							|
 
 ## Pointers
 Pointers are marked with `_p<DataType>` suffix:
 ```
 U32* data_pU32 = (U32*)0;			/* Pointer to U32. */
 ```
-|Pointer to 	|Notation 			|
+|Pointer to 	|Notation 						|
 |---------------|-------------------------------|
-|data type  	| `_p<data>`			|
-|struct		| `_ps`				|
-|function	| `_pF<function return type>`	|
+|data type  	| `_p<data>`					|
+|struct			| `_ps`							|
+|function		| `_pF<function return type>`	|
 
 
 *__Do not use uninitialised pointers!!!__*
@@ -160,10 +160,10 @@ Limit usage of **void pointers**.
 Whenever the code needs to work with constant literals use defines and macros. All defines and macros are in capital letters with underscore for word separation:
 
 **Notation:**
-|Type		|Notation(suffix)	|
+|Type			|Notation(suffix)		|
 |---------------|-----------------------|		
-|Constant define| `_d<DataType>`	|
-|Macro		| `_dM<DataType>`	|
+|Constant define| `_d<DataType>`		|
+|Macro			| `_dM<DataType>`		|
 
 Examples:
 ```
