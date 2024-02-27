@@ -1,3 +1,4 @@
+
 # Software design manual
 ## General guildline:
 - Do not use dynamic allocation (calloc, malloc)
@@ -175,4 +176,25 @@ Examples:
 ```
 
 ## Comments
+All types of comments are allowed.  Documentation after member use following line comment style:
+```
+int var; 			/**< Detailed description after the member */
+```
 
+### File comments:
+Every `.c` and `.h` file should contain basic file description at the start:
+```
+/**
+ * @file NameOfTheFile
+ * @brief BriefDescription
+ * @details DetailedDescription
+ *
+ * =================================================================
+ * @author Author1
+ * @author Author2
+ *
+ * =================================================================
+ * KEM, FEI, TUKE
+ * @date CurrentDate
+ */
+```
