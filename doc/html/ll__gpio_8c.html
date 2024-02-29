@@ -133,21 +133,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="ll__gpio_8c_source.html#l00009">9</a> of file <a class="el" href="ll__gpio_8c_source.html">ll_gpio.c</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   10</span>{</div>
-<div class="line"><span class="lineno">   11</span>    Uint16 gpio_port = led_config_s-&gt;<a class="code hl_variable" href="structLL__LED__struct.html#a55386f08be70c584368f7211e150bafb">pin</a> / (Uint16)32;</div>
-<div class="line"><span class="lineno">   12</span>    Uint16 gpio_pin_in_port = led_config_s-&gt;<a class="code hl_variable" href="structLL__LED__struct.html#a55386f08be70c584368f7211e150bafb">pin</a> % (Uint16)32;</div>
-<div class="line"><span class="lineno">   13</span>    Uint16 second_half = gpio_pin_in_port / 16;</div>
-<div class="line"><span class="lineno">   14</span> </div>
-<div class="line"><span class="lineno">   15</span>    EALLOW;</div>
-<div class="line"><span class="lineno">   16</span>    <span class="comment">/* Mux setting */</span></div>
-<div class="line"><span class="lineno">   17</span>    * (Uint16*)(<a class="code hl_define" href="ll__gpio_8h.html#acce3b8a909ed8b957b4e411dfb7cbd91">GPIO_BASE</a> + <a class="code hl_define" href="ll__gpio_8h.html#a29f56ef449ade077eedd7e9676d90297">GPIOx_MUX_OFFSET</a> + (2 * second_half)) |= (1 &lt;&lt; 2*(gpio_pin_in_port - 16 * second_half));</div>
-<div class="line"><span class="lineno">   18</span> </div>
-<div class="line"><span class="lineno">   19</span>    EDIS;</div>
-<div class="line"><span class="lineno">   20</span>}</div>
-<div class="ttc" id="all__gpio_8h_html_a29f56ef449ade077eedd7e9676d90297"><div class="ttname"><a href="ll__gpio_8h.html#a29f56ef449ade077eedd7e9676d90297">GPIOx_MUX_OFFSET</a></div><div class="ttdeci">#define GPIOx_MUX_OFFSET</div><div class="ttdef"><b>Definition</b> <a href="ll__gpio_8h_source.html#l00014">ll_gpio.h:14</a></div></div>
-<div class="ttc" id="all__gpio_8h_html_acce3b8a909ed8b957b4e411dfb7cbd91"><div class="ttname"><a href="ll__gpio_8h.html#acce3b8a909ed8b957b4e411dfb7cbd91">GPIO_BASE</a></div><div class="ttdeci">#define GPIO_BASE</div><div class="ttdef"><b>Definition</b> <a href="ll__gpio_8h_source.html#l00013">ll_gpio.h:13</a></div></div>
-<div class="ttc" id="astructLL__LED__struct_html_a55386f08be70c584368f7211e150bafb"><div class="ttname"><a href="structLL__LED__struct.html#a55386f08be70c584368f7211e150bafb">LL_LED_struct::pin</a></div><div class="ttdeci">Uint16 pin</div><div class="ttdef"><b>Definition</b> <a href="ll__gpio_8h_source.html#l00018">ll_gpio.h:18</a></div></div>
-</div><!-- fragment -->
+
 </div>
 </div>
 </div><!-- contents -->

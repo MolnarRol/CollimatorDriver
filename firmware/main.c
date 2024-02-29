@@ -13,7 +13,6 @@
  * @date 27.02.2024
  */
 #include <main.h>
-#include <ll_gpio.h>
 #include <ATB_interface.h>
 
 /**
@@ -24,9 +23,9 @@ void main(void)
     /* Initialization */
     mcu_vInitClocks();                                          /* Initialize uC clock system. */
     ATB_Init();
+
     /* Main loop */
     while(1)
     {
-
     }
 }

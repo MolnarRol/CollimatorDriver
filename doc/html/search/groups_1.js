@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['interface_0',['ATB Interface',['../group__ATB__InterfaceFunctions.html',1,'']]]
+  ['core_20functions_0',['ATB Core functions',['../group__ATB__CoreFunctions.html',1,'']]]
 ];

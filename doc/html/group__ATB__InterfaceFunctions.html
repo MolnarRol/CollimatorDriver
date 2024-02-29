@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.10.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Collimator blade driver: ATB Interface</title>
+<title>Collimator blade driver: ATB Interface functions</title>
 <link rel="icon" href="logo_small.png" type="image/x-icon" />
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript">var page_layout=1;</script>
@@ -104,7 +104,7 @@ $(function(){initNavTree('group__ATB__InterfaceFunctions.html',''); initResizabl
 <div class="header">
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
-  <div class="headertitle"><div class="title">ATB Interface</div></div>
+  <div class="headertitle"><div class="title">ATB Interface functions</div></div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
@@ -148,34 +148,39 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">ref_ticks_U32</td><td>Ticks reference for check. </td></tr>
-    <tr><td class="paramname">checked_ticks_passed_U32</td><td>Required number of ticks elapsed. </td></tr>
+    <tr><td class="paramname">checked_ticks_passed_U32</td><td>Required number of ticks elapsed. To calculate this value from time you can use this macros: <ul>
+<li><a class="el" href="ATB__interface_8h.html#a373c6aeb2600492ffd41be95cfeaebbd">ATB_US_TO_TICKS_dM_U32()</a> </li>
+<li><a class="el" href="ATB__interface_8h.html#a89521308bac978727efcf641ac1841e7">ATB_MS_TO_TICKS_dM_U32()</a> </li>
+<li><a class="el" href="ATB__interface_8h.html#ad67d73f88a151b3bacdb57892d3fac81">ATM_S_TO_TICKS_dM_U32()</a> </li>
+</ul>
+</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>Time passed status. </dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
-    <tr><td class="paramname">Returns</td><td>1 if requested number of ticks have passed, else returns 0. </td></tr>
+    <tr><td class="paramname">1</td><td>number of ticks have passed </td></tr>
+    <tr><td class="paramname">0</td><td>number of ticks have not passed</td></tr>
   </table>
   </dd>
 </dl>
-
-<p class="definition">Definition at line <a class="el" href="ATB_8c_source.html#l00081">81</a> of file <a class="el" href="ATB_8c_source.html">ATB.c</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   82</span>{</div>
-<div class="line"><span class="lineno">   83</span>    <span class="keyword">const</span> <a class="code hl_typedef" href="app__types_8h.html#a696390429f2f3b644bde8d0322a24124">U32</a> ticks_timestamp_U32 = <a class="code hl_function" href="#gaf256d3fa83a8ed49eb597ff55a355928">ATB_GetTicks_U32</a>();                           <span class="comment">/* Saving current time stamp. */</span></div>
-<div class="line"><span class="lineno">   84</span>    <a class="code hl_typedef" href="app__types_8h.html#a696390429f2f3b644bde8d0322a24124">U32</a> ticks_delta_U32 = ticks_timestamp_U32 - ref_ticks_U32;                  <span class="comment">/* Calculation of delta of ticks. */</span></div>
-<div class="line"><span class="lineno">   85</span>    <a class="code hl_typedef" href="app__types_8h.html#a0a0a322d5fa4a546d293a77ba8b4a71f">U16</a> status_U16 = (<a class="code hl_typedef" href="app__types_8h.html#a0a0a322d5fa4a546d293a77ba8b4a71f">U16</a>)0;                                                       <span class="comment">/* Return value */</span></div>
-<div class="line"><span class="lineno">   86</span> </div>
-<div class="line"><span class="lineno">   87</span>    <span class="keywordflow">if</span>(ticks_delta_U32 &gt;= checked_ticks_passed_U32)</div>
-<div class="line"><span class="lineno">   88</span>    {</div>
-<div class="line"><span class="lineno">   89</span>        status_U16 = (<a class="code hl_typedef" href="app__types_8h.html#a0a0a322d5fa4a546d293a77ba8b4a71f">U16</a>)1;</div>
-<div class="line"><span class="lineno">   90</span>    }</div>
-<div class="line"><span class="lineno">   91</span> </div>
-<div class="line"><span class="lineno">   92</span>    <span class="keywordflow">return</span> status_U16;</div>
-<div class="line"><span class="lineno">   93</span>}</div>
-<div class="ttc" id="aapp__types_8h_html_a0a0a322d5fa4a546d293a77ba8b4a71f"><div class="ttname"><a href="app__types_8h.html#a0a0a322d5fa4a546d293a77ba8b4a71f">U16</a></div><div class="ttdeci">uint16_t U16</div><div class="ttdef"><b>Definition</b> <a href="app__types_8h_source.html#l00019">app_types.h:19</a></div></div>
+<p><b>Usage example:</b> </p><div class="fragment"><div class="line"><a class="code hl_typedef" href="app__types_8h.html#a696390429f2f3b644bde8d0322a24124">U32</a> time1_U32 = <a class="code hl_function" href="#gaf256d3fa83a8ed49eb597ff55a355928">ATB_GetTicks_U32</a>();</div>
+<div class="line"><span class="keywordflow">while</span>(1)</div>
+<div class="line">{</div>
+<div class="line">     <span class="keywordflow">if</span>( <a class="code hl_function" href="#gab6f3b97e3d0d03a4f948f9f89c8842be">ATB_CheckTicksPassed_U16</a>(time1_U32, <a class="code hl_define" href="ATB__interface_8h.html#a89521308bac978727efcf641ac1841e7">ATB_MS_TO_TICKS_dM_U32</a>(250)) )</div>
+<div class="line">     {</div>
+<div class="line">         function()                                      <span class="comment">// Executed every 250ms.</span></div>
+<div class="line">         time1_U32 = <a class="code hl_function" href="#gaf256d3fa83a8ed49eb597ff55a355928">ATB_GetTicks_U32</a>();                 <span class="comment">// Write new reference time</span></div>
+<div class="line">     }</div>
+<div class="line">}</div>
+<div class="ttc" id="aATB__interface_8h_html_a89521308bac978727efcf641ac1841e7"><div class="ttname"><a href="ATB__interface_8h.html#a89521308bac978727efcf641ac1841e7">ATB_MS_TO_TICKS_dM_U32</a></div><div class="ttdeci">#define ATB_MS_TO_TICKS_dM_U32(ms)</div><div class="ttdef"><b>Definition</b> <a href="ATB__interface_8h_source.html#l00011">ATB_interface.h:11</a></div></div>
 <div class="ttc" id="aapp__types_8h_html_a696390429f2f3b644bde8d0322a24124"><div class="ttname"><a href="app__types_8h.html#a696390429f2f3b644bde8d0322a24124">U32</a></div><div class="ttdeci">uint32_t U32</div><div class="ttdef"><b>Definition</b> <a href="app__types_8h_source.html#l00022">app_types.h:22</a></div></div>
-<div class="ttc" id="agroup__ATB__InterfaceFunctions_html_gaf256d3fa83a8ed49eb597ff55a355928"><div class="ttname"><a href="#gaf256d3fa83a8ed49eb597ff55a355928">ATB_GetTicks_U32</a></div><div class="ttdeci">U32 ATB_GetTicks_U32(void)</div><div class="ttdoc">Get current application time base ticks.</div><div class="ttdef"><b>Definition</b> <a href="ATB_8c_source.html#l00070">ATB.c:70</a></div></div>
-</div><!-- fragment -->
+<div class="ttc" id="agroup__ATB__InterfaceFunctions_html_gab6f3b97e3d0d03a4f948f9f89c8842be"><div class="ttname"><a href="#gab6f3b97e3d0d03a4f948f9f89c8842be">ATB_CheckTicksPassed_U16</a></div><div class="ttdeci">U16 ATB_CheckTicksPassed_U16(const uint32_t ref_ticks_U32, const uint32_t checked_ticks_passed_U32)</div><div class="ttdoc">Check if requested ticks (time) have passed.</div><div class="ttdef"><b>Definition</b> <a href="ATB_8c_source.html#l00094">ATB.c:94</a></div></div>
+<div class="ttc" id="agroup__ATB__InterfaceFunctions_html_gaf256d3fa83a8ed49eb597ff55a355928"><div class="ttname"><a href="#gaf256d3fa83a8ed49eb597ff55a355928">ATB_GetTicks_U32</a></div><div class="ttdeci">U32 ATB_GetTicks_U32(void)</div><div class="ttdoc">Get current application time base ticks.</div><div class="ttdef"><b>Definition</b> <a href="ATB_8c_source.html#l00065">ATB.c:65</a></div></div>
+</div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="ATB_8c_source.html#l00094">94</a> of file <a class="el" href="ATB_8c_source.html">ATB.c</a>.</p>
+
 </div>
 </div>
 <a id="gaf256d3fa83a8ed49eb597ff55a355928" name="gaf256d3fa83a8ed49eb597ff55a355928"></a>
@@ -194,19 +199,10 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Get current application time base ticks. </p>
-<dl class="retval"><dt>Return values</dt><dd>
-  <table class="retval">
-    <tr><td class="paramname">Unsigned</td><td>64-bit integer value of tick counter. </td></tr>
-  </table>
-  </dd>
-</dl>
+<dl class="section return"><dt>Returns</dt><dd>Unsigned 64-bit integer value of tick counter. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ATB_8c_source.html#l00070">70</a> of file <a class="el" href="ATB_8c_source.html">ATB.c</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   71</span>{</div>
-<div class="line"><span class="lineno">   72</span>    <span class="keywordflow">return</span> (<a class="code hl_typedef" href="app__types_8h.html#a696390429f2f3b644bde8d0322a24124">U32</a>)<a class="code hl_variable" href="ATB_8c.html#aaac0564601d73043a1e7722ed384fa5f">s_ATB_ticks_U64</a>;</div>
-<div class="line"><span class="lineno">   73</span>}</div>
-<div class="ttc" id="aATB_8c_html_aaac0564601d73043a1e7722ed384fa5f"><div class="ttname"><a href="ATB_8c.html#aaac0564601d73043a1e7722ed384fa5f">s_ATB_ticks_U64</a></div><div class="ttdeci">static volatile U64 s_ATB_ticks_U64</div><div class="ttdoc">Application tick timer variable.</div><div class="ttdef"><b>Definition</b> <a href="ATB_8c_source.html#l00016">ATB.c:16</a></div></div>
-</div><!-- fragment -->
+<p class="definition">Definition at line <a class="el" href="ATB_8c_source.html#l00065">65</a> of file <a class="el" href="ATB_8c_source.html">ATB.c</a>.</p>
+
 </div>
 </div>
 <a id="ga8fe4ce20de41587fcb8e9c3a079b7823" name="ga8fe4ce20de41587fcb8e9c3a079b7823"></a>
@@ -225,18 +221,10 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Get current application time base ticks. </p>
-<dl class="retval"><dt>Return values</dt><dd>
-  <table class="retval">
-    <tr><td class="paramname">Unsigned</td><td>32-bit integer value of tick counter. </td></tr>
-  </table>
-  </dd>
-</dl>
+<dl class="section return"><dt>Returns</dt><dd>Unsigned 32-bit integer value of tick counter. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ATB_8c_source.html#l00061">61</a> of file <a class="el" href="ATB_8c_source.html">ATB.c</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   62</span>{</div>
-<div class="line"><span class="lineno">   63</span>    <span class="keywordflow">return</span> <a class="code hl_variable" href="ATB_8c.html#aaac0564601d73043a1e7722ed384fa5f">s_ATB_ticks_U64</a>;</div>
-<div class="line"><span class="lineno">   64</span>}</div>
-</div><!-- fragment -->
+<p class="definition">Definition at line <a class="el" href="ATB_8c_source.html#l00056">56</a> of file <a class="el" href="ATB_8c_source.html">ATB.c</a>.</p>
+
 </div>
 </div>
 <a id="ga56b84e5d4c15df6e09a39e14364d2070" name="ga56b84e5d4c15df6e09a39e14364d2070"></a>
@@ -255,43 +243,10 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>ATB module initialization function. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">time_base_period__us__U16</td><td>Period in microseconds for s_ATB_ticks_U64 increment. </td></tr>
-  </table>
-  </dd>
-</dl>
+<p>Configures timer to overflow with period of 10us to execute ATB_ISR. </p>
 
 <p class="definition">Definition at line <a class="el" href="ATB_8c_source.html#l00027">27</a> of file <a class="el" href="ATB_8c_source.html">ATB.c</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   28</span>{</div>
-<div class="line"><span class="lineno">   29</span><span class="comment">//    /* Enable clocking. */</span></div>
-<div class="line"><span class="lineno">   30</span><span class="comment">//    if(__HAL_RCC_TIM7_IS_CLK_ENABLED() == 0) __HAL_RCC_TIM7_CLK_ENABLE();</span></div>
-<div class="line"><span class="lineno">   31</span><span class="comment">//</span></div>
-<div class="line"><span class="lineno">   32</span><span class="comment">//    /* Basic timer setup. */</span></div>
-<div class="line"><span class="lineno">   33</span><span class="comment">//    LL_TIM_DisableCounter(TIM7);</span></div>
-<div class="line"><span class="lineno">   34</span><span class="comment">//    LL_TIM_SetCounter(TIM7, (U32)0);</span></div>
-<div class="line"><span class="lineno">   35</span><span class="comment">//    s_ATB_ticks_U64 = (U64)0;</span></div>
-<div class="line"><span class="lineno">   36</span><span class="comment">//</span></div>
-<div class="line"><span class="lineno">   37</span><span class="comment">//    /* Timer parameter calculations. */</span></div>
-<div class="line"><span class="lineno">   38</span><span class="comment">//    TIM_UTIL_Param_s timing_s = { .TIM_InputFreq__Hz__F32 = ATB_TIM_CLK__Hz__dU32 };</span></div>
-<div class="line"><span class="lineno">   39</span><span class="comment">//    const F32 timer_freq__Hz__F32 = ( 1.0f/((F32)(ATB_TICK__us__dU16) * 1.0E-6F) );</span></div>
-<div class="line"><span class="lineno">   40</span><span class="comment">//</span></div>
-<div class="line"><span class="lineno">   41</span><span class="comment">//    if( TIM_UTIL_CalcSettingsFromFreq(&amp;timing_s, timer_freq__Hz__F32) == TIM_UTIL_OK_e )</span></div>
-<div class="line"><span class="lineno">   42</span><span class="comment">//    {</span></div>
-<div class="line"><span class="lineno">   43</span><span class="comment">//        LL_TIM_SetPrescaler(TIM7, (U32)timing_s.PSC_U16);</span></div>
-<div class="line"><span class="lineno">   44</span><span class="comment">//        LL_TIM_SetAutoReload(TIM7, timing_s.ARR_U32);</span></div>
-<div class="line"><span class="lineno">   45</span><span class="comment">//    }</span></div>
-<div class="line"><span class="lineno">   46</span><span class="comment">//</span></div>
-<div class="line"><span class="lineno">   47</span><span class="comment">//    /* Interrupt setup. */</span></div>
-<div class="line"><span class="lineno">   48</span><span class="comment">//    LL_TIM_EnableIT_UPDATE(TIM7);</span></div>
-<div class="line"><span class="lineno">   49</span><span class="comment">//    NVIC_ClearPendingIRQ(TIM7_DAC_IRQn);</span></div>
-<div class="line"><span class="lineno">   50</span><span class="comment">//    NVIC_SetPriority(TIM7_DAC_IRQn, ATB_ISR_PRIO_dU32);</span></div>
-<div class="line"><span class="lineno">   51</span><span class="comment">//    NVIC_EnableIRQ(TIM7_DAC_IRQn);</span></div>
-<div class="line"><span class="lineno">   52</span><span class="comment">//</span></div>
-<div class="line"><span class="lineno">   53</span><span class="comment">//    /* Enable counter. */</span></div>
-<div class="line"><span class="lineno">   54</span><span class="comment">//    LL_TIM_EnableCounter(TIM7);</span></div>
-<div class="line"><span class="lineno">   55</span>}</div>
-</div><!-- fragment -->
+
 </div>
 </div>
 </div><!-- contents -->

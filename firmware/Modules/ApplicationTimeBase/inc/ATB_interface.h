@@ -4,10 +4,10 @@
 #include <main.h>
 
 /* Defines and macros */
-#define         ATB_TICK__us__dU16          ( (U16)10 )                             /**< Period of one application time base tick. */
+#define     ATB_TICK__us__dU16              ( (U16)10 )                             /**< Period of one application time base tick. */
 
 /* Time to ticks macros. */
-#define         ATB_US_TO_TICKS_dM_U32(us)  ( (U32)((us) / ATB_TICK__us__dU16) )
+#define     ATB_US_TO_TICKS_dM_U32(us)      ( (U32)((us) / ATB_TICK__us__dU16) )
 #define     ATB_MS_TO_TICKS_dM_U32(ms)      ( (U32)((ms) * 1E3 / ATB_TICK__us__dU16) )
 #define     ATM_S_TO_TICKS_dM_U32(s)        ( (U32)((s) * 1E6 /ATB_TICK__us__dU16) )
 
