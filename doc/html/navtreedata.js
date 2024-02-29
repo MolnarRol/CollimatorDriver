@@ -25,32 +25,33 @@
 var NAVTREE =
 [
   [ "Collimator blade driver", "index.html", [
-    [ "CollimatorDriver", "index.html#autotoc_md6", [
-      [ "Project requirements", "index.html#autotoc_md7", null ],
-      [ "Tasks", "index.html#autotoc_md8", null ]
+    [ "Project details", "index.html#autotoc_md8", [
+      [ "CollimatorDriver", "index.html#autotoc_md9", null ],
+      [ "Project requirements", "index.html#autotoc_md10", null ],
+      [ "Tasks", "index.html#autotoc_md11", null ]
     ] ],
-    [ "Programming manual", "index.html#autotoc_md9", null ],
+    [ "Software team", "index.html#autotoc_md12", null ],
+    [ "Programming manual", "index.html#autotoc_md13", null ],
     [ "ProgrammingManual", "md_ProgrammingManual.html", [
-      [ "Software design manual", "md_ProgrammingManual.html#autotoc_md10", [
-        [ "General guildline", "md_ProgrammingManual.html#autotoc_md11", null ],
-        [ "Data types", "md_ProgrammingManual.html#autotoc_md12", null ],
-        [ "Variables", "md_ProgrammingManual.html#autotoc_md13", [
-          [ "Variable names", "md_ProgrammingManual.html#autotoc_md14", null ],
-          [ "Global variables", "md_ProgrammingManual.html#autotoc_md15", null ],
-          [ "Static variables", "md_ProgrammingManual.html#autotoc_md16", null ],
-          [ "Variables containing units", "md_ProgrammingManual.html#autotoc_md17", null ]
-        ] ],
-        [ "Enumeration (Enums)", "md_ProgrammingManual.html#autotoc_md18", null ],
-        [ "Functions", "md_ProgrammingManual.html#autotoc_md19", [
-          [ "Naming the functions", "md_ProgrammingManual.html#autotoc_md20", null ]
-        ] ],
-        [ "Pointers", "md_ProgrammingManual.html#autotoc_md21", null ],
-        [ "Defines and macros", "md_ProgrammingManual.html#autotoc_md22", null ],
-        [ "Comments", "md_ProgrammingManual.html#autotoc_md23", [
-          [ "File comments", "md_ProgrammingManual.html#autotoc_md24", null ]
-        ] ]
+      [ "General guildline", "md_ProgrammingManual.html#autotoc_md14", null ],
+      [ "Data types", "md_ProgrammingManual.html#autotoc_md15", null ],
+      [ "Variables", "md_ProgrammingManual.html#autotoc_md16", [
+        [ "Variable names", "md_ProgrammingManual.html#autotoc_md17", null ],
+        [ "Global variables", "md_ProgrammingManual.html#autotoc_md18", null ],
+        [ "Static variables", "md_ProgrammingManual.html#autotoc_md19", null ],
+        [ "Variables containing units", "md_ProgrammingManual.html#autotoc_md20", null ]
+      ] ],
+      [ "Enumeration (Enums)", "md_ProgrammingManual.html#autotoc_md21", null ],
+      [ "Functions", "md_ProgrammingManual.html#autotoc_md22", [
+        [ "Naming the functions", "md_ProgrammingManual.html#autotoc_md23", null ]
+      ] ],
+      [ "Pointers", "md_ProgrammingManual.html#autotoc_md24", null ],
+      [ "Defines and macros", "md_ProgrammingManual.html#autotoc_md25", null ],
+      [ "Comments", "md_ProgrammingManual.html#autotoc_md26", [
+        [ "File comments", "md_ProgrammingManual.html#autotoc_md27", null ]
       ] ]
     ] ],
+    [ "Topics", "topics.html", "topics" ],
     [ "Data Structures", "annotated.html", [
       [ "Data Structures", "annotated.html", "annotated_dup" ],
       [ "Data Fields", "functions.html", [
@@ -63,6 +64,7 @@ var NAVTREE =
       [ "Globals", "globals.html", [
         [ "All", "globals.html", null ],
         [ "Functions", "globals_func.html", null ],
+        [ "Variables", "globals_vars.html", null ],
         [ "Typedefs", "globals_type.html", null ],
         [ "Macros", "globals_defs.html", null ]
       ] ]
@@ -72,7 +74,7 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"annotated.html"
+"ATB_8c.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

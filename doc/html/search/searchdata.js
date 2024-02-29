@@ -3,11 +3,12 @@ var indexSectionsWithContent =
   0: "abcdefgilmnprstuv",
   1: "l",
   2: "almpr",
-  3: "lm",
-  4: "ip",
+  3: "alm",
+  4: "ips",
   5: "fsu",
-  6: "gsu",
-  7: "bcdp"
+  6: "agsu",
+  7: "ai",
+  8: "bcdp"
 };
 
 var indexSectionNames =
@@ -19,7 +20,8 @@ var indexSectionNames =
   4: "variables",
   5: "typedefs",
   6: "defines",
-  7: "pages"
+  7: "groups",
+  8: "pages"
 };
 
 var indexSectionLabels =
@@ -31,6 +33,7 @@ var indexSectionLabels =
   4: "Variables",
   5: "Typedefs",
   6: "Macros",
-  7: "Pages"
+  7: "Modules",
+  8: "Pages"
 };
 

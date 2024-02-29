@@ -14,6 +14,8 @@
  */
 #include <main.h>
 #include <ll_gpio.h>
+#include <ATB_interface.h>
+
 /**
  * @brief Main function
  */
@@ -21,7 +23,7 @@ void main(void)
 {
     /* Initialization */
     mcu_vInitClocks();                                          /* Initialize uC clock system. */
-
+    ATB_Init();
     /* Main loop */
     while(1)
     {

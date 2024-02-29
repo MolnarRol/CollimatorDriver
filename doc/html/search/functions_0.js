@@ -1,4 +1,8 @@
 var searchData=
 [
-  ['ll_5fgpio_5finit_0',['LL_GPIO_Init',['../ll__gpio_8h.html#a94693365d32fffd25fb63130e9c2fab6',1,'LL_GPIO_Init(LL_LED_struct *led_config_s):&#160;ll_gpio.c'],['../ll__gpio_8c.html#a94693365d32fffd25fb63130e9c2fab6',1,'LL_GPIO_Init(LL_LED_struct *led_config_s):&#160;ll_gpio.c']]]
+  ['atb_5fchecktickspassed_5fu16_0',['ATB_CheckTicksPassed_U16',['../group__ATB__InterfaceFunctions.html#gab6f3b97e3d0d03a4f948f9f89c8842be',1,'ATB_CheckTicksPassed_U16(const uint32_t ref_ticks_U32, const uint32_t checked_ticks_passed_U32):&#160;ATB.c'],['../group__ATB__InterfaceFunctions.html#gab6f3b97e3d0d03a4f948f9f89c8842be',1,'ATB_CheckTicksPassed_U16(const uint32_t ref_ticks_U32, const uint32_t checked_ticks_passed_U32):&#160;ATB.c']]],
+  ['atb_5fgetticks_5fu32_1',['ATB_GetTicks_U32',['../group__ATB__InterfaceFunctions.html#gaf256d3fa83a8ed49eb597ff55a355928',1,'ATB_GetTicks_U32(void):&#160;ATB.c'],['../group__ATB__InterfaceFunctions.html#gaf256d3fa83a8ed49eb597ff55a355928',1,'ATB_GetTicks_U32(void):&#160;ATB.c']]],
+  ['atb_5fgetticks_5fu64_2',['ATB_GetTicks_U64',['../group__ATB__InterfaceFunctions.html#ga8fe4ce20de41587fcb8e9c3a079b7823',1,'ATB_GetTicks_U64(void):&#160;ATB.c'],['../group__ATB__InterfaceFunctions.html#ga8fe4ce20de41587fcb8e9c3a079b7823',1,'ATB_GetTicks_U64(void):&#160;ATB.c']]],
+  ['atb_5finit_3',['ATB_Init',['../group__ATB__InterfaceFunctions.html#ga56b84e5d4c15df6e09a39e14364d2070',1,'ATB_Init(void):&#160;ATB.c'],['../group__ATB__InterfaceFunctions.html#ga56b84e5d4c15df6e09a39e14364d2070',1,'ATB_Init(void):&#160;ATB.c']]],
+  ['atb_5fisr_4',['ATB_ISR',['../ATB__core_8h.html#ad9d2ae372af71c2cdc21b09f599b7e0a',1,'ATB_ISR(void):&#160;ATB.c'],['../ATB_8c.html#a8325c58085d42654b08df096f91088a2',1,'ATB_ISR(void):&#160;ATB.c']]]
 ];

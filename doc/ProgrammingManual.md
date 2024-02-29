@@ -1,13 +1,12 @@
 [TOC]
-# Software design manual
-## General guildline
+# General guildline
 - Do not use dynamic allocation (calloc, malloc)
 - Always specify data type of variables and function return values.
 - Limit mixing math operations with multiple data types. Use casting if necessary.
 - Good comments make the code more readable.
 - Do not use magic numbers (constant literals) in code. Replace them with defines.
 - Variable that must remain constant declare as such (`const`).
-## Data types
+# Data types
 Defined in `app_types.h`:
 ```
 #include "app_types.h"
@@ -23,7 +22,7 @@ Defined in `app_types.h`:
 |`S64`	   |`_S64`	    	|signed 64-bit integer    |
 |`F32`     |`_F32`	    	|single precision float   |
 
-## Variables
+# Variables
 All variables must be self explanatory, ideally short but specific.
 ``` 
 (s_)(MODULE)_{name_of_the_variable}(__unit_){_VariableType}
@@ -34,12 +33,12 @@ All variables must be self explanatory, ideally short but specific.
 If the variable **must not be seen outside of the module**, then use `static` keyword.
 Keyword `volatile` is **recommended to use with variables with asynchronous access** (in interrupts).
 
-### Variable names
+## Variable names
 All variables names are written in [snake case](https://en.wikipedia.org/wiki/Snake_case). Example:
 ```
 your_variable_name
 ```
-### Global variables
+## Global variables
 If the variable is global (static included), then they should contain prefix with module name. **Local variables are without this prefix**. For example:
 ```
 U16 MODULE_some_global_variable_U16;			/* Global variable. */
@@ -51,7 +50,7 @@ void fun(void)
 }
 ```
 
-### Static variables
+## Static variables
 Static variables are marked with `s_` prefix. If the variable is **global**, then the module name comes after the prefix like so:
 ```
 static U32 s_MODULE_name_of_the_variable_U32;		/* Static variable. */
@@ -61,7 +60,7 @@ void fun(void)
 	static U16 s_last_index_U16;			/* Static local variable. */
 }
 ```
-### Variables containing units
+## Variables containing units
 For better code readability we should include physical dimension of a unit that we want to represent with a variable.
 | Unit 			  			| Variable Name | Description       |
 ----------------------------| --------------|-------------------|
@@ -90,7 +89,7 @@ F32 output_current__mA__F32 = (F32)314;
 F32 output_power__W__F32 = output_voltage__V__F32 * output_current__mA__F32 
 					/ (F32)1000.0;
 ```
-## Enumeration (Enums)
+# Enumeration (Enums)
 When typedef-ing enum use `_enum` postfix. Each enum member has `_e` postfix. Name of each enum is in **capitals** :
 ```
 typedef enum
@@ -101,7 +100,7 @@ typedef enum
 } MODULE_my_enum_name_enum;
 ```
 
-## Functions
+# Functions
 Functions must do only one thing. If the control logic is complicated, then break down this logic to simpler and smaller units.
 **Function naming scheme:**
 ```
@@ -126,7 +125,7 @@ void fun(void)
 **Static functions** do not have `s_`  prefix.
 
 When **passing a struct** to a function it is recommended to use pointer rather than copy.
-### Naming the functions
+## Naming the functions
 Function names like variable names should be safe explanatory. It is up to you as a programmer to name the function, but it is a good practice to stick to standard naming of basic functions like: For example:
 | Name  	    	|Return void     	| Description 									|
 |-------------------|-------------------|-----------------------------------------------|
@@ -137,7 +136,7 @@ Function names like variable names should be safe explanatory. It is up to you a
 |`Init()`	    	|Not specified 		|Initialize module 								|
 |`DeInit()`	    	| Not specified 	|De-initialize module 							|
 
-## Pointers
+# Pointers
 Pointers are marked with `_p<DataType>` suffix:
 ```
 U32* data_pU32 = (U32*)0;			/* Pointer to U32. */
@@ -156,7 +155,7 @@ U16* data_pU16;
 ```
 Limit usage of **void pointers**.
 
-## Defines and macros
+# Defines and macros
 Whenever the code needs to work with constant literals use defines and macros. All defines and macros are in capital letters with underscore for word separation:
 
 **Notation:**
@@ -175,10 +174,10 @@ Examples:
 #define CALC_POWER__W__dMF32(U, I)		( (F32)(U) * (F32)(I) )
 ```
 
-## Comments
+# Comments
 All types of comments are allowed.
 
-### File comments
+## File comments
 Every `.c` and `.h` file should contain basic file description at the start:
 ```
 /**

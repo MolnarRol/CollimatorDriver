@@ -112,6 +112,7 @@ $(function(){initNavTree('main_8c.html',''); initResizable(); });
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;<a class="el" href="main_8h_source.html">main.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="ll__gpio_8h_source.html">ll_gpio.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="ATB__interface_8h_source.html">ATB_interface.h</a>&gt;</code><br />
 </div>
 <p><a href="main_8c_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -152,17 +153,18 @@ Bc. Roland Molnar</dd></dl>
 
 <p>Main function. </p>
 
-<p class="definition">Definition at line <a class="el" href="main_8c_source.html#l00020">20</a> of file <a class="el" href="main_8c_source.html">main.c</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   21</span>{</div>
-<div class="line"><span class="lineno">   22</span>    <span class="comment">/* Initialization */</span></div>
-<div class="line"><span class="lineno">   23</span>    mcu_vInitClocks();                                          <span class="comment">/* Initialize uC clock system. */</span></div>
-<div class="line"><span class="lineno">   24</span> </div>
-<div class="line"><span class="lineno">   25</span>    <span class="comment">/* Main loop */</span></div>
-<div class="line"><span class="lineno">   26</span>    <span class="keywordflow">while</span>(1)</div>
-<div class="line"><span class="lineno">   27</span>    {</div>
-<div class="line"><span class="lineno">   28</span> </div>
-<div class="line"><span class="lineno">   29</span>    }</div>
-<div class="line"><span class="lineno">   30</span>}</div>
+<p class="definition">Definition at line <a class="el" href="main_8c_source.html#l00022">22</a> of file <a class="el" href="main_8c_source.html">main.c</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   23</span>{</div>
+<div class="line"><span class="lineno">   24</span>    <span class="comment">/* Initialization */</span></div>
+<div class="line"><span class="lineno">   25</span>    mcu_vInitClocks();                                          <span class="comment">/* Initialize uC clock system. */</span></div>
+<div class="line"><span class="lineno">   26</span>    <a class="code hl_function" href="group__ATB__InterfaceFunctions.html#ga56b84e5d4c15df6e09a39e14364d2070">ATB_Init</a>();</div>
+<div class="line"><span class="lineno">   27</span>    <span class="comment">/* Main loop */</span></div>
+<div class="line"><span class="lineno">   28</span>    <span class="keywordflow">while</span>(1)</div>
+<div class="line"><span class="lineno">   29</span>    {</div>
+<div class="line"><span class="lineno">   30</span> </div>
+<div class="line"><span class="lineno">   31</span>    }</div>
+<div class="line"><span class="lineno">   32</span>}</div>
+<div class="ttc" id="agroup__ATB__InterfaceFunctions_html_ga56b84e5d4c15df6e09a39e14364d2070"><div class="ttname"><a href="group__ATB__InterfaceFunctions.html#ga56b84e5d4c15df6e09a39e14364d2070">ATB_Init</a></div><div class="ttdeci">void ATB_Init(void)</div><div class="ttdoc">ATB module initialization function.</div><div class="ttdef"><b>Definition</b> <a href="ATB_8c_source.html#l00027">ATB.c:27</a></div></div>
 </div><!-- fragment -->
 </div>
 </div>

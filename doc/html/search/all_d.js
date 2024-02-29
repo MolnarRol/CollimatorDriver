@@ -9,6 +9,7 @@ var searchData=
   ['s64_6',['S64',['../app__types_8h.html#a1d293e5c494dd6826239b02f5fe98e7f',1,'app_types.h']]],
   ['s64_5fmax_7',['S64_MAX',['../app__types_8h.html#a315eb5085afdf75105682251bdc39461',1,'app_types.h']]],
   ['s64_5fmin_8',['S64_MIN',['../app__types_8h.html#a4d8be2feea71781ff58f493fc9642e52',1,'app_types.h']]],
-  ['software_20design_20manual_9',['Software design manual',['../md_ProgrammingManual.html#autotoc_md10',1,'']]],
-  ['static_20variables_10',['Static variables',['../md_ProgrammingManual.html#autotoc_md16',1,'']]]
+  ['s_5fatb_5fticks_5fu64_9',['s_ATB_ticks_U64',['../ATB_8c.html#aaac0564601d73043a1e7722ed384fa5f',1,'ATB.c']]],
+  ['software_20team_10',['Software team',['../index.html#autotoc_md12',1,'']]],
+  ['static_20variables_11',['Static variables',['../md_ProgrammingManual.html#autotoc_md19',1,'']]]
 ];
