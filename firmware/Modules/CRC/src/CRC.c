@@ -16,43 +16,29 @@ U16 CRC_CrcCalculation_U16(const U16 *Data_U16, U16 DataLength_U16){    // lengt
 
     U16 CRC_CrcResult_U16=0;                            /*initialization of return value variable*/
 
-    /*variables for splitting u16 16bits into 2 u16 8 bits number*/
+    /*variable for splitting u16 16bits into 2 u16 8 bits number*/
 
-    U16 first_byte_U16=0;                               /*first byte variable*/
-    U16 second_byte_U16=0;                              /*second byte variable*/
-
+    U16 second_byte_U16=0;
 
     while(DataLength_U16--){
 
         /*U16 Data split*/
 
-        first_byte_U16=(*Data_U16) & 0xFF00;            /*first byte masking*/
         second_byte_U16=(*Data_U16) & 0x00FF;           /*second byte masking*/
         Data_U16++;
-
-        //CRC calculation for first byte
-
-        CRC_CrcResult_U16 ^= first_byte_U16;
-        for(i = (U16)0; i < (U16)8; i++){
-            if(CRC_CrcResult_U16 &= 0x80){              /*if CRC aligned perform XOR*/
-                CRC_CrcResult_U16 ^= (POLY<<1);         /*Align polynom then XOR*/
-            }
-            CRC_CrcResult_U16=CRC_CrcResult_U16 << (U16)1;   /*shift result*/
-        }
-
-        //CRC calculation for second byte
 
         CRC_CrcResult_U16 ^= second_byte_U16;
 
         for(i = (U16)0; i < (U16)8; i++){
-            if(CRC_CrcResult_U16 &= 0x80){              /*if CRC aligned perform XOR*/
-                CRC_CrcResult_U16 ^= (POLY<<1);         /*Align polynom then XOR*/
+            if(CRC_CrcResult_U16 & 0x80){               /*if CRC aligned perform XOR*/
+                CRC_CrcResult_U16 ^= (0x43<<1);         /*Align polynom then XOR*/
             }
             CRC_CrcResult_U16=CRC_CrcResult_U16 << (U16)1;   /*shift result*/
         }
+
     }
 
-    CRC_CrcResult_U16= CRC_CrcResult_U16>>(U16)2;            /*Neviem com ale mal to slapy*/
+    CRC_CrcResult_U16 = CRC_CrcResult_U16>>(U16)2;      /*Neviem com ale mal to tam*/
 
     return CRC_CrcResult_U16;
 }
