@@ -14,20 +14,31 @@ ECOM_Buffer_struct s_ECOM_tx_buffer_s = {0};
 
 ECOM_Packet_struct rx_packet;
 U16 resp = 0;
+U16 test = 0;
+U16 data;
 
 void ECOM_MainHandler(void)
 {
+    DELAY_US(500);
     ECOM_RxHandler();
     ECOM_TxHandler();
 }
 
 void ECOM_DataRecievedCallback()
 {
-    SCI_SendData(&s_ECOM_tx_buffer_s.data_aU16, s_ECOM_tx_buffer_s.buffer_state_s.level_U16);
+//    SCI_SendData(&s_ECOM_tx_buffer_s.data_aU16, s_ECOM_tx_buffer_s.buffer_state_s.level_U16);
+//    ECOM_TxHandler();
 }
 
 
 /* SCI Communication handlers. */
+/**
+ * @brief External communication receive handler
+ * @details Used SCI FIFO in non interrupt manner. The function writes data from SCI RX FIFO to circular buffer.
+ *          After time defined by @ref ECOM_MSC_TIMEOUT_TICKS_dU32 the data is considered as valid frame from external interface
+ *          and can be further processed.
+ *          Called by @ref ECOM_MainHandler()
+ */
 static void ECOM_RxHandler(void)
 {
     static U32 s_last_data_timestamp_U32;
@@ -43,19 +54,81 @@ static void ECOM_RxHandler(void)
         }
         s_last_data_timestamp_U32 = ATB_GetTicks_U32();                                                             /* Write new data timestamp. */
     }
-    else if( ATB_CheckTicksPassed_U16(s_last_data_timestamp_U32, ECOM_MSC_TIMEOUT_TICKS_dU32)
+    else if( ATB_CheckTicksPassed_U16(s_last_data_timestamp_U32, ECOM_MSC_TIMEOUT_TICKS_dU32)                       /* Check if msg timeout elapsed. */
              && s_bytes_recieved_flag_b )
     {
-        ECOM_ClearBuffer(&s_ECOM_rx_buffer_s);
-        ECOM_DataRecievedCallback();
-
+        ECOM_DataRecievedCallback();                                                                                /* Call data recieved callback. */
+        s_ECOM_rx_buffer_s.buffer_state_s.buffer_rdy_flag = (U16)1;
         s_bytes_recieved_flag_b = 0;
     }
 }
 
+/**
+ * @brief
+ */
 static void ECOM_TxHandler(void)
 {
+    U16 fifo_free_bytes_U16;
+    U16 tx_buffer_size_U16;
 
+    if(s_ECOM_rx_buffer_s.buffer_state_s.buffer_rdy_flag)
+    {
+        fifo_free_bytes_U16 = (U16)16 - SciaRegs.SCIFFTX.bit.TXFFST;
+        if(fifo_free_bytes_U16 != (U16)0)
+        {
+            tx_buffer_size_U16 = ECOM_ReadBuffer_U16(&s_ECOM_rx_buffer_s, &SciaRegs.SCITXBUF.all, fifo_free_bytes_U16);
+        }
+        if( tx_buffer_size_U16 == (U16)0 )
+        {
+            s_ECOM_rx_buffer_s.buffer_state_s.buffer_rdy_flag = 0;
+        }
+    }
+
+}
+
+static void ECOM_WriteBuffer(ECOM_Buffer_struct * const buffer_ps, const U16 * data_pU16, U16 write_size_U16)
+{
+    while(write_size_U16 != (U16)0)
+    {
+        write_size_U16 -= (U16)1;
+        buffer_ps->data_aU16[buffer_ps->head_U16] = *data_pU16;                           /* Copy data to the buffer. */
+        data_pU16++;                                                                    /* Increment data pointer to the next value. */
+        buffer_ps->head_U16 = (buffer_ps->head_U16 + (U16)1) % ECOM_BUFFER_SIZE_dU16;     /* Write new head index. */
+    }
+}
+
+static U16 ECOM_ReadBuffer_U16(ECOM_Buffer_struct * const buffer_ps, U16 * dst_data_pU16, U16 read_size)
+{
+    U16 buffer_len_U16 = ECOM_GetBufferSize_U16(buffer_ps);
+    while( (read_size != (U16)0) && (buffer_len_U16 != (U16)0) )
+    {
+        read_size -= (U16)1;
+        *dst_data_pU16 = buffer_ps->data_aU16[buffer_ps->tail_U16];
+//        dst_data_pU16++;
+        buffer_ps->tail_U16 = (buffer_ps->tail_U16 + (U16)1) % ECOM_BUFFER_SIZE_dU16;
+        buffer_len_U16 = ECOM_GetBufferSize_U16(buffer_ps);
+    }
+    return buffer_len_U16;
+}
+
+static U16 ECOM_GetBufferSize_U16(const ECOM_Buffer_struct * const buffer_ps)
+{
+    U16 buffer_size_U16;
+    if( buffer_ps->head_U16 >= buffer_ps->tail_U16 )
+    {
+        buffer_size_U16 = buffer_ps->head_U16 - buffer_ps->tail_U16;
+    }
+    else
+    {
+        buffer_size_U16 = ECOM_BUFFER_SIZE_dU16 - buffer_ps->tail_U16 + buffer_ps->head_U16;
+    }
+
+    return buffer_size_U16;
+}
+
+static void ECOM_ResetBuffer(ECOM_Buffer_struct * const buffer_ps)
+{
+    buffer_ps->tail_U16 = buffer_ps->head_U16;
 }
 
 static void ECOM_ParsePacket(ECOM_Packet_struct * const parsed_packet_s, U16* packet_raw_U16, const U16 packet_size_U16)
@@ -66,31 +139,4 @@ static void ECOM_ParsePacket(ECOM_Packet_struct * const parsed_packet_s, U16* pa
     parsed_packet_s->crc8_U16 = *((U16*)packet_raw_U16 + (packet_size_U16 - 1));
 #endif  /* ECOM_CRC_ENABLED */
 }
-
-static void ECOM_WriteBuffer(ECOM_Buffer_struct * const buffer_ps, const U16 * const data_pU16, const U16 size_U16)
-{
-    if( buffer_ps->buffer_state_s.buffer_overrun_flag_U16 )                                       /* Buffer overrun - do not write buffer. */
-    {
-        return;
-    }
-    U16 data_idx_U16;
-
-    for(data_idx_U16 = (U16)0; data_idx_U16 < size_U16; data_idx_U16++ )
-    {
-        buffer_ps->data_aU16[buffer_ps->buffer_state_s.level_U16] = data_pU16[data_idx_U16];    /* Copy data to the buffer. */
-        buffer_ps->buffer_state_s.level_U16 = (buffer_ps->buffer_state_s.level_U16 + (U16)1);
-
-        if(buffer_ps->buffer_state_s.level_U16 >= ECOM_BUFFER_SIZE_dU16)                        /* Check buffer overrun. */
-        {
-            buffer_ps->buffer_state_s.buffer_overrun_flag_U16 = (U16)1;                           /* Set buffer overrun flag. */
-            break;                                                                            /* Exit writing. */
-        }
-    }
-}
-
-static void ECOM_ClearBuffer(ECOM_Buffer_struct * const buffer_ps)
-{
-    buffer_ps->buffer_state_s.level_U16 = (U16)0;
-}
-
 

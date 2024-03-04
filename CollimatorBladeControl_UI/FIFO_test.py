@@ -17,8 +17,8 @@ if __name__ == '__main__':
     if com_device.is_open:
         com_device.close()
     com_device.open()
-    while True:
-        print("Numbers to send: ", end="")
-        x = str_to_bytearray(input())
-        print(x, end="\n=======================================================\n")
-        com_device.write(x)
+    x = []
+    for i in range(12):
+        x.append(i)
+
+    com_device.write(bytearray(x))
