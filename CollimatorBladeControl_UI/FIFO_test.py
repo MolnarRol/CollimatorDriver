@@ -18,7 +18,7 @@ if __name__ == '__main__':
         com_device.close()
     com_device.open()
     x = []
-    for i in range(20):
-        x.append(i)
+    for i in range(510):
+        x.append(i % 256)
 
     com_device.write(bytearray(x))
