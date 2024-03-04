@@ -16,7 +16,5 @@ typedef enum
 } ECOM_ProtocolHeader_enum;
 
 void ECOM_MainHandler(void);
-void ECOM_DataRecievedCallback(void);
-
 
 #endif /* MODULES_EXTERNALCOMMUNICATION_INC_ECOM_INTERFACE_H_ */

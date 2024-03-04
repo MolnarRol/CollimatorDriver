@@ -30,26 +30,11 @@ typedef struct
 #endif  /* ECOM_CRC_ENABLED */
 } ECOM_Packet_struct;
 
-typedef struct
-{
-    U16                         data_aU16[ECOM_BUFFER_SIZE_dU16];
-    U16                         head_U16;
-    U16                         tail_U16;
-    struct
-    {
-        U16                     buffer_rdy_flag:1;
-        U16                     __reserved: 15;
-    }buffer_state_s;
-} ECOM_Buffer_struct;
-
-static U16  ECOM_ReadBuffer_U16(ECOM_Buffer_struct * const buffer_ps, U16 * dst_data_pU16, U16 read_size);
-static void ECOM_WriteBuffer(ECOM_Buffer_struct * const buffer_ps, const U16 * data_pU16, U16 size_U16);
-static void ECOM_ResetBuffer(ECOM_Buffer_struct * const buffer_ps);
-static U16  ECOM_GetBufferSize_U16(const ECOM_Buffer_struct * const buffer_ps);
-
-static void ECOM_ParsePacket(ECOM_Packet_struct * const parsed_packet_s, U16* packet_raw_U16, const U16 packet_size_U16);
-
+/* Communication handlers. */
 static void ECOM_RxHandler(void);
 static void ECOM_TxHandler(void);
+
+static void ECOM_DataRecievedCallback(void);
+static void ECOM_ParsePacket(ECOM_Packet_struct * const parsed_packet_s, U16* packet_raw_U16, const U16 packet_size_U16);
 
 #endif /* ECOM_CORE_H_ */
