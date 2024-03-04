@@ -5,8 +5,8 @@
  *      Author: roland
  */
 
-#ifndef MODULES_EXTERNALCOMMUNICATION_INC_ECOM_INTERFACE_H_
-#define MODULES_EXTERNALCOMMUNICATION_INC_ECOM_INTERFACE_H_
+#ifndef ECOM_INTERFACE_H_
+#define ECOM_INTERFACE_H_
 
 typedef enum
 {
@@ -17,4 +17,4 @@ typedef enum
 
 void ECOM_MainHandler(void);
 
-#endif /* MODULES_EXTERNALCOMMUNICATION_INC_ECOM_INTERFACE_H_ */
+#endif /* ECOM_INTERFACE_H_ */

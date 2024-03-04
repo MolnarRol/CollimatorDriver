@@ -10,6 +10,7 @@
 
 #include <ATB_interface.h>
 #include <SCI.h>
+#include <AC_interface.h>
 
 /* Communication buffers. */
 ECOM_Buffer_struct s_ECOM_rx_buffer_s = {0};
@@ -26,7 +27,10 @@ void ECOM_MainHandler(void)
 
 static void ECOM_DataRecievedCallback(void)
 {
-
+    if(s_ECOM_rx_buffer_s.top_U16 == (U16)1)
+    {
+        AC_SetRequest(s_ECOM_rx_buffer_s.data_aU16[0]);
+    }
 }
 
 /*

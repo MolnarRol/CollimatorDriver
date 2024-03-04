@@ -33,6 +33,7 @@ void ECOM_WriteBufferToAddress(ECOM_Buffer_struct * const buffer_ps, U16 * const
     if(buffer_len_U16 == (U16)0)
     {
         buffer_ps->buffer_state_s.buffer_rdy_flag = (U16)0;
+        ECOM_ResetBuffer(buffer_ps);
     }
 }
 

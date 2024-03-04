@@ -25,13 +25,13 @@ typedef enum
 
 typedef AC_CoreStatus_enum (*AC_ControlFunction_pF)(const void* const, const U16);
 
-static AC_CoreStatus_enum AC_TestFunction(const void* const x, const U16 y);
-static AC_CoreStatus_enum AC_TestFunction2(const void* const x, const U16 y);
+static AC_CoreStatus_enum AC_SetLed(const void* const x, const U16 y);
+static AC_CoreStatus_enum AC_ResetLed(const void* const x, const U16 y);
 
 static AC_ControlFunction_pF AC_Funtions[] =
 {
-     &AC_TestFunction,
-     &AC_TestFunction2
+     &AC_ResetLed,
+     &AC_SetLed
 };
 
 

@@ -12,6 +12,7 @@
  */
 #include <AC_core.h>
 #include <AC_interface.h>
+#include <main.h>           /* for debugging */
 
 static U16 s_AC_active_function_U16 = (U16)0;
 static U16 s_AC_request_active_U16 = (U16)0;
@@ -36,12 +37,14 @@ void AC_SetRequest(const U16 request_function_U16)
 }
 
 /* Application functions */
-static AC_CoreStatus_enum AC_TestFunction(const void* const x, const U16 y)
+static AC_CoreStatus_enum AC_SetLed(const void* const x, const U16 y)
 {
+    GpioDataRegs.GPACLEAR.bit.GPIO31 = 1;
     return AC_CORE_OK_e;
 }
 
-static AC_CoreStatus_enum AC_TestFunction2(const void* const x, const U16 y)
+static AC_CoreStatus_enum AC_ResetLed(const void* const x, const U16 y)
 {
+    GpioDataRegs.GPASET.bit.GPIO31 = 1;
     return AC_CORE_OK_e;
 }
