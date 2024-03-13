@@ -1,53 +1,54 @@
 from tkinter import *
 from tkinter import ttk
+from config_file_handler import ConfigHandler
+from connection_window import *
+from Communication.threaded_serial import SerialInterface
+from simple_serial_tester import SerialTester
+from info_view import *
 
-import serial
-from Communication.serial_utils import *
-# com_device = serial.Serial('/dev/ttyUSB0', 115200, timeout=0.01)
+
+# Application variables
+config_handler = ConfigHandler(config_file_name='appconfig.json')
+serial_handler = SerialInterface(config_handler.config['serial_port']['port'],
+                                 config_handler.config['serial_port']['baud_rate'])
+
 # Root tkinter element
 root = Tk()
+root.title('Collimator control interface')
+root.rowconfigure(0, weight=1)
+root.columnconfigure(0, weight=1)
 
 
-def set_len_on():
-    # com_device.write(bytearray([0x1]))
+def __connection_settings_clicked__():
+    loc_connection_window = ConnectionWindow(root, config_handler, serial_handler)
+    del loc_connection_window
     pass
 
-
-def set_led_off():
-    # com_device.write(bytearray([0x0]))
+def __info_menu_clicked__():
+    info_window = InfoView(root)
     pass
 
-def connection_window():
-    available_ports = []
-    get_serial_ports(available_ports)
-    connection_window = Toplevel(root)
-    connection_window.title('Connection window')
-    connection_window.grab_set()
-
-    l1 = Label(connection_window, text='Sellect device port:')
-    l1.grid(row=0, column=0)
-
-    connection_combobox = ttk.Combobox(connection_window, values=available_ports)
-    connection_combobox.grid(row=0, column=1)
-
-    refresh_btn = Button(connection_window, text="Refresh devices", command=get_serial_ports(available_ports))
-    refresh_btn.grid(row=0, column=2)
-
-    connect_btn = Button(connection_window, text="Connect", padx=10, pady=5) # , background='#0000e0', foreground='#FFFFFF'
-    connect_btn.grid(row=1, column=3, padx=(10, 2), pady=(5, 2))
-
-    return None
 
 if __name__ == '__main__':
-    # if com_device.is_open:
-    #     com_device.close()
-    # com_device.open()
-    connection_window()
+    # Application menu
+    top_bar_menu = Menu(root)
+    top_bar_menu.add_command(label='Connection settings', command=__connection_settings_clicked__)
+    top_bar_menu.add_command(label='Info', command=__info_menu_clicked__)
 
+    # Serial port configuration
+    if config_handler.config['serial_port']['auto_connect'] is False:
+        connection_window = ConnectionWindow(root, config_handler, serial_handler)
+        del connection_window
+    else:
+        if serial_handler.connect() is False:
+            connection_window = ConnectionWindow(root, config_handler, serial_handler,
+                                                 info_text=("Could not connect to " +
+                                                            config_handler.config['serial_port']['port']))
+            del connection_window
 
-    led_on_btn = Button(root, text="ON", command=set_len_on, padx=10, pady=10)
-    led_off_btn = Button(root, text="OFF", command=set_led_off, padx=10, pady=10)
-    led_on_btn.grid(row=0, column=0)
-    led_off_btn.grid(row=0, column=1)
+    # serial_tester = SerialTester(root)
+    # serial_tester.element.grid(row=0, column=0, sticky='NSEW')
+    info_window = InfoView(root)
 
+    root.config(menu=top_bar_menu)
     root.mainloop()
