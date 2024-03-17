@@ -15,8 +15,13 @@
 #include <main.h>
 #include <ATB_interface.h>
 #include <AC_interface.h>
-#include <SCI.h>
 #include <ECOM_interface.h>
+#include <MDA_interface.h>
+#include <PWM_interface.h>
+#include <SCI.h>
+
+//U16 cmp = 0xffff;
+float duty = 0.0f;
 
 /**
  * @brief Main function
@@ -26,6 +31,8 @@ void main(void)
     /* Initialization */
     mcu_vInitClocks();                                          /* Initialize uC clock system. */
     ATB_Init();
+    PWM_Init();
+    MDA_Init();
     SCI_Init();
 
     /* Main loop */
@@ -33,5 +40,8 @@ void main(void)
     {
         ECOM_MainHandler();
         AC_MainHandler();                                       /* Application control main handler. */
+        PWM_SetCompareValues(PWM_DUTY_PERC_TO_CMP_dMU16(duty),
+                             PWM_DUTY_PERC_TO_CMP_dMU16(duty),
+                             PWM_DUTY_PERC_TO_CMP_dMU16(duty));
     }
 }

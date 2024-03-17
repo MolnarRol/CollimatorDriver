@@ -42,4 +42,9 @@ typedef int64_t		S64;
 typedef float		F32;
 typedef double		F64;
 
+#define True_b      ( (U16)1 )
+#define False_b     ( (U16)0 )
+typedef U16         boolean;
+
+
 #endif /* INC_APP_TYPES_H_ */
