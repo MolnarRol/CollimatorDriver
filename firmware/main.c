@@ -20,9 +20,6 @@
 #include <PWM_interface.h>
 #include <SCI.h>
 
-//U16 cmp = 0xffff;
-float duty = 0.0f;
-
 /**
  * @brief Main function
  */
@@ -34,14 +31,10 @@ void main(void)
     PWM_Init();
     MDA_Init();
     SCI_Init();
-
     /* Main loop */
     while(1)
     {
         ECOM_MainHandler();
         AC_MainHandler();                                       /* Application control main handler. */
-        PWM_SetCompareValues(PWM_DUTY_PERC_TO_CMP_dMU16(duty),
-                             PWM_DUTY_PERC_TO_CMP_dMU16(duty),
-                             PWM_DUTY_PERC_TO_CMP_dMU16(duty));
     }
 }

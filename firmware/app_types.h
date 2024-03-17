@@ -17,13 +17,13 @@
 
 /* Unsigned integers. */
 typedef uint16_t	U16;
-#define U16_MAX		( UINT16_MAX );
+#define U16_MAX		( UINT16_MAX )
 
 typedef uint32_t	U32;
-#define U32_MAX		( UINT32_MAX );
+#define U32_MAX		( UINT32_MAX )
 
 typedef uint64_t	U64;
-#define U64_MAX		( UINT64_MAX );
+#define U64_MAX		( UINT64_MAX )
 
 /* Signed integers. */
 typedef int16_t		S16;

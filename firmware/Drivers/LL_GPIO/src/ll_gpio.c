@@ -8,13 +8,13 @@
 
 void LL_GPIO_Init(LL_LED_struct* led_config_s)
 {
-    Uint16 gpio_port = led_config_s->pin / (Uint16)32;
-    Uint16 gpio_pin_in_port = led_config_s->pin % (Uint16)32;
-    Uint16 second_half = gpio_pin_in_port / 16;
-
-    EALLOW;
-    /* Mux setting */
-    * (Uint16*)(GPIO_BASE + GPIOx_MUX_OFFSET + (2 * second_half)) |= (1 << 2*(gpio_pin_in_port - 16 * second_half));
-
-    EDIS;
+//    Uint16 gpio_port = led_config_s->pin / (Uint16)32;
+//    Uint16 gpio_pin_in_port = led_config_s->pin % (Uint16)32;
+//    Uint16 second_half = gpio_pin_in_port / 16;
+//
+//    EALLOW;
+//    /* Mux setting */
+//    * (Uint16*)(GPIO_BASE + GPIOx_MUX_OFFSET + (2 * second_half)) |= (1 << 2*(gpio_pin_in_port - 16 * second_half));
+//
+//    EDIS;
 }
