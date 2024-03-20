@@ -19,6 +19,7 @@
 #include <MDA_interface.h>
 #include <PWM_interface.h>
 #include <SCI.h>
+#include <TEST.h>
 
 /**
  * @brief Main function
@@ -34,7 +35,11 @@ void main(void)
     /* Main loop */
     while(1)
     {
-        ECOM_MainHandler();
-        AC_MainHandler();                                       /* Application control main handler. */
+//        PWM_SetCompareValues(PWM_DUTY_TO_CMP_dMU16(0.25),
+//                             PWM_DUTY_TO_CMP_dMU16(0.35),
+//                             PWM_DUTY_TO_CMP_dMU16(0.45));
+        TEST_ScalarMotorMovementHandler();
+//        ECOM_MainHandler();
+//        AC_MainHandler();                                       /* Application control main handler. */
     }
 }
