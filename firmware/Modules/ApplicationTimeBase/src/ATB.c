@@ -121,8 +121,8 @@ U16  ATB_CheckTicksPassed_U16(const uint32_t ref_ticks_U32, const uint32_t check
 interrupt void ATB_ISR(void)
 {
     s_ATB_ticks_U64 += (U64)1;                                                  /* Increment tick variable. */
-    PieCtrlRegs.PIEACK.bit.ACK1 = (U16)1;                                       /* Acknowledge ISR end. */
     CpuTimer0Regs.TCR.bit.TIF = (U16)1;                                         /* Reset interrupt flag. */
+    PieCtrlRegs.PIEACK.bit.ACK1 = (U16)1;                                       /* Acknowledge ISR end. */
 }
 /**
  * @}

@@ -17,9 +17,10 @@ const static boolean s_PWM_Initialized_b = False_b;
 
 interrupt void PWM_OverflowISR()
 {
+    EINT;
     TEST_ScalarMotorMovementHandler();
-    PieCtrlRegs.PIEACK.bit.ACK3 = (U16)1;                       /* Acknowledge ISR end. */
     EPwm3Regs.ETCLR.bit.INT = 1;
+    PieCtrlRegs.PIEACK.bit.ACK3 = (U16)1;                       /* Acknowledge ISR end. */
 }
 
 /**

@@ -14,6 +14,9 @@ const U32 scalar_update_period__us__U32 = (U32)200;
 F32 scalar_freq__Hz__F32 = (F32)0.0;;
 U16 test = 0;
 
+U16 cmpa[512];
+U16 cmpa_idx = 0;
+
 volatile TRAN_struct tran_s =
 {
     .dq_s =
@@ -40,12 +43,14 @@ void TEST_ScalarMotorMovementHandler(void)
 
     TRAN_DqToAbc(&tran_s);
 
-    PWM_SetCompareValues(PWM_DUTY_TO_CMP_dMU16( (tran_s.abc_s.a_F32 + (F32)1.0) / (F32)2.0 ),
-                         PWM_DUTY_TO_CMP_dMU16( (tran_s.abc_s.b_F32 + (F32)1.0) / (F32)2.0 ),
-                         PWM_DUTY_TO_CMP_dMU16( (tran_s.abc_s.c_F32 + (F32)1.0) / (F32)2.0 ));
+    PWM_SetCompareValues(PWM_DUTY_TO_CMP_dMU16( (tran_s.abc_s.a_F32 / (F32)12.0) + (F32)0.5 ),
+                         PWM_DUTY_TO_CMP_dMU16( (tran_s.abc_s.b_F32 / (F32)12.0) + (F32)0.5 ),
+                         PWM_DUTY_TO_CMP_dMU16( (tran_s.abc_s.c_F32 / (F32)12.0) + (F32)0.5 ));
 
-
-//    DELAY_US(50);
+    if(cmpa_idx < 512)
+    {
+        cmpa[cmpa_idx++] = EPwm3Regs.CMPA.bit.CMPA;
+    }
 }
 
 

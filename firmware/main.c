@@ -19,8 +19,8 @@
 #include <MDA_interface.h>
 #include <PWM_interface.h>
 #include <SCI.h>
-#include <TEST.h>
 
+boolean output_en = False_b;
 /**
  * @brief Main function
  */
@@ -35,10 +35,7 @@ void main(void)
     /* Main loop */
     while(1)
     {
-//        PWM_SetCompareValues(PWM_DUTY_TO_CMP_dMU16(0.25),
-//                             PWM_DUTY_TO_CMP_dMU16(0.35),
-//                             PWM_DUTY_TO_CMP_dMU16(0.45));
-//        TEST_ScalarMotorMovementHandler();
+        PWM_SetOutputEnable(output_en);
 //        ECOM_MainHandler();
 //        AC_MainHandler();                                       /* Application control main handler. */
     }
