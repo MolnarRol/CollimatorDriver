@@ -13,7 +13,7 @@
 //test
 #include <ATB_core.h>
 
-static volatile U64 s_ATB_ticks_U64;                                /**< Application tick timer variable. */
+volatile U64 s_ATB_ticks_U64;                                /**< Application tick timer variable. */
 static U16 s_ATB_Initialized_U16 = 0;                               /**< Module initialization status. */
 
 /**

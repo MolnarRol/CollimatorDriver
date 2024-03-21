@@ -8,6 +8,7 @@
 #ifndef MODULES_TESTING_INC_TEST_H_
 #define MODULES_TESTING_INC_TEST_H_
 
+#include <mcu.h>
 #include <app_types.h>
 
 void TEST_ScalarMotorMovementHandler(void);
