@@ -11,7 +11,7 @@
 #include <math.h>
 
 const U32 scalar_update_period__us__U32 = (U32)200;
-F32 scalar_freq__Hz__F32 = (F32)0.0;;
+F32 scalar_freq__Hz__F32 = (F32)0.0;
 U16 test = 0;
 
 U16 cmpa[512];
