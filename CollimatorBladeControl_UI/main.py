@@ -1,19 +1,24 @@
-from tkinter import ttk
-from tkinter import *
-from PIL import Image, ImageTk
 import serial
 
-root_el = Tk()                                                                      # Root application element
-# Icon setupw
-root_el.wm_iconphoto(False,                                                  # Project icon setup
-                     ImageTk.PhotoImage(Image.open('logo_small.png')))
+com_device = serial.Serial('/dev/ttyUSB0', 115200, timeout=0.01)
 
-serial.Serial('/dev/TTYUSB0', 19200, timeout=0)
 
-def app():
-    
-    # root_el.mainloop()
+def str_to_bytearray(s):
+    nums = []
+    for num in s.split():
+        if num.startswith("0x"):
+            nums.append(int(num, 16))
+        else:
+            nums.append(int(num))
+    return bytearray(nums)
 
 
 if __name__ == '__main__':
-    app()
+    if com_device.is_open:
+        com_device.close()
+    com_device.open()
+    while True:
+        print("Numbers to send: ", end="")
+        x = str_to_bytearray(input())
+        print(x, end="\n=======================================================\n")
+        com_device.write(x)

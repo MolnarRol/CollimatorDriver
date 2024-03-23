@@ -1,7 +1,0 @@
-var structCLA1TASKSRCSELLOCK__BITS =
-[
-    [ "CLA1TASKSRCSEL1", "structCLA1TASKSRCSELLOCK__BITS.html#ab18821054ce256e597a65bf3f541b584", null ],
-    [ "CLA1TASKSRCSEL2", "structCLA1TASKSRCSELLOCK__BITS.html#a65a09c44c4ef3b8629824c249514d0f8", null ],
-    [ "rsvd1", "structCLA1TASKSRCSELLOCK__BITS.html#adf3d0167ce2ed65137a2d3c1283be78e", null ],
-    [ "rsvd2", "structCLA1TASKSRCSELLOCK__BITS.html#a1954bc0993e8bd4d43e4edfb9248ed00", null ]
-];

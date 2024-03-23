@@ -36,13 +36,16 @@ void SCI_Init(void)
     SciaRegs.SCICTL1.bit.TXENA = 1;                 /* Enable TX. */
 
     /* Baud config */
-    U16 BRR_U16 = 650;
+    U16 BRR_U16 = 109;
     SciaRegs.SCIHBAUD.bit.BAUD = (BRR_U16 >> 8);
     SciaRegs.SCILBAUD.bit.BAUD = BRR_U16 & (0x00FF);
 
+    SciaRegs.SCIFFTX.bit.SCIFFENA = (U16)1;         /* Enable FIFO for communication interface. */
+    SciaRegs.SCIFFTX.bit.TXFIFORESET = (U16)1;
 
     SciaRegs.SCICTL1.bit.SWRESET = 1;               /* Reset SCI communication. */
     EDIS;
+    SciaRegs.SCITXBUF.all = 0;
 }
 
 void SCI_SendData(const U16 *data_pU16, U16 n_data_U16)
