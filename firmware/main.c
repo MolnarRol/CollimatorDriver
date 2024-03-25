@@ -29,8 +29,8 @@ void main(void)
     /* Initialization */
     mcu_vInitClocks();                                          /* Initialize uC clock system. */
     ATB_Init();
-    PWM_Init();
     MDA_Init();
+    PWM_Init();
     SCI_Init();
     /* Main loop */
     while(1)
