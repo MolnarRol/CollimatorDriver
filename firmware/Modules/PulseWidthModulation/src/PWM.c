@@ -15,14 +15,6 @@
 
 const static boolean s_PWM_Initialized_b = False_b;
 
-interrupt void PWM_OverflowISR()
-{
-    EINT;
-    TEST_ScalarMotorMovementHandler();
-    EPwm3Regs.ETCLR.bit.INT = 1;
-    PieCtrlRegs.PIEACK.bit.ACK3 = (U16)1;                       /* Acknowledge ISR end. */
-}
-
 /**
  * @brief PWM initialization function
  * @details Three PWM phases use ePWM3 and ePWM6
@@ -70,17 +62,6 @@ void PWM_Init(void)
     EPwm3Regs.TBCTL.bit.SWFSYNC         = (U16)1;               /* Sync the timer clock. */
 
     EPwm3Regs.CMPA.bit.CMPA             = PWM_DEFAULT_CMP_dU16; /* Setting compare > period - pin is low after initialization. */
-
-    DINT;
-    PieCtrlRegs.PIECTRL.bit.ENPIE       = (U16)1;               /* Enable interrupt vector table peripheral. */
-    PieCtrlRegs.PIEIER3.bit.INTx3       = (U16)1;
-
-    IER                                 |= M_INT3;              /* Enable CPU interrupt line. */
-    EPwm3Regs.ETSEL.bit.INTEN           = (U16)1;
-    EPwm3Regs.ETSEL.bit.INTSEL          = (U16)1;
-    EPwm3Regs.ETPS.bit.INTPRD           = (U16)1;
-    PieVectTable.EPWM3_INT              = &PWM_OverflowISR;
-    EINT;
 
     /* ADC SOC trigger setup. */
     EPwm3Regs.ETSEL.bit.SOCAEN          = (U16)1;               /* Enable start of conversion pulse. */
