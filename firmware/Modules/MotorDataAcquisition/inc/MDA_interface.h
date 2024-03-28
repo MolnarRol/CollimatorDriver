@@ -18,8 +18,12 @@ typedef struct
         F32 id__A__F32;
         F32 iq__A__F32;
     } currents_s;
+
     F32 rotor_el_angle__rad__F32;
-    F32 rotor_el_speed__rpm__F32;
+    F32 rotor_el_speed__rad_s1__F32;
+
+    F32 rotor_mech_angle__rad__F32;
+    F32 rotor_mech__rad_s1__F32;
 } MDA_Data_struct;
 
 
