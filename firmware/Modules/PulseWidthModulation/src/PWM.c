@@ -85,6 +85,7 @@ void PWM_Init(void)
     /* ADC SOC trigger setup. */
     EPwm3Regs.ETSEL.bit.SOCAEN          = (U16)1;               /* Enable start of conversion pulse. */
     EPwm3Regs.ETSEL.bit.SOCASEL         = (U16)2;               /* Start of conversion pulse on counter max value. */
+
     EPwm3Regs.ETSEL.bit.SOCBEN          = (U16)1;
     EPwm3Regs.ETSEL.bit.SOCBSEL         = (U16)2;
     EPwm3Regs.ETPS.bit.SOCPSSEL         = (U16)1;

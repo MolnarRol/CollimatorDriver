@@ -36,7 +36,7 @@ void main(void)
     while(1)
     {
         PWM_SetOutputEnable(output_en);
-//        ECOM_MainHandler();
+        ECOM_MainHandler();
 //        AC_MainHandler();                                       /* Application control main handler. */
     }
 }
