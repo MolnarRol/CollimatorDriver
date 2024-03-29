@@ -4,6 +4,7 @@
  *  Created on: Mar 13, 2024
  *      Author: roland
  */
+#include <math.h>
 #include <MDA_core.h>
 #include <MDA_interface.h>
 #include <TRAN.h>
@@ -12,7 +13,7 @@
 MDA_Data_struct s_MDA_data_s;                                        /**<  */
 
 /**
- * @brief
+ * @brief Motor data acquisition function.
  */
 void MDA_Init(void)
 {
@@ -21,7 +22,7 @@ void MDA_Init(void)
 }
 
 /**
- * @brief
+ * @brief ADC conversion completion interrupt.
  */
 interrupt void MDA_AdcConverstionCompleteIsr(void)
 {
@@ -33,7 +34,7 @@ interrupt void MDA_AdcConverstionCompleteIsr(void)
 }
 
 /**
- * @brief
+ * @brief ADC initialization function.
  */
 static inline void MDA_AdcInit(void)
 {
@@ -78,41 +79,55 @@ static inline void MDA_AdcInit(void)
     AdcaRegs.ADCINTSEL1N2.bit.INT1E     = (U16)1;                                   /* Enable interrupt 1. */
     AdcaRegs.ADCINTSEL1N2.bit.INT1SEL   = (U16)1;                                   /* Setting end of conversion 1 to interrupt source. */
     AdcaRegs.ADCINTFLGCLR.bit.ADCINT1   = (U16)1;                                   /* Clear ADC INT 1 flag. */
-    DINT;
+
+    DINT;                                                                           /* Globally disable interrupts. */
     PieCtrlRegs.PIECTRL.bit.ENPIE       = (U16)1;                                   /* Enable interrupt vector table peripheral. */
     PieCtrlRegs.PIEIER1.bit.INTx1       = (U16)1;
     IER                                 |= M_INT1;                                  /* Enable CPU interrupt line. */
     PieVectTable.ADCA1_INT              = &MDA_AdcConverstionCompleteIsr;
-    EINT;
+    EINT;                                                                           /* GLobally enable interrupts. */
+
     EDIS;
 }
 
 /**
- * @brief
+ * @brief Quadrature encoder interface initialization
  */
 static inline void MDA_QepInit(void)
 {
     EALLOW;
-    CpuSysRegs.PCLKCR4.bit.EQEP1        = (U16)1;       /* Enable clocks for eQEP1. */
-    GpioCtrlRegs.GPAMUX2.bit.GPIO20     = (U16)1;       /* Quadrature encoder A track. */
+    CpuSysRegs.PCLKCR4.bit.EQEP1        = (U16)1;                                   /* Enable clocks for eQEP1. */
+    GpioCtrlRegs.GPAMUX2.bit.GPIO20     = (U16)1;                                   /* Quadrature encoder A track. */
     GpioCtrlRegs.GPAGMUX2.bit.GPIO20    = (U16)0;
 
-    GpioCtrlRegs.GPAMUX2.bit.GPIO21     = (U16)1;       /* Quadrature encoder B track. */
+    GpioCtrlRegs.GPAMUX2.bit.GPIO21     = (U16)1;                                   /* Quadrature encoder B track. */
     GpioCtrlRegs.GPAGMUX2.bit.GPIO21    = (U16)0;
 
-
-    if(MDA_END_SWAP_DIR_db == True_b)
+    if(MDA_ENC_SWAP_DIR_db == True_b)
     {
-        EQep1Regs.QDECCTL.bit.SWAP      = (U16)1;
+        EQep1Regs.QDECCTL.bit.SWAP      = (U16)1;                                   /* Swapping A and B tracks. */
     }
 
-    EQep1Regs.QEPCTL.bit.FREE_SOFT      = (U16)3;
-    EQep1Regs.QEPCTL.bit.PCRM           = (U16)1;       /* Reset on maximum */
-    EQep1Regs.QPOSMAX                   = MDA_ENC_CPR_dU16 - (U16)1;
-    EQep1Regs.QEPCTL.bit.QPEN = 1;
+    EQep1Regs.QEPCTL.bit.FREE_SOFT      = (U16)3;                                   /* Run even when the CPU is stopped. */
+    EQep1Regs.QEPCTL.bit.PCRM           = (U16)1;                                   /* Reset on maximum */
+    EQep1Regs.QPOSMAX                   = MDA_ENC_CPR_dU16 - (U16)1;                /* Setting maximum to counts per revolution of rotary encoder. */
+
+    /* Delta time measurement setup. */
+    EQep1Regs.QEPCTL.bit.QCLM           = (U16)1;                                   /* Latch on unit time out. */
+    EQep1Regs.QUPRD                     = (U32)( MDA_ENC_DELTA_PULSE_SAMPLE_TIME__s__dF32
+                                                  * (F32) 200.0E6) - (U32)1;
+    EQep1Regs.QCAPCTL.bit.CCPS          = (U16)2;                                   /* eQEP capture timer clock prescaler /4. */
+
+    /* Delta pulses measurement setup. */
+
+
+    EQep1Regs.QEPCTL.bit.QPEN           = (U16)1;                                   /* Enable encoder interface counter. */
+    EQep1Regs.QCAPCTL.bit.CEN           = (U16)1;
+    EQep1Regs.QEPCTL.bit.UTE            = (U16)1;
     EDIS;
 }
 
+#pragma FUNC_ALWAYS_INLINE ( MDA_UpdateData )
 /**
  * @brief Update data structure with newly acquired measurement data.
  */
@@ -121,6 +136,12 @@ static inline void MDA_UpdateData(void)
     TRAN_struct current_transf_s = {0};
 
     /* Speed and motor position. */
+    s_MDA_data_s.rotor_mech_angle__rad__F32 = MDA_GetRawRotorMechAngle_U16();
+    s_MDA_data_s.rotor_el_angle__rad__F32 = MDA_CalcRawElRotorAngle_U16((U16)s_MDA_data_s.rotor_mech_angle__rad__F32);
+    current_transf_s.angle__rad__F32 = s_MDA_data_s.rotor_el_angle__rad__F32;
+
+    s_MDA_data_s.rotor_mech_speed__rad_s1__F32 = MDA_GetRawMechSpeed__rad_s1__F32();
+
 
     /* Write calculated phase current value from ADC conversions. */
     current_transf_s.abc_s.a_F32 = MDA_PHASE_CURRENT_FROM_ADC_VAL_dMF32(MDA_ADC_U_CURRENT_CONV_RES_d);
@@ -138,12 +159,101 @@ static inline void MDA_UpdateData(void)
     s_MDA_data_s.dc_link_voltage__V__F32 = MDA_DC_LINK_VOLTAGE_FROM_ADC_VAL_dMF32(MDA_ADC_DC_LINK_CONV_RES_d);
 }
 
+#pragma FUNC_ALWAYS_INLINE ( MDA_GetRawRotorMechAngle_U16 )
+static inline U16 MDA_GetRawRotorMechAngle_U16(void)
+{
+    return (U16)( ((U32)EQep1Regs.QPOSCNT * (U32)U16_MAX) / (U32)(MDA_ENC_CPR_dU16 - (U16)1) );
+}
+
+static inline U16 MDA_CalcRawElRotorAngle_U16(const U16 mech_angle_raw_U16)
+{
+    return (U16)( ((U32)mech_angle_raw_U16 * (U32)MOTOR_POLE_PAIRS_dU16) % (U32)U16_MAX );
+
+}
+
+/**
+ * @brief Calculates mechanical speed using delta pulse count with fixed sampling interval.
+ * @param pulse_delta_count_U16/
+ * @returns calculated speed in rad/s.
+ */
+#pragma RETAIN ( MDA_CalcRawMechSpeedFromTimeDelta__rad_s1__F32 )
+#pragma FUNC_ALWAYS_INLINE ( MDA_CalcRawMechSpeedFromTimeDelta__rad_s1__F32 )
+static F32 MDA_CalcRawMechSpeedFromTimeDelta__rad_s1__F32(const F32 time_delta__s__F32)
+{
+    /*
+     *      /  2 x PI \       1
+     * w = | ----------| x ---------
+     *      \   CPR   /     delta_t
+     *     '___________'
+     *           '-> constant k
+     */
+    F32 k_F32 = ((F32)2.0 * (F32)M_PI) / (F32)MDA_ENC_CPR_dU16;
+    return (k_F32 * ((F32)1.0 / time_delta__s__F32));
+}
+
+/**
+ * @brief Calculates mechanical speed using delta pulse count with fixed sampling interval.
+ * @param pulse_delta_count_U16/
+ * @returns calculated speed in rad/s.
+ */
+#pragma RETAIN ( MDA_CalcRawMechSpeedFromPulseDelta__rad_s1__F32 )
+#pragma FUNC_ALWAYS_INLINE ( MDA_CalcRawMechSpeedFromPulseDelta__rad_s1__F32 )
+static F32 MDA_CalcRawMechSpeedFromPulseDelta__rad_s1__F32(const U16 pulse_delta_count_U16)
+{
+    /*
+     *      /     2 x PI        \
+     * w = |---------------------| x PULSE_DELTA_COUNT
+     *      \ CPR x SAMPLE_TIME /
+     *     '_____________________'
+     *               '-> constant k
+     */
+    const F32 k_F32 = ( (F32)2.0 * (F32)M_PI) /
+                        ((F32)MDA_ENC_CPR_dU16 * MDA_ENC_DELTA_PULSE_SAMPLE_TIME__s__dF32);
+    return (k_F32 * (F32)pulse_delta_count_U16);
+}
+
+static inline F32 MDA_GetRawMechSpeed__rad_s1__F32(void)
+{
+    F32 calculated_speed__rad_s1__F32 = (F32)0.0;
+    F32 delta_time_F32;
+
+    if(EQep1Regs.QEPSTS.bit.COEF == 1)
+    {
+        EQep1Regs.QEPSTS.bit.COEF = 1;
+        return calculated_speed__rad_s1__F32;
+    }
+    delta_time_F32 = MDA_ENC_TIME_BETWEEN_PULSES__s__dMF32(EQep1Regs.QCPRDLAT);
+    calculated_speed__rad_s1__F32 = MDA_CalcRawMechSpeedFromTimeDelta__rad_s1__F32(delta_time_F32);
+//    if(calculated_speed__rad_s1__F32 >= (F32)800.0)
+//    {
+//        calculated_speed__rad_s1__F32 = MDA_CalcRawMechSpeedFromPulseDelta__rad_s1__F32(pulse_delta_count_U16)
+//    }
+
+    if(EQep1Regs.QEPSTS.bit.QDF == (U16)0)
+    {
+        calculated_speed__rad_s1__F32 = -calculated_speed__rad_s1__F32;
+    }
+
+    return calculated_speed__rad_s1__F32;
+}
+
+
+/*************************************************************************************
+ *                               Interface functions                                 *
+ *************************************************************************************/
 
 /**
  * @brief Access motor data for motor control.
  * @returns pointer to acquired motor currents, speed and position data.
  */
-const MDA_Data_struct* MDA_GetData_ps(void)
+inline const MDA_Data_struct* MDA_GetData_ps(void)
 {
     return (const MDA_Data_struct*)&s_MDA_data_s;
+}
+
+/*
+ * */
+inline void MDA_ResetLinearPosition(void)
+{
+    s_MDA_data_s.linear_position__mm__F32 = (F32)0.0;
 }
