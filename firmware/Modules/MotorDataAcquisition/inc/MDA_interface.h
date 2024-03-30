@@ -1,8 +1,14 @@
-/*
- * MDA_interface.h
+/**
+ * @file MDA_interface.h
+ * @brief Motor data acquisition module
+ * @details Module for readeading and evaluating measurement data for further regulation and control.
  *
- *  Created on: Mar 13, 2024
- *      Author: roland
+ * =================================================================
+ * @author Bc. Roland Molnar
+ *
+ * =================================================================
+ * KEM, FEI, TUKE
+ * @date 30.03.2024
  */
 
 #ifndef MODULES_MOTORDATAACQUISITION_INC_MDA_INTERFACE_H_
@@ -25,16 +31,15 @@ typedef struct
 
     /* Motor mechanical speed and position. */
     F32 rotor_mech_angle__rad__F32;             /**< Rotor mechanical angle position. */
-    F32 rotor_mech_speed__rad_s1__F32;          /**< Rotor mecjanical speed. */
+    F32 rotor_mech_speed__rad_s1__F32;          /**< Rotor mechanical speed. */
 
     /* Linear positioning. */
     F32 linear_position__mm__F32;               /**< Mechanism linear position from origin. */
+    U32 linear_position_enc_counter_U32;
 } MDA_Data_struct;
-
 
 void MDA_Init(void);
 const MDA_Data_struct* MDA_GetData_ps(void);
 void MDA_ResetLinearPosition(void);
-
 
 #endif /* MODULES_MOTORDATAACQUISITION_INC_MDA_INTERFACE_H_ */

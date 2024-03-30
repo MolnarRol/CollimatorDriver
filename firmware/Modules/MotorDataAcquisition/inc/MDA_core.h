@@ -1,8 +1,14 @@
-/*
- * MDA_core.h
+/**
+ * @file MDA_core.h
+ * @brief Motor data acquisition module
+ * @details Module for readeading and evaluating measurement data for further regulation and control.
  *
- *  Created on: Mar 13, 2024
- *      Author: roland
+ * =================================================================
+ * @author Bc. Roland Molnar
+ *
+ * =================================================================
+ * KEM, FEI, TUKE
+ * @date 30.03.2024
  */
 
 #ifndef MODULES_MOTORDATAACQUISITION_INC_MDA_CORE_H_
@@ -29,7 +35,7 @@
 #define MDA_ADC_W_CURRENT_CONV_RES_d                    ( AdcaResultRegs.ADCRESULT0 )
 #define MDA_ADC_DC_LINK_CONV_RES_d                      ( AdcbResultRegs.ADCRESULT1 )
 
-#define MDA_ENC_TIME_BETWEEN_PULSES__s__dMF32(count)    ( (F32)count / (F32)50.0E6 )
+#define MDA_ENC_TIME_BETWEEN_PULSES__s__dMF32(count)    ( (F32)count / (F32)100.0E6 )
 
 /* Initialization functions. */
 static void MDA_AdcInit(void);
@@ -37,10 +43,9 @@ static void MDA_QepInit(void);
 
 static void MDA_UpdateData(void);
 
-/*  */
+/* Helper functions. */
 static U16 MDA_GetRawRotorMechAngle_U16(void);
 static F32 MDA_GetRawMechSpeed__rad_s1__F32(void);
-static U16 MDA_CalcRawElRotorAngle_U16(const U16 mech_angle_raw_U16);
 
 
 #endif /* MODULES_MOTORDATAACQUISITION_INC_MDA_CORE_H_ */

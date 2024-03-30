@@ -1,8 +1,14 @@
-/*
- * MDA_config.h
+/**
+ * @file MDA_config.h
+ * @brief Motor data acquisition module
+ * @details Module for readeading and evaluating measurement data for further regulation and control.
  *
- *  Created on: Mar 13, 2024
- *      Author: roland
+ * =================================================================
+ * @author Bc. Roland Molnar
+ *
+ * =================================================================
+ * KEM, FEI, TUKE
+ * @date 30.03.2024
  */
 
 #ifndef MODULES_MOTORDATAACQUISITION_INC_MDA_CONFIG_H_
@@ -20,13 +26,14 @@
 
 /* Motor parameters. */
 #define MOTOR_POLE_PAIRS_dU16                           ( (U16)4 )
+#define MOTOR_LINEAR_TRANN_TRANSFER__rev_mm1__dF32      ( (F32)10 )
 
 /* Speed and position defines. */
 #define MDA_ENC_CPR_dU16                                ( (U16)60 )             /* Encoder counts per revolution. */
 
 #define MDA_ENC_SWAP_DIR_db                             ( False_b )             /* Swap A and B encoder channels. */
 
-#define MDA_ENC_DELTA_PULSE_SAMPLE_TIME__s__dF32        ( (F32)250.0E-3 )
-#define MDA_ENC_NO_PULSE_TIMEOUT__us__dU16              ( (U16)500 )
+#define MDA_ENC_DELTA_PULSE_SAMPLE_TIME__s__dF32        ( (F32)30.0E-3 )
+#define MDA_ENC_NO_PULSE_TIMEOUT__us__dU16              ( (U16)20000 )
 
 #endif /* MODULES_MOTORDATAACQUISITION_INC_MDA_CONFIG_H_ */
