@@ -40,3 +40,16 @@ void main(void)
 //        AC_MainHandler();                                       /* Application control main handler. */
     }
 }
+
+/**
+ * @brief Error handler
+ */
+#pragma RETAIN ( ErrorHandler )
+void ErrorHandler(void)
+{
+    DINT;                                                       /* Disable interrupts. */
+    for(;;)                                                     /* Endless loop. */
+    {
+        // Do nothing.
+    }
+}
