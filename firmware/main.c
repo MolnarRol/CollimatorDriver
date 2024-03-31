@@ -15,11 +15,12 @@
 #include <main.h>
 #include <ATB_interface.h>
 #include <AC_interface.h>
-#include <SCI.h>
 #include <ECOM_interface.h>
-#include <DEBUG.h>
+#include <MDA_interface.h>
+#include <PWM_interface.h>
+#include <SCI.h>
 
-U32 led_blink_time_U32;
+boolean output_en = False_b;
 /**
  * @brief Main function
  */
@@ -28,21 +29,14 @@ void main(void)
     /* Initialization */
     mcu_vInitClocks();                                          /* Initialize uC clock system. */
     ATB_Init();
+    MDA_Init();
+    PWM_Init();
     SCI_Init();
-    DEBUG_Init();
-
-    led_blink_time_U32 = ATB_GetTicks_U32();
-
     /* Main loop */
     while(1)
     {
+        PWM_SetOutputEnable(output_en);
         ECOM_MainHandler();
-        AC_MainHandler();                                       /* Application control main handler. */
-        if( ATB_CheckTicksPassed_U16(led_blink_time_U32, ATB_MS_TO_TICKS_dM_U32(100)) )
-        {
-            led_blink_time_U32 = ATB_GetTicks_U32();
-            GpioDataRegs.GPBTOGGLE.bit.GPIO34 = 1;
-//            GpioDataRegs.GPATOGGLE.bit.GPIO31 = 1;
-        }
+//        AC_MainHandler();                                       /* Application control main handler. */
     }
 }

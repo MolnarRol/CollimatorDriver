@@ -1,0 +1,49 @@
+/*
+ * TRAN.h
+ *
+ *  Created on: Mar 14, 2024
+ *      Author: roland
+ */
+
+#ifndef MODULES_MISCELANEOUS_INC_TRAN_H_
+#define MODULES_MISCELANEOUS_INCTRAN_H_
+#include <app_types.h>
+
+#define TRAN_DEG_TO_RAD_dMF32(deg)  ( (F32)deg * (F32)0.017453292519943295 )        /* deg * (pi / 180.0) */
+
+typedef struct
+{
+    struct
+    {
+        F32 a_F32;
+        F32 b_F32;
+        F32 c_F32;
+    } abc_s;
+
+    struct
+    {
+        F32 alpha_F32;
+        F32 beta_F32;
+    } alpha_beta_s;
+
+    struct
+    {
+        F32 d_F32;
+        F32 q_F32;
+    } dq_s;
+
+    F32 angle__rad__F32;
+} TRAN_struct;
+
+/* Direct transformations. */
+void TRAN_AbcToAlphaBeta(TRAN_struct * const tran_values_s);
+void TRAN_AlphaBetaToDq(TRAN_struct * const tran_values_s);
+void TRAN_AbcToDq(TRAN_struct * const tran_values_s);
+
+/* Inverse transformations */
+void TRAN_AlphaBetaToAbc(TRAN_struct * const tran_values_s);
+void TRAN_DqToAlphaBeta(TRAN_struct * const tran_values_s);
+void TRAN_DqToAbc(TRAN_struct * const tran_values_s);
+
+
+#endif /* MODULES_MISCELANEOUS_INC_TRAN_H_ */

@@ -17,13 +17,13 @@
 
 /* Unsigned integers. */
 typedef uint16_t	U16;
-#define U16_MAX		( UINT16_MAX );
+#define U16_MAX		( UINT16_MAX )
 
 typedef uint32_t	U32;
-#define U32_MAX		( UINT32_MAX );
+#define U32_MAX		( UINT32_MAX )
 
 typedef uint64_t	U64;
-#define U64_MAX		( UINT64_MAX );
+#define U64_MAX		( UINT64_MAX )
 
 /* Signed integers. */
 typedef int16_t		S16;
@@ -41,5 +41,10 @@ typedef int64_t		S64;
 /* Floating point */
 typedef float		F32;
 typedef double		F64;
+
+#define True_b      ( (U16)1 )
+#define False_b     ( (U16)0 )
+typedef U16         boolean;
+
 
 #endif /* INC_APP_TYPES_H_ */
