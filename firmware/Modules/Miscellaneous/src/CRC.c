@@ -8,7 +8,7 @@
 /*function for crc calculation*/
 
 #include <app_types.h>
-#include "CRC_core.h"
+#include <Modules/Miscellaneous/inc/CRC_core.h>
 
 
 U16 CRC_CrcCalculation_U16(const U16 *Data_U16, U16 DataLength_U16){    // length in 16bitovych chlievikov

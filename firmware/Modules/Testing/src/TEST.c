@@ -5,10 +5,10 @@
  *      Author: roland
  */
 #include <TEST.h>
-#include <TRAN.h>
 #include <ATB_interface.h>
 #include <PWM_interface.h>
 #include <math.h>
+#include <Modules/Miscellaneous/inc/TRAN.h>
 
 F32 scalar_freq__Hz__F32 = (F32)250.0;
 

@@ -13,8 +13,8 @@
 #include <math.h>
 #include <MDA_core.h>
 #include <MDA_interface.h>
-#include <TRAN.h>
 #include <InterruptServiceRoutines.h>
+#include <Modules/Miscellaneous/inc/TRAN.h>
 
 MDA_Data_struct s_MDA_data_s;                                        /**< Module data structure. */
 

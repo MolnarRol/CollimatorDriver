@@ -4,8 +4,8 @@
  *  Created on: Mar 14, 2024
  *      Author: roland
  */
-#include <TRAN.h>
 #include <math.h>
+#include <Modules/Miscellaneous/inc/TRAN.h>
 
 /* Direct transformations. */
 void TRAN_AbcToAlphaBeta(TRAN_struct * const tran_values_s)

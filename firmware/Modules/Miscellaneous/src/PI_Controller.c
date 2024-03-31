@@ -1,11 +1,11 @@
 /*
  * Controller.c
  *
- *  Created on: 14 mar. 2024 ã.
+ *  Created on: 14 mar. 2024 ï¿½.
  *      Author: vadym
  */
 
-#include <Modules/PI_Controller/inc/PI_Controller.h>
+#include <PI_Controller.h>
 
 float PI_ctrl_CalculateOutput(PI_CTRL_s *controller, F32 y_ref_f32){
 
