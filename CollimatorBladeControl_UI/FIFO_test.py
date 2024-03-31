@@ -1,4 +1,5 @@
 import serial
+import time
 
 com_device = serial.Serial('/dev/ttyUSB0', 115200, timeout=0.01)
 
@@ -18,7 +19,9 @@ if __name__ == '__main__':
         com_device.close()
     com_device.open()
     x = []
-    for i in range(5):
-        x.append(i % 60)
+    for i in range(64):
+        x.append(i % 64Som)
 
-    com_device.write(bytearray(x))
+    while True:
+        com_device.write(bytearray(x))
+        time.sleep(0.250)
