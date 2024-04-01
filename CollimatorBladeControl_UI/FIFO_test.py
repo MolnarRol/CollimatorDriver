@@ -3,7 +3,6 @@ import time
 
 com_device = serial.Serial('/dev/ttyUSB0', 115200, timeout=0.01)
 
-
 def str_to_bytearray(s):
     nums = []
     for num in s.split():
@@ -15,13 +14,15 @@ def str_to_bytearray(s):
 
 
 if __name__ == '__main__':
+    # If serial device is open -> reopen
     if com_device.is_open:
         com_device.close()
     com_device.open()
-    x = []
-    for i in range(64):
-        x.append(i % 64Som)
 
-    while True:
-        com_device.write(bytearray(x))
-        time.sleep(0.250)
+    x = []
+    for i in range(5):
+        x.append(i % 5)
+
+    # while True:
+    com_device.write(bytearray(x))
+        # time.sleep(0.250)

@@ -5,7 +5,7 @@
  *      Author: roland
  */
 #include <app_types.h>
-#include <ECOM_core.h>
+#include <ECOM_config.h>
 
 #ifndef MODULES_EXTERNALCOMMUNICATION_INC_ECOM_BUFFERS_H_
 #define MODULES_EXTERNALCOMMUNICATION_INC_ECOM_BUFFERS_H_

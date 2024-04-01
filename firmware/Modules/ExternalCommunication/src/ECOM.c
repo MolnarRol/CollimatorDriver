@@ -5,21 +5,20 @@
  *      Author: roland
  */
 #include <ECOM_core.h>
-#include <ECOM_interface.h>
-#include <ECOM_buffers.h>
-
-#include <ATB_interface.h>
-#include <SCI.h>
 
 static boolean s_ATB_TxLock_b = False_b;
 
 /* Communication buffers. */
-ECOM_Buffer_struct s_ECOM_rx_buffer_s = {0};
-ECOM_Buffer_struct s_ECOM_tx_buffer_s = {0};
+ECOM_Buffer_struct s_ECOM_rx_buffer_s = {0};        /**< Receiver extended buffer structure. */
+ECOM_Buffer_struct s_ECOM_tx_buffer_s = {0};        /**< Transmitter extended buffer structure. */
 
+/**
+ * @brief
+ */
 void ECOM_MainHandler(void)
 {
     ECOM_RxHandler();
+    ECOM_ProtocolHandler();
     ECOM_TxHandler();
 }
 
@@ -67,18 +66,10 @@ static void ECOM_TxHandler(void)
         if(buffer_bytes_left_U16 == (U16)0)
         {
             ECOM_ResetBuffer(&s_ECOM_tx_buffer_s);
-//            if(SCI_TX_BUFFER_EMPTY_dM)
-//            {
-                s_ECOM_tx_buffer_s.buffer_state_s.buffer_rdy_flag = (U16)0;
-//                s_ATB_TxLock_b = False_b;
-//            }
+            s_ECOM_tx_buffer_s.buffer_state_s.buffer_rdy_flag = (U16)0;
         }
         last_tx_timestamp_U32 = ATB_GetTicks_U32();
     }
-//    else if(True_b)
-//    {
-//
-//    }
     else
     {
         if(SCI_TX_BUFFER_EMPTY_dM && ATB_CheckTicksPassed_U16(last_tx_timestamp_U32, ECOM_MSC_TIMEOUT_TICKS_dU32))

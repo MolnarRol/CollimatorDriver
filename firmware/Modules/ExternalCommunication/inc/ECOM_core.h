@@ -5,7 +5,13 @@
  *      Author: roland
  */
 #include <app_types.h>
+#include <ATB_interface.h>
+#include <SCI.h>
+
+#include <ECOM_config.h>
+#include <ECOM_buffers.h>
 #include <ECOM_interface.h>
+#include <ECOM_protocol.h>
 
 #ifndef ECOM_CORE_H_
 #define ECOM_CORE_H_

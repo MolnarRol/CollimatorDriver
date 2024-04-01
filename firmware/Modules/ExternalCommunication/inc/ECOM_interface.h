@@ -4,6 +4,7 @@
  *  Created on: Mar 2, 2024
  *      Author: roland
  */
+#include <app_types.h>
 
 #ifndef MODULES_EXTERNALCOMMUNICATION_INC_ECOM_INTERFACE_H_
 #define MODULES_EXTERNALCOMMUNICATION_INC_ECOM_INTERFACE_H_
