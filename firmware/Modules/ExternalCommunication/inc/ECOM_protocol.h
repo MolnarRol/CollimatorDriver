@@ -5,6 +5,7 @@
  *      Author: roland
  */
 #include <app_types.h>
+#include <ECOM_config.h>
 
 #ifndef MODULES_EXTERNALCOMMUNICATION_INC_ECOM_PROTO_H_
 #define MODULES_EXTERNALCOMMUNICATION_INC_ECOM_PROTO_H_
@@ -42,5 +43,7 @@ typedef struct
 } ECOM_Packet_struct;
 
 void ECOM_ProtocolHandler(void);
+static void ECOM_ParsePacket(ECOM_Packet_struct * const parsed_packet_s, U16* packet_raw_U16, const U16 packet_size_U16);
+
 
 #endif /* MODULES_EXTERNALCOMMUNICATION_INC_ECOM_PROTO_H_ */

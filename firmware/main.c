@@ -21,7 +21,6 @@
 #include <SCI.h>
 
 boolean output_en = False_b;
-U16 data_aU16[16] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 /**
  * @brief Main function
  */

@@ -1,5 +1,5 @@
 import serial
-
+from Communication.Protocol import *
 com_device = serial.Serial('/dev/ttyUSB0', 115200, timeout=0.01)
 
 
@@ -20,5 +20,7 @@ if __name__ == '__main__':
     while True:
         print("Numbers to send: ", end="")
         x = str_to_bytearray(input())
-        print(x, end="\n=======================================================\n")
+
+        x = construct_message(HeaderId.COMMAND_e, x, crc=False)
+        print(x.hex(' '), end="\n=======================================================\n")
         com_device.write(x)
