@@ -36,9 +36,9 @@ void ECOM_ProtocolHandler(void)
         case ECOM_PROTO_SM_STATE_PROCESSING_dU16:
             s_ECOM_protocol_state_machine_state_U16 = ECOM_PROTO_SM_STATE_RESPONDING_dU16;
             ECOM_ParsePacket(&s_rx_packet, s_ECOM_rx_buffer_s.data_aU16, ECOM_GET_BUFFER_LEN_dM(&s_ECOM_rx_buffer_s));
-            {
-                ECOM_TxRequest(s_ECOM_msg_fail_response_aU16, 3);
-            }
+//            {
+//                ECOM_TxRequest(s_ECOM_msg_fail_response_aU16, 3);
+//            }
 
         case ECOM_PROTO_SM_STATE_RESPONDING_dU16:
             ECOM_ResetBuffer(&s_ECOM_rx_buffer_s);
