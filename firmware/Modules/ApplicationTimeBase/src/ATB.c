@@ -33,19 +33,7 @@ void ATB_Init(void)
         CpuTimer0Regs.TPRH.all = (U16)0;
         CpuTimer0Regs.TPR.bit.TDDR = (U16)19;                       /* Divide timer clock by 20. */
         CpuTimer0Regs.PRD.all = (U32)99;                            /* Timer overflow every 10us. */
-        CpuTimer0Regs.TCR.bit.TIE = (U16)1;                         /* Enable timer overflow interrupt. */
-
-        /* Timer overflow interrupt setup. */
-        DINT;                                                       /* Disable interrupts. */
-        PieCtrlRegs.PIECTRL.bit.ENPIE = (U16)1;                     /* Enable interrupt vector table peripheral. */
-        PieCtrlRegs.PIEIER1.bit.INTx7 = (U16)1;
-
-        EALLOW;
-        PieVectTable.TIMER0_INT = &ATB_ISR;                         /* Write function pointer to the vector table. */
-        EDIS;
-        IER |= M_INT1;                                              /* Enable CPU interrupt line. */
-        CpuTimer0Regs.TCR.bit.TSS = (U16)0;                         /* Start the system timer. */
-        EINT;                                                       /* Enable interrupts. */
+        CpuTimer0Regs.TCR.bit.TIE = (U16)1;                         /* Enable timer overflow interrupt. */                                                  /* Enable interrupts. */
         s_ATB_Initialized_U16 = (U16)1;
     }
 }
@@ -116,13 +104,11 @@ U16  ATB_CheckTicksPassed_U16(const uint32_t ref_ticks_U32, const uint32_t check
  */
 
 /**
- * @brief   Interrupt service routine for incrementing the s_ATB_ticks_U64 variable.
+ * @brief   Incrementing the s_ATB_ticks_U64 variable.
  */
-interrupt void ATB_ISR(void)
+void ATB_IncrementTime(void)
 {
-    s_ATB_ticks_U64 += (U64)1;                                                  /* Increment tick variable. */
-    CpuTimer0Regs.TCR.bit.TIF = (U16)1;                                         /* Reset interrupt flag. */
-    PieCtrlRegs.PIEACK.bit.ACK1 = (U16)1;                                       /* Acknowledge ISR end. */
+    s_ATB_ticks_U64 += (U64)1;
 }
 /**
  * @}
