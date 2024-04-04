@@ -22,7 +22,6 @@
 #define ECOM_MSC_TIMEOUT_TICKS_dU32 ( ATB_US_TO_TICKS_dM_U32(ECOM_MSG_TIMEOUT__us__dU16) )
 
 
-
 /* Communication handlers. */
 static void ECOM_RxHandler(void);
 static void ECOM_TxHandler(void);

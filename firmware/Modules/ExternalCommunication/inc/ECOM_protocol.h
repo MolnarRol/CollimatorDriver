@@ -22,14 +22,15 @@ typedef enum
 
 typedef enum
 {
-    KeepAlive_e                 = 0,
-    Command_e                   = 1,
-    Status_e                    = 2
+    COMMAND_e                   = 0x01,
+    DATA_TRANSFER_e             = 0x02,
+    TRANSFER_ERR_e              = 0xFE,
+    HELLO_MSG_e                 = 0xFF
 } ECOM_ProtocolHeader_enum;
 
 typedef struct
 {
-    U16                         packet_id_U16;
+    ECOM_ProtocolHeader_enum    packet_id_e;
     U16                         packet_size_U16;
 } ECOM_PacketHeader_struct;
 
@@ -44,6 +45,6 @@ typedef struct
 
 void ECOM_ProtocolHandler(void);
 static void ECOM_ParsePacket(ECOM_Packet_struct * const parsed_packet_s, U16* packet_raw_U16, const U16 packet_size_U16);
-
+static U16 ECOM_ProtocolCheckMsg(const ECOM_Packet_struct * const parsed_packet_ps, const ECOM_Buffer_struct * const buffer_ps);
 
 #endif /* MODULES_EXTERNALCOMMUNICATION_INC_ECOM_PROTO_H_ */
