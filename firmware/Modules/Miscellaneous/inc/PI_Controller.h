@@ -43,7 +43,8 @@ typedef struct {
     }limit_s;
 
     F32 samp_period__s__f32;     /*sampling time*/
-    F32 ref_value_f32;           /*reference value*/
+    F32 ref_value_f32;           /*reference value S-curve*/
+    F32 action_value_f32;        /*action intervention from previous PI controller*/
     F32 I_previous_f32;          /*previous integral value*/
 
 }PI_CTRL_s;

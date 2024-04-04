@@ -7,12 +7,12 @@
 
 #include <PI_Controller.h>
 
-float PI_ctrl_CalculateOutput(PI_CTRL_s *controller, F32 y_ref_f32){
+F32 PI_ctrl_CalculateOutput(PI_CTRL_s *controller, F32 y_ref_f32){
 
     /*
      * e(k) = w(k) - y(k)
      */
-    F32 error_f32 = controller->ref_value_f32 - y_ref_f32;
+    F32 error_f32 = controller->action_value_f32 + controller->ref_value_f32 - y_ref_f32;
 
     /*
      * I(k) = T*e(k) + I(k-1)
@@ -63,6 +63,7 @@ PI_CTRL_s PI_id_current_controller =
      },
      .samp_period__s__f32 = SAMPLING_TIME__s__df32,
      .ref_value_f32 = ( (F32)0.0f ),
+     .action_value_f32 = ( (F32)0.0f ),
      .I_previous_f32 = ( (F32)0.0f )
 };
 
@@ -80,6 +81,7 @@ PI_CTRL_s PI_iq_current_controller =
      },
      .samp_period__s__f32 = SAMPLING_TIME__s__df32,
      .ref_value_f32 = ( (F32)0.0f ),
+     .action_value_f32 = ( (F32)0.0f ),
      .I_previous_f32 = ( (F32)0.0f )
 };
 
@@ -97,6 +99,7 @@ PI_CTRL_s PI_speed_controller =
      },
      .samp_period__s__f32 = SAMPLING_TIME__s__df32,
      .ref_value_f32 = ( (F32)0.0f ),
+     .action_value_f32 = ( (F32)0.0f ),
      .I_previous_f32 = ( (F32)0.0f )
 };
 
@@ -114,5 +117,6 @@ PI_CTRL_s PI_position_controller =
      },
      .samp_period__s__f32 = SAMPLING_TIME__s__df32,
      .ref_value_f32 = ( (F32)0.0f ),
+     .action_value_f32 = ( (F32)0.0f ),
      .I_previous_f32 = ( (F32)0.0f )
 };
