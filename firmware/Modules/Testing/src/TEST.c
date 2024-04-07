@@ -24,7 +24,7 @@ TRAN_struct tran_s =
 void TEST_ScalarMotorMovementHandler(void)
 {
     tran_s.angle__rad__F32 += TWO_PI_dF32 * scalar_freq__Hz__F32 * (F32)50.0e-6;
-    FM_RemainderAfterFloatDivision_F32(tran_s.angle__rad__F32, TWO_PI_dF32);
+    tran_s.angle__rad__F32 = FM_RemainderAfterFloatDivision_F32(tran_s.angle__rad__F32, TWO_PI_dF32);
     TRAN_DqToAbc(&tran_s);
 
     PWM_SetCompareValues(PWM_DUTY_TO_CMP_dMU16( (tran_s.abc_s.a_F32 / (F32)24.0) + (F32)0.5 ),
