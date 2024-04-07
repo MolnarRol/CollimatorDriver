@@ -16,6 +16,8 @@
 #include <InterruptServiceRoutines.h>
 #include <Modules/Miscellaneous/inc/TRAN.h>
 
+#include <TEST.h>
+
 MDA_Data_struct s_MDA_data_s;                                        /**< Module data structure. */
 
 /*********************************************************************************************************************************************
@@ -27,11 +29,13 @@ MDA_Data_struct s_MDA_data_s;                                        /**< Module
  */
 interrupt void MDA_AdcConverstionCompleteIsr(void)
 {
+
     EINT;
-    MDA_UpdateData();
+//    MDA_UpdateData();
     ISR_MotorControlHandler();
     AdcaRegs.ADCINTFLGCLR.bit.ADCINT1   = (U16)1;                                   /* Clear interrupt flag. */
     PieCtrlRegs.PIEACK.bit.ACK1         = (U16)1;
+
 }
 
 /**
@@ -118,11 +122,6 @@ static inline void MDA_QepInit(void)
     EQep1Regs.QUPRD                     = (U32)( MDA_ENC_DELTA_PULSE_SAMPLE_TIME__s__dF32
                                                   * (F32) 200.0E6) - (U32)1;
     EQep1Regs.QCAPCTL.bit.CCPS          = (U16)1;                                   /* eQEP capture timer clock prescaler /4. */
-
-    /* Delta pulses measurement setup. */
-
-
-
 
     /* eQep pulse Watchdog setup. */
     EQep1Regs.QWDPRD                    = (U16)( ((F32)200.0 / (F32)64.0) * (F32)MDA_ENC_NO_PULSE_TIMEOUT__us__dU16 );
