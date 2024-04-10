@@ -19,6 +19,8 @@
 #include <MDA_interface.h>
 #include <PWM_interface.h>
 #include <SCI.h>
+#include "InterruptServiceRoutines.h"
+#include "FOC.h"
 
 boolean output_en = False_b;
 /**
@@ -32,10 +34,17 @@ void main(void)
     MDA_Init();
     PWM_Init();
     SCI_Init();
+
+    PWM_SetOutputEnable(True_b);
+
+    CommutationAlignment();
+
+    PWM_SetOutputEnable(True_b);
+
     /* Main loop */
     while(1)
     {
-        PWM_SetOutputEnable(output_en);
+//        PWM_SetOutputEnable(output_en);
         ECOM_MainHandler();
 //        AC_MainHandler();                                       /* Application control main handler. */
     }

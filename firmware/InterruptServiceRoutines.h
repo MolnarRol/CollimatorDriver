@@ -11,5 +11,6 @@
 
 void ISR_MotorControlHandler(void);
 
+//void ComutationU16();
 
 #endif /* INTERRUPTSERVICEROUTINES_H_ */
