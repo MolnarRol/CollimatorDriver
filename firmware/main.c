@@ -48,12 +48,14 @@ void main(void)
 
     TEST_PinInit();
 
+    MDA_CalibratePhaseCurrentsOffsets();
+    CommutationAlignment();
+
     /* Main loop */
     while(1)
     {
         if(output_en){
-            CommutationAlignment();
-            output_en = False_b;
+//            output_en = False_b;
         }
 
 //        PWM_SetOutputEnable(output_en);

@@ -24,6 +24,9 @@
 #define MDA_DC_LINK_VOLTAGE_SENSITIVITY_dF32            ( (F32)43.6E-3 )        /* V / V */
 #define MDA_ADC_CURRENT_MEASUREMENT_WINDOWS_dU16        ( (U16)19 )
 
+#define MDA_PHASE_CURRENT_CALIBRATION_STEPS_U16         ( (U16)1000 )
+#define MDA_PHASE_CURRENT_CALIBRATION_STEP_DELAY__us__dU16 ( (U16)100 )
+
 /* Motor parameters. */
 #define MOTOR_POLE_PAIRS_dU16                           ( (U16)4 )
 #define MOTOR_LINEAR_TRANN_TRANSFER__rev_mm1__dF32      ( (F32)10 )

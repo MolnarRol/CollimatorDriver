@@ -41,5 +41,6 @@ typedef struct
 void MDA_Init(void);
 const MDA_Data_struct* MDA_GetData_ps(void);
 void MDA_ResetLinearPosition(void);
+void MDA_CalibratePhaseCurrentsOffsets(void);
 
 #endif /* MODULES_MOTORDATAACQUISITION_INC_MDA_INTERFACE_H_ */

@@ -18,7 +18,13 @@
 #include <FAST_MATH_FUNC.h>
 #include <TEST.h>
 
-MDA_Data_struct s_MDA_data_s;                                        /**< Module data structure. */
+/* static */ MDA_Data_struct s_MDA_data_s;                                        /**< Module data structure. */
+
+/* Phase current offset variables. */
+static boolean s_MDA_phase_currents_calibrated_b       = False_b;
+const static F32 s_MDA_phase_u_offset_current__A__dF32  = (F32)0.0;
+const static F32 s_MDA_phase_v_offset_current__A__dF32  = (F32)0.0;
+const static F32 s_MDA_phase_w_offset_current__A__dF32  = (F32)0.0;
 
 /*********************************************************************************************************************************************
  *                                                      Static functions                                                                     *
@@ -134,6 +140,42 @@ static inline void MDA_QepInit(void)
     EDIS;
 }
 
+void MDA_CalibratePhaseCurrentsOffsets(void)
+{
+    if(s_MDA_phase_currents_calibrated_b == True_b)
+    {
+        s_MDA_phase_currents_calibrated_b = True_b;
+        return;
+    }
+    DINT;                                                                           /* Disable interrupts. */
+    U32 adc_read_sum_u_U32 = (U32)0;
+    U32 adc_read_sum_v_U32 = (U32)0;
+    U32 adc_read_sum_w_U32 = (U32)0;
+    U16 step_index_U16;
+
+    for(step_index_U16 = (U16)0; step_index_U16 < MDA_PHASE_CURRENT_CALIBRATION_STEPS_U16; step_index_U16++)
+    {
+        AdcbRegs.ADCSOCFRC1.all |= (U16)0x0003;                                     /* Force SOC0 and SOC1 for ADC B. */
+        AdcaRegs.ADCSOCFRC1.all |= (U16)0x0003;                                     /* Force SOC0 and SOC1 for ADC A. */
+
+        while(AdcaRegs.ADCINTFLG.bit.ADCINT1 != (U16)1) __asm__("NOP");             /* Wait for conversion. */
+        AdcaRegs.ADCINTFLGCLR.bit.ADCINT1 = (U16)1;                                 /* Clear interrupt flag. */
+
+        adc_read_sum_u_U32 += (U32)MDA_ADC_U_CURRENT_CONV_RES_d;                    /* Add result to phase u sum. */
+        adc_read_sum_v_U32 += (U32)MDA_ADC_V_CURRENT_CONV_RES_d;                    /* Add result to phase v sum. */
+        adc_read_sum_w_U32 += (U32)MDA_ADC_W_CURRENT_CONV_RES_d;                    /* Add result to phase w sum. */
+
+        DELAY_US( MDA_PHASE_CURRENT_CALIBRATION_STEP_DELAY__us__dU16 );             /* Wait. */
+    }
+
+    /* Averaging ADC readout for each phase and offset calculation. */
+    *(F32*)&s_MDA_phase_u_offset_current__A__dF32 = MDA_PHASE_CURRENT_FROM_ADC_VAL_dMF32(adc_read_sum_u_U32 / (U32)MDA_PHASE_CURRENT_CALIBRATION_STEPS_U16);
+    *(F32*)&s_MDA_phase_v_offset_current__A__dF32 = MDA_PHASE_CURRENT_FROM_ADC_VAL_dMF32(adc_read_sum_v_U32 / (U32)MDA_PHASE_CURRENT_CALIBRATION_STEPS_U16);
+    *(F32*)&s_MDA_phase_w_offset_current__A__dF32 = MDA_PHASE_CURRENT_FROM_ADC_VAL_dMF32(adc_read_sum_w_U32 / (U32)MDA_PHASE_CURRENT_CALIBRATION_STEPS_U16);
+
+    EINT;                                                                           /* Enable interrupts. */
+}
+
 #pragma FUNC_ALWAYS_INLINE ( MDA_UpdateData )
 /**
  * @brief Update data structure with newly acquired measurement data.
@@ -155,9 +197,9 @@ static inline void MDA_UpdateData(void)
     s_MDA_data_s.linear_position__mm__F32 = ((F32)s_MDA_data_s.linear_position_enc_counter_U32 / (F32)MDA_ENC_CPR_dU16) * MOTOR_LINEAR_TRANN_TRANSFER__rev_mm1__dF32;
 
     /* Write calculated phase current value from ADC conversions. */
-    current_transf_s.abc_s.a_F32 = MDA_PHASE_CURRENT_FROM_ADC_VAL_dMF32(MDA_ADC_U_CURRENT_CONV_RES_d);
-    current_transf_s.abc_s.b_F32 = MDA_PHASE_CURRENT_FROM_ADC_VAL_dMF32(MDA_ADC_V_CURRENT_CONV_RES_d);
-    current_transf_s.abc_s.c_F32 = MDA_PHASE_CURRENT_FROM_ADC_VAL_dMF32(MDA_ADC_W_CURRENT_CONV_RES_d);
+    MDA_GetRawPhaseCurrents( &current_transf_s.abc_s.a_F32,
+                             &current_transf_s.abc_s.b_F32,
+                             &current_transf_s.abc_s.c_F32 );
 
     /* Current transformation UVW -> DQ */
     TRAN_AbcToDq(&current_transf_s);
@@ -277,6 +319,14 @@ static inline F32 MDA_GetRawMechSpeed__rad_s1__F32(void)
     }
 
     return calculated_speed__rad_s1__F32;
+}
+
+#pragma FUNC_ALWAYS_INLINE ( MDA_GetRawPhaseCurrents )
+static inline void MDA_GetRawPhaseCurrents(F32 * const u_pF32, F32 * const v_pF32, F32 * const w_pF32)
+{
+    *u_pF32 = MDA_PHASE_CURRENT_FROM_ADC_VAL_dMF32(MDA_ADC_U_CURRENT_CONV_RES_d) - s_MDA_phase_u_offset_current__A__dF32;
+    *v_pF32 = MDA_PHASE_CURRENT_FROM_ADC_VAL_dMF32(MDA_ADC_V_CURRENT_CONV_RES_d) - s_MDA_phase_v_offset_current__A__dF32;
+    *w_pF32 = MDA_PHASE_CURRENT_FROM_ADC_VAL_dMF32(MDA_ADC_W_CURRENT_CONV_RES_d) - s_MDA_phase_w_offset_current__A__dF32;
 }
 
 /*********************************************************************************************************************************************
