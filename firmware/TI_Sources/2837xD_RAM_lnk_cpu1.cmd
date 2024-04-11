@@ -43,13 +43,13 @@ PAGE 1 :
 
    RAMGS0      : origin = 0x00C000, length = 0x001000
    RAMGS1      : origin = 0x00D000, length = 0x001000
-   RAMGS2      : origin = 0x00E000, length = 0x001000
-   RAMGS3      : origin = 0x00F000, length = 0x001000
-   RAMGS4      : origin = 0x010000, length = 0x001000
-   RAMGS5      : origin = 0x011000, length = 0x001000
-   RAMGS6      : origin = 0x012000, length = 0x001000
-   RAMGS7      : origin = 0x013000, length = 0x001000
-   RAMGS8      : origin = 0x014000, length = 0x001000
+   RAMGS2      : origin = 0x00E000, length = 0x007000
+   //RAMGS3      : origin = 0x00F000, length = 0x001000
+   //RAMGS4      : origin = 0x010000, length = 0x001000
+   //RAMGS5      : origin = 0x011000, length = 0x001000
+   //RAMGS6      : origin = 0x012000, length = 0x001000
+   //RAMGS7      : origin = 0x013000, length = 0x001000
+   //RAMGS8      : origin = 0x014000, length = 0x001000
    RAMGS9      : origin = 0x015000, length = 0x001000
    RAMGS10     : origin = 0x016000, length = 0x001000
 
@@ -84,7 +84,7 @@ SECTIONS
    .stack           : > RAMM1,     PAGE = 1
 
 #if defined(__TI_EABI__)
-   .bss             : > RAMLS5,    PAGE = 1
+   .bss             : > RAMGS2,    PAGE = 1
    .bss:output      : > RAMLS3,    PAGE = 0
    .init_array      : > RAMM0,     PAGE = 0
    .const           : > RAMLS5,    PAGE = 1
@@ -127,11 +127,13 @@ SECTIONS
     }
 
     /* The following section definition are for SDFM examples */
-   Filter1_RegsFile : > RAMGS1, PAGE = 1, fill=0x1111
+   /*Filter1_RegsFile : > RAMGS1, PAGE = 1, fill=0x1111
    Filter2_RegsFile : > RAMGS2, PAGE = 1, fill=0x2222
    Filter3_RegsFile : > RAMGS3, PAGE = 1, fill=0x3333
    Filter4_RegsFile : > RAMGS4, PAGE = 1, fill=0x4444
    Difference_RegsFile : >RAMGS5,   PAGE = 1, fill=0x3333
+	*/
+
 }
 
 /*

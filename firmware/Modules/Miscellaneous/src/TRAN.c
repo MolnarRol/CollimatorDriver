@@ -5,7 +5,10 @@
  *      Author: roland
  */
 #include <math.h>
-#include <Modules/Miscellaneous/inc/TRAN.h>
+#include <FAST_MATH_FUNC.h>
+#include <TRAN.h>
+#include <TEST.h>
+
 
 /* Direct transformations. */
 void TRAN_AbcToAlphaBeta(TRAN_struct * const tran_values_s)
@@ -20,8 +23,8 @@ void TRAN_AbcToAlphaBeta(TRAN_struct * const tran_values_s)
 
 void TRAN_AlphaBetaToDq(TRAN_struct * const tran_values_s)
 {
-    const F32 sin_angle_F32 = sin(tran_values_s->angle__rad__F32);                    /* sine of angle */
-    const F32 cos_angle_F32 = cos(tran_values_s->angle__rad__F32);                    /* cosine of angle */
+    const F32 sin_angle_F32 = FM_sin_F32(tran_values_s->angle__rad__F32);                    /* sine of angle */
+    const F32 cos_angle_F32 = FM_cos_F32(tran_values_s->angle__rad__F32);                    /* cosine of angle */
 
     /* d calculation */
     tran_values_s->dq_s.d_F32 = cos_angle_F32 * tran_values_s->alpha_beta_s.alpha_F32
@@ -49,8 +52,8 @@ void TRAN_AlphaBetaToAbc(TRAN_struct * const tran_values_s)
 
 void TRAN_DqToAlphaBeta(TRAN_struct * const tran_values_s)
 {
-    const F32 sin_angle_F32 = sin(tran_values_s->angle__rad__F32);                    /* sine of angle */
-    const F32 cos_angle_F32 = cos(tran_values_s->angle__rad__F32);                    /* cosine of angle */
+    const F32 sin_angle_F32 = FM_sin_F32(tran_values_s->angle__rad__F32);                    /* sine of angle */
+    const F32 cos_angle_F32 = FM_cos_F32(tran_values_s->angle__rad__F32);                    /* cosine of angle */
 
     tran_values_s->alpha_beta_s.alpha_F32 = cos_angle_F32 * tran_values_s->dq_s.d_F32
             - sin_angle_F32 * tran_values_s->dq_s.q_F32;

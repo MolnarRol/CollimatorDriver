@@ -21,11 +21,25 @@
 #include <SCI.h>
 #include "InterruptServiceRoutines.h"
 #include "FOC.h"
+#include "TEST.h"
 
-boolean output_en = False_b;
+extern TRAN_struct tran_s;
+extern boolean enable_FOC;
+
+
+boolean output_en = True_b;
 /**
  * @brief Main function
  */
+
+//float BufferA[1000];
+//float BufferB[1000];
+//float BufferC[1000];
+
+Uint16 u16buffer_counter;
+
+
+
 void main(void)
 {
     /* Initialization */
@@ -35,18 +49,24 @@ void main(void)
     PWM_Init();
     SCI_Init();
 
-    PWM_SetOutputEnable(True_b);
+    TEST_PinInit();
 
-    CommutationAlignment();
+    CommutationAlignment();                             // premenuj potom na FOC_com alingemnt
 
-    PWM_SetOutputEnable(True_b);
+
+    //PWM_SetOutputEnable(output_en);
+
+    enable_FOC = 1;
 
     /* Main loop */
     while(1)
     {
-//        PWM_SetOutputEnable(output_en);
-        ECOM_MainHandler();
-//        AC_MainHandler();                                       /* Application control main handler. */
+
+        PWM_SetOutputEnable(output_en);
+//        ECOM_MainHandler();
+//        AC_MainHandler();
+        /* Application control main handler. */
+
     }
 }
 
