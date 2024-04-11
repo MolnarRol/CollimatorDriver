@@ -9,6 +9,7 @@
 #include <PWM_interface.h>
 #include <math.h>
 #include <Modules/Miscellaneous/inc/TRAN.h>
+#define M_PI        3.14159265358979323846
 
 F32 scalar_freq__Hz__F32 = (F32)250.0;
 
