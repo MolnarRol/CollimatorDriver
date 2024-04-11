@@ -10,8 +10,8 @@
    sodipodi:docname="logo_big.svg"
    inkscape:version="1.3.2 (091e20ef0f, 2023-11-25, custom)"
    inkscape:export-filename="logo_big.png"
-   inkscape:export-xdpi="180"
-   inkscape:export-ydpi="180"
+   inkscape:export-xdpi="200"
+   inkscape:export-ydpi="200"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -27,7 +27,7 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="5.7569075"
-     inkscape:cx="85.549403"
+     inkscape:cx="85.462551"
      inkscape:cy="86.765334"
      inkscape:window-width="1916"
      inkscape:window-height="1033"
@@ -80,27 +80,27 @@
        transform="matrix(0.26458333,0,0,0.26458333,16.685253,10.433281)"><tspan
          x="52.914062"
          y="59.914062"
-         id="tspan13"><tspan
+         id="tspan5"><tspan
            style="font-family:SourceCodeVF;-inkscape-font-specification:SourceCodeVF"
-           id="tspan1">embeded
+           id="tspan4">embedded
 </tspan></tspan><tspan
          x="52.914062"
          y="70.082062"
-         id="tspan15"><tspan
+         id="tspan8"><tspan
            style="font-family:SourceCodeVF;-inkscape-font-specification:SourceCodeVF"
-           id="tspan14">system
+           id="tspan6">system
 </tspan></tspan><tspan
          x="52.914062"
          y="80.250061"
-         id="tspan17"><tspan
+         id="tspan10"><tspan
            style="font-family:SourceCodeVF;-inkscape-font-specification:SourceCodeVF"
-           id="tspan16">software
+           id="tspan9">software
 </tspan></tspan><tspan
          x="52.914062"
          y="90.41806"
-         id="tspan19"><tspan
+         id="tspan12"><tspan
            style="font-family:SourceCodeVF;-inkscape-font-specification:SourceCodeVF"
-           id="tspan18">solution</tspan></tspan></text>
+           id="tspan11">solution</tspan></tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05556px;font-family:SourceCodeVF;-inkscape-font-specification:SourceCodeVF;baseline-shift:baseline;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.264999;stroke-dasharray:none;stroke-opacity:1"
