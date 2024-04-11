@@ -19,6 +19,7 @@
 #include <MDA_interface.h>
 #include <PWM_interface.h>
 #include <SCI.h>
+#include <TEST.h>
 
 boolean output_en = False_b;
 /**
@@ -32,11 +33,26 @@ void main(void)
     MDA_Init();
     PWM_Init();
     SCI_Init();
+    TEST_PinInit();
     /* Main loop */
     while(1)
     {
         PWM_SetOutputEnable(output_en);
-        ECOM_MainHandler();
-//        AC_MainHandler();                                       /* Application control main handler. */
+//        ECOM_MainHandler();
+//        AC_MainHandler();
+        /* Application control main handler. */
+    }
+}
+
+/**
+ * @brief Error handler
+ */
+#pragma RETAIN ( ErrorHandler )
+void ErrorHandler(void)
+{
+    DINT;                                                       /* Disable interrupts. */
+    for(;;)                                                     /* Endless loop. */
+    {
+        // Do nothing.
     }
 }
