@@ -4,7 +4,7 @@
 #include <main.h>
 
 /* Defines and macros */
-#define     ATB_TICK__us__dU16              ( (U16)10 )                             /**< Period of one application time base tick. */
+#define     ATB_TICK__us__dU16              ( (U16)50 )                             /**< Period of one application time base tick. */
 
 /* Time to ticks macros. */
 #define     ATB_US_TO_TICKS_dM_U32(us)      ( (U32)((us) / ATB_TICK__us__dU16) )
@@ -18,6 +18,7 @@
 
 /* Interface functions. */
 void        ATB_Init(void);
+void        ATB_IncrementTime(void);
 U64         ATB_GetTicks_U64(void);
 U32         ATB_GetTicks_U32(void);
 U16         ATB_CheckTicksPassed_U16(const uint32_t ref_ticks_U32, const uint32_t checked_ticks_passed_U32);
