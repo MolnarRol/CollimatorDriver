@@ -47,10 +47,16 @@ void main(void)
     SCI_Init();
 
     TEST_PinInit();
+
     /* Main loop */
     while(1)
     {
-        PWM_SetOutputEnable(output_en);
+        if(output_en){
+            CommutationAlignment();
+            output_en = False_b;
+        }
+
+//        PWM_SetOutputEnable(output_en);
 //        ECOM_MainHandler();
 //        AC_MainHandler();
         /* Application control main handler. */

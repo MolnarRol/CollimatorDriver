@@ -111,19 +111,10 @@ void CommutationAlignment(){
 
     PWM_SetOutputEnable(True_b);
 
-    TRAN_struct comut_S;
-    //1.krok DC napatie na fazy U V so striedou z = 0.5
 
-    comut_S.dq_s.d_F32 = 2.0;
-    comut_S.dq_s.q_F32 = 2.0;
-    // Cakacka -- idealne timer 2
-    TRAN_DqToAbc(&comut_S);
+    PWM_ForceAngle(0.0, 2.0, 24.0);
 
-    PWM_SetCompareValues(PWM_DUTY_TO_CMP_dMU16( comut_S.abc_s.a_F32 / 24.0 + (F32)0.5 ),
-                         PWM_DUTY_TO_CMP_dMU16( comut_S.abc_s.b_F32 / 24.0 + (F32)0.5 ),
-                         PWM_DUTY_TO_CMP_dMU16( comut_S.abc_s.c_F32 / 24.0 + (F32)0.5 ));
-
-    DELAY_US(100000);
+    DELAY_US(250000);
 
     // Incializacia POSCNT
     EALLOW;
@@ -134,17 +125,7 @@ void CommutationAlignment(){
 
     DELAY_US(100000);
 
-    // Odpojenie napatia
-
-//    comut_S.dq_s.d_F32 = 0;
-//    comut_S.dq_s.q_F32 = 0;
-//
-//    TRAN_DqToAbc(&comut_S);
-//
-//    PWM_SetCompareValues(PWM_DUTY_TO_CMP_dMU16( comut_S.abc_s.a_F32 / 24.0 + (F32)0.5 ),
-//                         PWM_DUTY_TO_CMP_dMU16( comut_S.abc_s.b_F32 / 24.0 + (F32)0.5 ),
-//                         PWM_DUTY_TO_CMP_dMU16( comut_S.abc_s.c_F32 / 24.0 + (F32)0.5 ));
-
+    PWM_SetCompareValues(0, 0, 0);
 
     PWM_SetOutputEnable(False_b);
 
