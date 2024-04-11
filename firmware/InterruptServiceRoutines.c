@@ -20,9 +20,10 @@ inline void ISR_MotorControlHandler(void)
 
     ATB_IncrementTime();
     /* Motor control functionality. Called every PWM cycle. */
-    TEST_ScalarMotorMovementHandler();
-    //FOC_CalculateOutput(20);
 
+    TEST_ScalarMotorMovementHandler();
+
+//    TEST_SteppingHandler();
 
 }
 

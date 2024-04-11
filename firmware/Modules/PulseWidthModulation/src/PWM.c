@@ -11,7 +11,7 @@
  * @date 17.03.2024
  */
 #include <PWM_core.h>
-#include <TEST.h>
+#include <TRAN.h>
 
 const static boolean s_PWM_Initialized_b = False_b;
 
@@ -150,4 +150,20 @@ void PWM_SetOutputEnable(const boolean enable_b)
     }
 }
 
+void PWM_ForceAngle(const F32 forced_angle__rad__F32, const F32 voltage_amplitude__V__F32, const F32 dc_link__V__F32)
+{
+    TRAN_struct local_transf_s =
+    {
+     .dq_s = {
+              .d_F32 = voltage_amplitude__V__F32,
+              .q_F32 = (F32)0.0
+     },
+     .angle__rad__F32 = forced_angle__rad__F32
+    };
+
+    TRAN_DqToAbc(&local_transf_s);
+    PWM_SetCompareValues(PWM_DUTY_TO_CMP_dMU16( (local_transf_s.abc_s.a_F32 / dc_link__V__F32) + (F32)0.5 ),
+                         PWM_DUTY_TO_CMP_dMU16( (local_transf_s.abc_s.b_F32 / dc_link__V__F32) + (F32)0.5 ),
+                         PWM_DUTY_TO_CMP_dMU16( (local_transf_s.abc_s.c_F32 / dc_link__V__F32) + (F32)0.5 ));
+}
 

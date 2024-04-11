@@ -46,29 +46,15 @@ void main(void)
     PWM_Init();
     SCI_Init();
 
-    PWM_SetOutputEnable(True_b);
-
-    CommutationAlignment();
-
-    PWM_SetOutputEnable(True_b);
-
+    TEST_PinInit();
     /* Main loop */
     while(1)
     {
+        PWM_SetOutputEnable(output_en);
+//        ECOM_MainHandler();
+//        AC_MainHandler();
+        /* Application control main handler. */
 
-        ECOM_MainHandler();
-//        AC_MainHandler();                                       /* Application control main handler. */
-
-        /* TEST */
-
-        if(u16buffer_counter < 1000){
-
-            BufferA[u16buffer_counter] = tran_s.angle__rad__F32;
-            BufferB[u16buffer_counter] = 6.2831 * ( MDA_GetData_ps()->rotor_el_angle__rad__F32 / (F32)U16_MAX );
-            BufferC[u16buffer_counter] = tran_s.abc_s.a_F32;
-            u16buffer_counter++;
-
-        }
     }
 }
 
