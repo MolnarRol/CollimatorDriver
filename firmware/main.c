@@ -19,6 +19,7 @@
 #include <MDA_interface.h>
 #include <PWM_interface.h>
 #include <SCI.h>
+#include <TEST.h>
 
 boolean output_en = False_b;
 /**
@@ -32,6 +33,7 @@ void main(void)
     MDA_Init();
     PWM_Init();
     SCI_Init();
+    TEST_PinInit();
     /* Main loop */
     while(1)
     {
