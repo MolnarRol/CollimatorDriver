@@ -10,14 +10,14 @@
 #include <math.h>
 #include <Modules/Miscellaneous/inc/TRAN.h>
 
-F32 scalar_freq__Hz__F32 = (F32)250.0;
+F32 scalar_freq__Hz__F32 = (F32)5.0;
 
 volatile TRAN_struct tran_s =
 {
     .dq_s =
     {
          .d_F32 = (F32)0.0,
-         .q_F32 = (F32)2.0
+         .q_F32 = (F32)1.0
     },
     .angle__rad__F32 = (F32)0.0
 };

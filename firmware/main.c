@@ -21,11 +21,22 @@
 #include <SCI.h>
 #include "InterruptServiceRoutines.h"
 #include "FOC.h"
+#include "TEST.h"
+
+extern TRAN_struct tran_s;
+
 
 boolean output_en = False_b;
 /**
  * @brief Main function
  */
+
+float BufferA[1000];
+float BufferB[1000];
+float BufferC[1000];
+
+Uint16 u16buffer_counter;
+
 void main(void)
 {
     /* Initialization */
@@ -44,9 +55,20 @@ void main(void)
     /* Main loop */
     while(1)
     {
-//        PWM_SetOutputEnable(output_en);
+
         ECOM_MainHandler();
 //        AC_MainHandler();                                       /* Application control main handler. */
+
+        /* TEST */
+
+        if(u16buffer_counter < 1000){
+
+            BufferA[u16buffer_counter] = tran_s.angle__rad__F32;
+            BufferB[u16buffer_counter] = 6.2831 * ( MDA_GetData_ps()->rotor_el_angle__rad__F32 / (F32)U16_MAX );
+            BufferC[u16buffer_counter] = tran_s.abc_s.a_F32;
+            u16buffer_counter++;
+
+        }
     }
 }
 
