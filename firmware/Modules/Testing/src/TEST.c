@@ -11,6 +11,7 @@
 #include <FAST_MATH_FUNC.h>
 #include <MDA_interface.h>
 
+#include <MDA_core.h>
 F32 scalar_freq__Hz__F32                = (F32)0.0;
 F32 current_forced_el_angle__rad__F32   = (F32)0.0;
 
@@ -21,9 +22,23 @@ void TEST_ScalarMotorMovementHandler(void)
     PWM_ForceAngle(current_forced_el_angle__rad__F32, (F32)1.25, (F32)24.0);
 }
 
-F32 forced_angle_aF32[32];
-F32 act_angle_F32[32];
-U16 angle_idx_U16 = 0;
+F32 current_a[512];
+F32 current_b[512];
+F32 current_c[512];
+
+
+U16 index_prud=0;
+
+void kukam_prud(){
+    if(index_prud < 512){
+        MDA_GetRawPhaseCurrents( &current_a[index_prud],
+                                 &current_b[index_prud],
+                                 &current_c[index_prud] );
+
+        index_prud++;
+    }
+
+}
 
 void TEST_SteppingHandler(void)
 {
@@ -44,13 +59,6 @@ void TEST_SteppingHandler(void)
         PWM_ForceAngle(forced_angle_F32, (F32)1.25, (F32)24.0);
         forced_angle_F32 += TWO_PI_dF32 / (F32)4.0;
         forced_angle_F32 = FM_RemainderAfterFloatDivision_F32(forced_angle_F32, TWO_PI_dF32);
-
-        if(angle_idx_U16 < 32)
-        {
-            forced_angle_aF32[angle_idx_U16] = forced_angle_F32;
-            act_angle_F32[angle_idx_U16] = MDA_GetData_ps()->rotor_el_angle__rad__F32;
-            angle_idx_U16 += 1;
-        }
     }
 }
 

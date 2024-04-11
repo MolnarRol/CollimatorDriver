@@ -24,18 +24,20 @@
 #include "TEST.h"
 
 extern TRAN_struct tran_s;
+extern boolean enable_FOC;
 
 
-boolean output_en = False_b;
+boolean output_en = True_b;
 /**
  * @brief Main function
  */
 
-float BufferA[1000];
-float BufferB[1000];
-float BufferC[1000];
+//float BufferA[1000];
+//float BufferB[1000];
+//float BufferC[1000];
 
 Uint16 u16buffer_counter;
+
 
 void main(void)
 {
@@ -47,18 +49,16 @@ void main(void)
     SCI_Init();
 
     TEST_PinInit();
-
     MDA_CalibratePhaseCurrentsOffsets();
     CommutationAlignment();
+
+    enable_FOC = 1;
 
     /* Main loop */
     while(1)
     {
-        if(output_en){
-//            output_en = False_b;
-        }
 
-//        PWM_SetOutputEnable(output_en);
+        PWM_SetOutputEnable(output_en);
 //        ECOM_MainHandler();
 //        AC_MainHandler();
         /* Application control main handler. */

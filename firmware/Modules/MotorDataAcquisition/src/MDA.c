@@ -321,8 +321,8 @@ static inline F32 MDA_GetRawMechSpeed__rad_s1__F32(void)
     return calculated_speed__rad_s1__F32;
 }
 
-#pragma FUNC_ALWAYS_INLINE ( MDA_GetRawPhaseCurrents )
-static inline void MDA_GetRawPhaseCurrents(F32 * const u_pF32, F32 * const v_pF32, F32 * const w_pF32)
+//#pragma FUNC_ALWAYS_INLINE ( MDA_GetRawPhaseCurrents )
+void MDA_GetRawPhaseCurrents(F32 * const u_pF32, F32 * const v_pF32, F32 * const w_pF32)
 {
     *u_pF32 = MDA_PHASE_CURRENT_FROM_ADC_VAL_dMF32(MDA_ADC_U_CURRENT_CONV_RES_d) - s_MDA_phase_u_offset_current__A__dF32;
     *v_pF32 = MDA_PHASE_CURRENT_FROM_ADC_VAL_dMF32(MDA_ADC_V_CURRENT_CONV_RES_d) - s_MDA_phase_v_offset_current__A__dF32;
