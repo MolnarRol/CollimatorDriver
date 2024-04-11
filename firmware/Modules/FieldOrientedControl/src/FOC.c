@@ -43,7 +43,7 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32){
     else if( ( Ticks__s__F32 > ACCELERATOIN_TIME__s__df32 ) && Ticks__s__F32 <= ( ACCELERATOIN_TIME__s__df32 + DeltaMdlTime__s__F32 ) ){
 
         Acceleration__rad_s_2__F32 = 0;
-        Speed__rad_s__F32 = MAX_SPEED__rad_s__df32;
+        Speed__rad_s__F32 = MAX_SPEED__rad_s__df32;                      // Opytat sa
         Position__rad__F32 += Speed__rad_s__F32 * SAMPLING_TIME__s__df32;
     }
 
