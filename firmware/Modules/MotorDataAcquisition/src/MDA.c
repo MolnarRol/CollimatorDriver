@@ -197,9 +197,15 @@ static inline void MDA_UpdateData(void)
     s_MDA_data_s.linear_position__mm__F32 = ((F32)s_MDA_data_s.linear_position_enc_counter_U32 / (F32)MDA_ENC_CPR_dU16) * MOTOR_LINEAR_TRANN_TRANSFER__rev_mm1__dF32;
 
     /* Write calculated phase current value from ADC conversions. */
+
+    /* From left -> right
+     * L1: Black
+     * L2: Red
+     * L3: Yellow
+     * */
     MDA_GetRawPhaseCurrents( &current_transf_s.abc_s.a_F32,
-                             &current_transf_s.abc_s.b_F32,
-                             &current_transf_s.abc_s.c_F32 );
+                             &current_transf_s.abc_s.c_F32,
+                             &current_transf_s.abc_s.b_F32 );
 
     /* Current transformation UVW -> DQ */
     TRAN_AbcToDq(&current_transf_s);

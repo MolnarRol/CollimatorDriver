@@ -22,19 +22,21 @@ void TEST_ScalarMotorMovementHandler(void)
     PWM_ForceAngle(current_forced_el_angle__rad__F32, (F32)1.25, (F32)24.0);
 }
 
-F32 current_a[512];
-F32 current_b[512];
-F32 current_c[512];
-
+//F32 current_a[512];
+//F32 current_b[512];
+//F32 current_c[512];
+F32 current_d[1024];
+F32 current_q[1024];
 
 U16 index_prud=0;
 
 void kukam_prud(){
-    if(index_prud < 512){
-        MDA_GetRawPhaseCurrents( &current_a[index_prud],
-                                 &current_b[index_prud],
-                                 &current_c[index_prud] );
-
+    if(index_prud < 1024){
+//        MDA_GetRawPhaseCurrents( &current_a[index_prud],
+//                                 &current_b[index_prud],
+//                                 &current_c[index_prud] );
+        current_d[index_prud] = MDA_GetData_ps()->currents_s.id__A__F32;
+        current_q[index_prud] = MDA_GetData_ps()->currents_s.iq__A__F32;
         index_prud++;
     }
 
