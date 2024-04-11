@@ -54,10 +54,14 @@ F32 FM_RemainderAfterFloatDivision_F32(const F32 value_F32, const F32 divisor_F3
 }
 
 #pragma FUNC_ALWAYS_INLINE ( FM_TrigonometricLinearInterpolationFromLookupTable_F32 )
-static inline  F32 FM_TrigonometricLinearInterpolationFromLookupTable_F32(const F32 * const lookup_table_F32, const F32 angle__rad__F32)
+static inline F32 FM_TrigonometricLinearInterpolationFromLookupTable_F32(const F32 * const lookup_table_F32, const F32 angle__rad__F32)
 {
     /* Mapping input angle into a [0, 2PI] interval. */
-    const F32 angle_normalised_F32 = FM_RemainderAfterFloatDivision_F32(angle__rad__F32, TWO_PI_dF32);
+    F32 angle_normalised_F32 = FM_RemainderAfterFloatDivision_F32(angle__rad__F32, TWO_PI_dF32);
+    if(angle_normalised_F32 < (F32)0.0)
+    {
+        angle_normalised_F32 += TWO_PI_dF32;
+    }
 
     /* Getting values from lookup table. */
     const U16 lut_index_U16 = (U16)( angle_normalised_F32 / LUT_ANGLE_STEP__rad__dF32) % (U16)LUT_SIZE_d;                                   /* Calculating lower index of the look up table. */

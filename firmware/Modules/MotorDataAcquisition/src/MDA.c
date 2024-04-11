@@ -15,7 +15,7 @@
 #include <MDA_interface.h>
 #include <InterruptServiceRoutines.h>
 #include <Modules/Miscellaneous/inc/TRAN.h>
-
+#include <FAST_MATH_FUNC.h>
 #include <TEST.h>
 
 MDA_Data_struct s_MDA_data_s;                                        /**< Module data structure. */
@@ -31,7 +31,7 @@ interrupt void MDA_AdcConverstionCompleteIsr(void)
 {
 
     EINT;
-//    MDA_UpdateData();
+    MDA_UpdateData();
     ISR_MotorControlHandler();
     AdcaRegs.ADCINTFLGCLR.bit.ADCINT1   = (U16)1;                                   /* Clear interrupt flag. */
     PieCtrlRegs.PIEACK.bit.ACK1         = (U16)1;
@@ -143,8 +143,9 @@ static inline void MDA_UpdateData(void)
     TRAN_struct current_transf_s = {0};
 
     /* Speed and motor position. */
-    s_MDA_data_s.rotor_mech_angle__rad__F32 = MDA_GetRawRotorMechAngle_U16();
-    s_MDA_data_s.rotor_el_angle__rad__F32 = (U16)( ((U32)s_MDA_data_s.rotor_mech_angle__rad__F32 * (U32)MOTOR_POLE_PAIRS_dU16) % (U32)U16_MAX );
+    s_MDA_data_s.rotor_mech_angle__rad__F32 =  TWO_PI_dF32 * ((F32)MDA_GetRawRotorMechAngle_U16() / (F32)U16_MAX);
+//    s_MDA_data_s.rotor_el_angle__rad__F32 = (U16)( ((U32)s_MDA_data_s.rotor_mech_angle__rad__F32 * (U32)MOTOR_POLE_PAIRS_dU16) % (U32)U16_MAX );
+    s_MDA_data_s.rotor_el_angle__rad__F32 = FM_RemainderAfterFloatDivision_F32(s_MDA_data_s.rotor_mech_angle__rad__F32 * (F32)MOTOR_POLE_PAIRS_dU16, TWO_PI_dF32);
     current_transf_s.angle__rad__F32 = s_MDA_data_s.rotor_el_angle__rad__F32;
 
     s_MDA_data_s.rotor_mech_speed__rad_s1__F32 = MDA_GetRawMechSpeed__rad_s1__F32();

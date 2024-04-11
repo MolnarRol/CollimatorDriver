@@ -18,5 +18,6 @@
 void PWM_Init(void);
 void PWM_SetCompareValues(const U16 comp_U_U16, const U16 comp_V_U16, const U16 comp_W_U16);
 void PWM_SetOutputEnable(const boolean enable_b);
+void PWM_ForceAngle(const F32 forced_angle__rad__F32, const F32 voltage_amplitude__V__F32, const F32 dc_link__V__F32);
 
 #endif /* MODULES_PULSEWIDTHMODULATION_INC_PWM_INTERFACE_H_ */
