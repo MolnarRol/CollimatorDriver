@@ -20,8 +20,11 @@
 #include <PWM_interface.h>
 #include <SCI.h>
 #include <TEST.h>
+#include <ByteConversions.h>
+
 
 boolean output_en = False_b;
+
 /**
  * @brief Main function
  */

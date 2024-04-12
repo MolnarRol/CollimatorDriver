@@ -5,13 +5,20 @@
  *      Author: roland
  */
 #include <ECOM_core.h>
+#include <AC_interface.h>
 
 U16 s_ECOM_protocol_state_machine_state_U16 = ECOM_PROTO_SM_STATE_IDLE_dU16;
 ECOM_Packet_struct s_rx_packet;
 
 extern ECOM_Buffer_struct s_ECOM_rx_buffer_s;
 
+/* Constant responses. */
 static const U16 s_ECOM_msg_transfer_fail_response_aU16[] = {TRANSFER_ERR_e, 0x2};
+static const U16 s_ECOM_msg_hello_response_aU16[] = {HELLO_MSG_e, 0x2};
+static const U16 s_ECOM_msg_cmd_success_response_aU16[] = {COMMAND_RES_e, 0x3, 0x0};
+static const U16 s_ECOM_msg_cmd_fail_response_aU16[] = {COMMAND_RES_e, 0x3, 0x1};
+
+static U16* s_response_paU16 = (U16*)0;
 
 void ECOM_DataRecievedCallback(void)
 {
@@ -23,24 +30,48 @@ void ECOM_DataRecievedCallback(void)
     }
 }
 
-void ECOM_ProtocolHandler(void)
+void ECOM_ProtocolStateMachineHandler(void)
 {
+    /*
+    static U32 s_last_time_idle_state_ticks_U32 = (U32)0;
+    if( ATB_CheckTicksPassed_U16(s_last_time_idle_state_ticks_U32, ATB_MS_TO_TICKS_dM_U32(50)) )
+    {
+        s_ECOM_protocol_state_machine_state_U16 = ECOM_PROTO_SM_STATE_RESPONDED_dU16;
+        s_last_time_idle_state_ticks_U32 = ATB_GetTicks_U32();
+    }
+    */
+
     switch(s_ECOM_protocol_state_machine_state_U16)
     {
         case ECOM_PROTO_SM_STATE_IDLE_dU16:
+//            s_last_time_idle_state_ticks_U32 = ATB_GetTicks_U32();
             break;
 
         case ECOM_PROTO_SM_STATE_PROCESSING_dU16:
-            s_ECOM_protocol_state_machine_state_U16 = ECOM_PROTO_SM_STATE_RESPONDING_dU16;
-            ECOM_ParsePacket(&s_rx_packet, s_ECOM_rx_buffer_s.data_aU16, ECOM_GET_BUFFER_LEN_dM(&s_ECOM_rx_buffer_s));
-            if( ECOM_ProtocolCheckMsg(&s_rx_packet, &s_ECOM_rx_buffer_s) != (U16)0 )
+            ECOM_ParsePacket(&s_rx_packet, s_ECOM_rx_buffer_s.data_aU16, ECOM_GET_BUFFER_LEN_dM(&s_ECOM_rx_buffer_s));   /* Parsing incoming packet. */
+
+            if( ECOM_ProtocolCheckMsg(&s_rx_packet, &s_ECOM_rx_buffer_s) != (U16)0 )                                    /* Checking if packet is OK. */
             {
-                ECOM_TxRequest(s_ECOM_msg_transfer_fail_response_aU16, 2);
+                s_response_paU16 = (U16*)s_ECOM_msg_transfer_fail_response_aU16;
             }
+            else
+            {
+                s_response_paU16 = ECOM_ProtocolRespond_pU16(&s_rx_packet);
+            }
+            s_ECOM_protocol_state_machine_state_U16 = ECOM_PROTO_SM_STATE_RESPONDING_dU16;                             /* Set next state. */
 
         case ECOM_PROTO_SM_STATE_RESPONDING_dU16:
-            ECOM_ResetBuffer(&s_ECOM_rx_buffer_s);
+            if(s_response_paU16 != (U16*)0)
+            {
+                if( ECOM_TxRequest(s_response_paU16, s_response_paU16[1]) != OK_e )
+                {
+                    break;
+                }
+            }
+            s_ECOM_protocol_state_machine_state_U16 = ECOM_PROTO_SM_STATE_RESPONDED_dU16;
 
+        case ECOM_PROTO_SM_STATE_RESPONDED_dU16:
+            ECOM_ResetBuffer(&s_ECOM_rx_buffer_s);
             SCI_SetRxEnableState(True_b);
             s_ECOM_protocol_state_machine_state_U16 = ECOM_PROTO_SM_STATE_IDLE_dU16;
             break;
@@ -50,6 +81,37 @@ void ECOM_ProtocolHandler(void)
             break;
         }
     }
+}
+
+static U16* ECOM_ProtocolRespond_pU16(const ECOM_Packet_struct * const packet_ps)
+{
+    U16* resp_pU16 = (U16*)0;
+
+    switch(packet_ps->header_s.packet_id_e)
+    {
+        case HELLO_MSG_e:
+        {
+            resp_pU16 = (U16*)s_ECOM_msg_hello_response_aU16;
+            break;
+        }
+        case COMMAND_e:
+        {
+            if( AC_ExecuteCommand_U16(packet_ps->payload_pU16, packet_ps->header_s.packet_size_U16 - 2) == (U16)0)
+            {
+                resp_pU16 = (U16*)s_ECOM_msg_cmd_success_response_aU16;
+            }
+            else
+            {
+                resp_pU16 = (U16*)s_ECOM_msg_cmd_fail_response_aU16;
+            }
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
+    return resp_pU16;
 }
 
 static U16 ECOM_ProtocolCheckMsg(const ECOM_Packet_struct * const parsed_packet_ps, const ECOM_Buffer_struct * const buffer_ps)

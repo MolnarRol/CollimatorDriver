@@ -21,8 +21,6 @@ typedef enum
     AC_FAIL_e
 } AC_RequestStatus_enum;
 
-void AC_MainHandler(void);
-void AC_SetRequest(const U16 request_function_U16);
-
+U16 AC_ExecuteCommand_U16(const U16 * const command_payload_pU16, const U16 payload_size_U16);
 
 #endif /* INC_AC_INTERFACE_H_ */

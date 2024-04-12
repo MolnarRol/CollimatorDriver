@@ -18,7 +18,7 @@ ECOM_Buffer_struct s_ECOM_tx_buffer_s = {0};        /**< Transmitter extended bu
 void ECOM_MainHandler(void)
 {
     ECOM_RxHandler();
-    ECOM_ProtocolHandler();
+    ECOM_ProtocolStateMachineHandler();
     ECOM_TxHandler();
 }
 

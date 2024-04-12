@@ -1,8 +1,9 @@
 import time
 
 import serial
+import struct
 from Communication.Protocol import *
-com_device = serial.Serial('/dev/ttyUSB0', 115200, timeout=1)
+com_device = serial.Serial('/dev/ttyUSB0', 115200, timeout=0.05)
 
 
 def str_to_bytearray(s):
@@ -27,8 +28,13 @@ if __name__ == '__main__':
 
     while True:
         print("Numbers to send: ", end="")
-        x = str_to_bytearray(input())
+        # x = str_to_bytearray(input())
+        b = int(input())
+        msg_payload = struct.pack('>BI', 0, b)
 
-        x = construct_message(HeaderId.HELLO_MSG_e, x, crc=False)
-        print(x.hex(' '), end="\n=======================================================\n")
+        x = construct_message(HeaderId.COMMAND_e, msg_payload, crc=False)
+        # print(x.hex(' '), end="\n=======================================================\n")
         com_device.write(x)
+        y = com_device.read(256)
+        print(y.hex(' '))
+        # time.sleep(0.25)
