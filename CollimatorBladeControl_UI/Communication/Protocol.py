@@ -25,6 +25,5 @@ def construct_message(header_id: Enum, payload_data: bytes, crc=True):
 
 
 if __name__ == '__main__':
-    payload = [0x10, 0x20, 0x30, 0x40]
-    out = construct_message(HeaderId.COMMAND_e, payload, crc=True).hex(' ')
-    print(out)
+    payload = bytearray([1, 2, 3, 4])
+    print(crc_calculator.checksum(payload))

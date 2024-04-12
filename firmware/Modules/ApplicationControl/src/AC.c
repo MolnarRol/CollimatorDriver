@@ -15,7 +15,7 @@
 #include <ByteConversions.h>
 
 
-U32 receive_data_U32 = (U32)0;
+U32 receive_data_U32 = (U32)0;          /* Debug variable */
 
 U16 AC_ExecuteCommand_U16(const U16 * const command_payload_pU16, const U16 payload_size_U16)
 {
@@ -34,7 +34,7 @@ static AC_CoreStatus_enum AC_TestFunction(const void* const x, const U16 y)
     {
         return AC_CORE_FAIL_e;
     }
-    receive_data_U32 = BC_4BytesTo32BitData((U16*)x).val_U32;
+    receive_data_U32 = BC_4BytesTo32BitData(x).val_U32;
     return AC_CORE_OK_e;
 }
 

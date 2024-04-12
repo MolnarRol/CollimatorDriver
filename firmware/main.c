@@ -21,8 +21,10 @@
 #include <SCI.h>
 #include <TEST.h>
 #include <ByteConversions.h>
+#include <CRC_interface.h>
 
-
+U16 data_aU16[4] = {0x11, 0x20, 0x30, 0x81};
+U16 crc;
 boolean output_en = False_b;
 
 /**
@@ -40,6 +42,7 @@ void main(void)
     /* Main loop */
     while(1)
     {
+        crc = CRC8_CCITT_U16(data_aU16, 4);
         PWM_SetOutputEnable(output_en);
         ECOM_MainHandler();
 //        AC_MainHandler();                                       /* Application control main handler. */
