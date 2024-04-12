@@ -32,7 +32,7 @@ if __name__ == '__main__':
         b = int(input())
         msg_payload = struct.pack('>BI', 0, b)
 
-        x = construct_message(HeaderId.COMMAND_e, msg_payload, crc=False)
+        x = construct_message(HeaderId.COMMAND_e, msg_payload)
         # print(x.hex(' '), end="\n=======================================================\n")
         com_device.write(x)
         y = com_device.read(256)

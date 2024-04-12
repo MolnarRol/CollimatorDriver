@@ -40,9 +40,7 @@ typedef struct
 {
     ECOM_PacketHeader_struct    header_s;
     U16*                        payload_pU16;
-#if ( ECOM_CRC_ENABLED == 1 )
     U16                         crc8_U16;
-#endif  /* ECOM_CRC_ENABLED */
 } ECOM_Packet_struct;
 
 void        ECOM_ProtocolStateMachineHandler(void);

@@ -10,6 +10,8 @@
 
 #include <app_types.h>
 
+#define POLY 0x43
+
 U16 CRC_CrcCalculation_U16(const U16 *Data_U16,  U16 DataLength_U16);
 U16 CRC_CrcVerificationReceive_U16(const U16 *Data_U16,  U16 DataLength_U16, U16 CRC_CrcCompare_U16);
 U16 CRC8_CCITT_U16(const U16 * const data_pU16, const U16 n_bytes_U16);

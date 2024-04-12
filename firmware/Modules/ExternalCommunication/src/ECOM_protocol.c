@@ -6,6 +6,7 @@
  */
 #include <ECOM_core.h>
 #include <AC_interface.h>
+#include <CRC.h>
 
 U16 s_ECOM_protocol_state_machine_state_U16 = ECOM_PROTO_SM_STATE_IDLE_dU16;
 ECOM_Packet_struct s_rx_packet;
@@ -96,7 +97,7 @@ static U16* ECOM_ProtocolRespond_pU16(const ECOM_Packet_struct * const packet_ps
         }
         case COMMAND_e:
         {
-            if( AC_ExecuteCommand_U16(packet_ps->payload_pU16, packet_ps->header_s.packet_size_U16 - 2) == (U16)0)
+            if( AC_ExecuteCommand_U16(packet_ps->payload_pU16, packet_ps->header_s.packet_size_U16 - 3) == (U16)0)
             {
                 resp_pU16 = (U16*)s_ECOM_msg_cmd_success_response_aU16;
             }
@@ -127,9 +128,16 @@ static U16 ECOM_ProtocolCheckMsg(const ECOM_Packet_struct * const parsed_packet_
     {
         ret_status_code_U16 = (U16)2;                                               /* Invalid message length. */
     }
+    else if(CRC8_CCITT_Verify_b( buffer_ps->data_aU16,
+                                 parsed_packet_ps->header_s.packet_size_U16,
+                                 parsed_packet_ps->crc8_U16) == False_b )
+    {
+        ret_status_code_U16 = (U16)3;
+    }
     else
     {
-        /* Nothing to do. */
+        /* Checking crc checksum. */
+
     }
 
     return ret_status_code_U16;
@@ -140,7 +148,5 @@ static void ECOM_ParsePacket(ECOM_Packet_struct * const parsed_packet_s, U16* pa
     parsed_packet_s->header_s.packet_id_e = (ECOM_ProtocolHeader_enum)*(packet_raw_U16++);
     parsed_packet_s->header_s.packet_size_U16 = *(packet_raw_U16++);
     parsed_packet_s->payload_pU16 = packet_raw_U16;
-#if ( ECOM_CRC_ENABLED == 1 )
     parsed_packet_s->crc8_U16 = *((U16*)packet_raw_U16 + (packet_size_U16 - 1));
-#endif  /* ECOM_CRC_ENABLED */
 }
