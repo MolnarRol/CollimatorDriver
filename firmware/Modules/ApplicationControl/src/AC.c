@@ -17,28 +17,34 @@
 
 U32 receive_data_U32 = (U32)0;          /* Debug variable */
 
-U16 AC_ExecuteCommand_U16(const U16 * const command_payload_pU16, const U16 payload_size_U16)
+void AC_ExecuteCommand( const U16 * const command_payload_pU16,
+                        const U16 payload_size_U16,
+                        U16 * response_data_pU16,
+                        U16 * response_data_size_pU16 )
 {
-    U16 ret_val_U16 = (U16)0;
     if(AC_CORE_CHECK_INDEX_BOUND_dM_b(command_payload_pU16[0]))
     {
-        ret_val_U16 = (U16)(AC_Funtions[command_payload_pU16[0]])((command_payload_pU16 + 1), (payload_size_U16 - 1));
+        AC_Funtions[command_payload_pU16[0]]( (command_payload_pU16 + 1),
+                                              (payload_size_U16 - 1),
+                                              response_data_pU16,
+                                              response_data_size_pU16 );
     }
-    return ret_val_U16;
+    else
+    {
+        *response_data_pU16 = 0;
+        *response_data_size_pU16 = 0;
+    }
 }
 
 /* Application functions */
-static AC_CoreStatus_enum AC_TestFunction(const void* const x, const U16 y)
+static void AC_TestFunction(const void* const payload_p,
+                            const U16 payload_size_U16,
+                            U16 * response_data_pU16,
+                            U16 * response_data_size_pU16)
 {
-    if(y != 4)
+    if(payload_size_U16 != 4)
     {
-        return AC_CORE_FAIL_e;
+        return;
     }
-    receive_data_U32 = BC_4BytesTo32BitData(x).val_U32;
-    return AC_CORE_OK_e;
-}
-
-static AC_CoreStatus_enum AC_TestFunction2(const void* const x, const U16 y)
-{
-    return AC_CORE_OK_e;
+    receive_data_U32 = BC_4BytesTo32BitData(payload_p).val_U32;
 }

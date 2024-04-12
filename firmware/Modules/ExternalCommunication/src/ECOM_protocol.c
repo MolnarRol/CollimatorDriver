@@ -10,6 +10,7 @@
 
 U16 s_ECOM_protocol_state_machine_state_U16 = ECOM_PROTO_SM_STATE_IDLE_dU16;
 ECOM_Packet_struct s_rx_packet;
+static U16 s_response_data_aU16[64];
 
 extern ECOM_Buffer_struct s_ECOM_rx_buffer_s;
 
@@ -97,14 +98,7 @@ static U16* ECOM_ProtocolRespond_pU16(const ECOM_Packet_struct * const packet_ps
         }
         case COMMAND_e:
         {
-            if( AC_ExecuteCommand_U16(packet_ps->payload_pU16, packet_ps->header_s.packet_size_U16 - 3) == (U16)0)
-            {
-                resp_pU16 = (U16*)s_ECOM_msg_cmd_success_response_aU16;
-            }
-            else
-            {
-                resp_pU16 = (U16*)s_ECOM_msg_cmd_fail_response_aU16;
-            }
+//            AC_ExecuteCommand_U16(packet_ps->payload_pU16, packet_ps->header_s.packet_size_U16 - 3);
             break;
         }
         default:
@@ -149,4 +143,23 @@ static void ECOM_ParsePacket(ECOM_Packet_struct * const parsed_packet_s, U16* pa
     parsed_packet_s->header_s.packet_size_U16 = *(packet_raw_U16++);
     parsed_packet_s->payload_pU16 = packet_raw_U16;
     parsed_packet_s->crc8_U16 = *((U16*)packet_raw_U16 + (packet_size_U16 - 1));
+}
+
+static void ECOM_CreatePacket(const ECOM_ProtocolHeader_enum header_e, U16 * dst_buff_pU16, const U16 * payload_pU16, const U16 payload_size_U16)
+{
+    U16 * const dst_base_pU16 = dst_buff_pU16;
+    U16 payload_iU16;
+
+    /* Packet header. */
+    *(dst_buff_pU16++) = (U16)header_e;
+    *(dst_buff_pU16++) = (U16)payload_size_U16 + (U16)3;
+
+    /* Payload. */
+    for(payload_iU16 = (U16)0; payload_iU16 < payload_size_U16; payload_iU16++)
+    {
+        *(dst_buff_pU16++) = *(payload_pU16++);
+    }
+
+    /* Packet tail. */
+    *(dst_buff_pU16) = CRC8_CCITT_U16(dst_base_pU16, payload_size_U16 + 2);
 }
