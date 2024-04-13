@@ -39,6 +39,7 @@ void kukam_prud(){
         current_q[index_prud] = MDA_GetData_ps()->currents_s.iq__A__F32;
         index_prud++;
     }
+    else index_prud = 0;
 
 }
 
