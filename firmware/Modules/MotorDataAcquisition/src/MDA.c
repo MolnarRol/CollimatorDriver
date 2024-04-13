@@ -17,6 +17,7 @@
 #include <Modules/Miscellaneous/inc/TRAN.h>
 #include <FAST_MATH_FUNC.h>
 #include <TEST.h>
+#include <LW_filter.h>
 
 /* static */ MDA_Data_struct s_MDA_data_s;                                        /**< Module data structure. */
 
@@ -211,8 +212,8 @@ static inline void MDA_UpdateData(void)
     TRAN_AbcToDq(&current_transf_s);
 
     /* Write transformed current results to data structure/ */
-    s_MDA_data_s.currents_s.id__A__F32 = current_transf_s.dq_s.d_F32;
-    s_MDA_data_s.currents_s.iq__A__F32 = current_transf_s.dq_s.q_F32;
+    s_MDA_data_s.currents_s.id__A__F32 = LW_Filter_id_CalculateOutput(current_transf_s.dq_s.d_F32);
+    s_MDA_data_s.currents_s.iq__A__F32 = LW_Filter_iq_CalculateOutput(current_transf_s.dq_s.q_F32);
 
     /* Write calculate DC link voltage to data structure. */
     s_MDA_data_s.dc_link_voltage__V__F32 = MDA_DC_LINK_VOLTAGE_FROM_ADC_VAL_dMF32(MDA_ADC_DC_LINK_CONV_RES_d);

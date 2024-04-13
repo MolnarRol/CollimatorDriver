@@ -14,6 +14,7 @@
 #include "PI_Controller.h"
 #include <Modules/Miscellaneous/inc/TRAN.h>
 #include <PWM_interface.h>
+#include <math.h>
 
 
 #define MAX_SPEED__rad_s__df32                             ( (F32)10.0f )

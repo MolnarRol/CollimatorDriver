@@ -109,6 +109,17 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32){
 
 }
 
+void Voltage_Limiter(TRAN_struct * const tran_values_s){
+
+    /* sqrt(Uq^2+Ud^2) > 0.5*Udc */
+    if( sqrt( ( tran_values_s->dq_s.d_F32 * tran_values_s->dq_s.d_F32 ) + ( tran_values_s->dq_s.q_F32 * tran_values_s->dq_s.q_F32 ) ) > ( 0.5 * MDA_GetData_ps()->dc_link_voltage__V__F32 ) )
+    {
+        tran_values_s->dq_s.q_F32 = sqrt( ( 0.5 * MDA_GetData_ps()->dc_link_voltage__V__F32 ) - ( tran_values_s->dq_s.d_F32 * tran_values_s->dq_s.d_F32 ) );   /*  sqrt(12*12 - Ud^2) */
+    }
+
+}
+
+
 void CommutationAlignment(){
 
     PWM_SetOutputEnable(True_b);
