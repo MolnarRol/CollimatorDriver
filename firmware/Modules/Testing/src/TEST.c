@@ -10,6 +10,7 @@
 #include <TRAN.h>
 #include <FAST_MATH_FUNC.h>
 #include <MDA_interface.h>
+#include <PI_Controller.h>
 
 #include <MDA_core.h>
 F32 scalar_freq__Hz__F32                = (F32)0.0;
@@ -35,11 +36,12 @@ void kukam_prud(){
 //        MDA_GetRawPhaseCurrents( &current_a[index_prud],
 //                                 &current_b[index_prud],
 //                                 &current_c[index_prud] );
+
         current_d[index_prud] = MDA_GetData_ps()->currents_s.id__A__F32;
         current_q[index_prud] = MDA_GetData_ps()->currents_s.iq__A__F32;
         index_prud++;
     }
-    else index_prud = 0;
+    //else index_prud = 0;
 
 }
 

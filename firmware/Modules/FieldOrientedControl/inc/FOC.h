@@ -36,4 +36,6 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32);
 
 void CommutationAlignment();
 
+void Voltage_Limiter(TRAN_struct * const tran_values_s);
+
 #endif /* MODULES_FIELDORIENTEDCONTROL_INC_FOC_H_ */
