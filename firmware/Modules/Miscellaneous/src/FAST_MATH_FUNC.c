@@ -102,7 +102,6 @@ F32 FM_cos_F32(const F32 angle__rad__F32)
  * @brief Fast square root approximation
  * @details This function uses Newtonian iteration to approximate solution. https://en.wikipedia.org/wiki/Newton%27s_method
  * @param num_F32 is the positive number of which square root needs to be calculated.
- * @warning for large input values > 50000.0
  * @returns square root of the input number.
  */
 F32 FM_sqrt_F32(const F32 num_F32)
