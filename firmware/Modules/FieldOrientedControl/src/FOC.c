@@ -137,10 +137,8 @@ void CommutationAlignment(){
     EQep1Regs.QEPCTL.bit.SWI = 0;
     EDIS;
 
-    DELAY_US(100000);
-
+    DELAY_US(50000);
     PWM_SetCompareValues(0, 0, 0);
-
     PWM_SetOutputEnable(False_b);
-
+    DELAY_US(100000);
 }

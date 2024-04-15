@@ -14,6 +14,7 @@
 
 #define LUT_SIZE_d                  ( 64UL )                                                                                                /* Number of points in look up table. */
 #define LUT_ANGLE_STEP__rad__dF32   ( TWO_PI_dF32 / (float)LUT_SIZE_d )                                                                      /* Delta in angle between points. */
+#define SQRT_NEWTON_ITERATIONS_dU16 ( (U16)6 )
 
 /* Static lookup tables */
 const static F32 s_FM_SIN_LOOKUP_TABLE_F32[LUT_SIZE_d] =                                                                                    /* Lookup table for cosine from [0, 2Pi] interval */
@@ -95,4 +96,39 @@ F32 FM_sin_F32(const F32 angle__rad__F32)
 F32 FM_cos_F32(const F32 angle__rad__F32)
 {
     return FM_TrigonometricLinearInterpolationFromLookupTable_F32(s_FM_COS_LOOKUP_TABLE_F32, angle__rad__F32);
+}
+
+/**
+ * @brief Fast square root approximation
+ * @details This function uses Newtonian iteration to approximate solution. https://en.wikipedia.org/wiki/Newton%27s_method
+ * @param num_F32 is the positive number of which square root needs to be calculated.
+ * @warning for large input values > 50000.0
+ * @returns square root of the input number.
+ */
+F32 FM_sqrt_F32(const F32 num_F32)
+{
+    if(num_F32 < (F32)0.0)
+    {
+        return (F32)0.0;
+    }
+
+    U16 iter_iU16;
+    F32 sqrt_F32;
+
+    for(iter_iU16 = 1; iter_iU16 <= 32; iter_iU16++)
+    {
+        sqrt_F32 = (F32)iter_iU16 * (F32)iter_iU16;
+        if(sqrt_F32 >= num_F32)
+        {
+            break;
+        }
+    }
+
+    /* Newtonian iteration. */
+    for(iter_iU16 = 0; iter_iU16 < SQRT_NEWTON_ITERATIONS_dU16; iter_iU16++)
+    {
+        sqrt_F32 = (F32)0.5 * (sqrt_F32 + num_F32 / sqrt_F32);
+    }
+
+    return sqrt_F32;
 }
