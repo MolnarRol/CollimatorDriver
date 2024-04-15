@@ -115,9 +115,9 @@ F32 FM_sqrt_F32(const F32 num_F32)
     U16 iter_iU16;
     F32 sqrt_F32;
 
-    for(iter_iU16 = 1; iter_iU16 <= 32; iter_iU16++)
+    for(iter_iU16 = 0; iter_iU16 < 32; iter_iU16++)
     {
-        sqrt_F32 = (F32)iter_iU16 * (F32)iter_iU16;
+        sqrt_F32 = (F32)((U32)1 << (U32)iter_iU16);
         if(sqrt_F32 >= num_F32)
         {
             break;
