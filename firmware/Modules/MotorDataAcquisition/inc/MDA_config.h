@@ -36,7 +36,7 @@
 
 #define MDA_ENC_SWAP_DIR_db                             ( False_b )             /* Swap A and B encoder channels. */
 
-#define MDA_ENC_DELTA_PULSE_SAMPLE_TIME__s__dF32        ( (F32)10E-3 )
+#define MDA_ENC_DELTA_PULSE_SAMPLE_TIME__s__dF32        ( (F32)500E-6 )
 #define MDA_ENC_NO_PULSE_TIMEOUT__us__dU16              ( (U16)8000 )
 
 #endif /* MODULES_MOTORDATAACQUISITION_INC_MDA_CONFIG_H_ */
