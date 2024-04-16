@@ -18,6 +18,7 @@ inline void ISR_MotorControlHandler(void)
 {
 
 
+    TEST_PIN_SET_dM;
 
     ATB_IncrementTime();
     /* Motor control functionality. Called every PWM cycle. */
@@ -26,7 +27,7 @@ inline void ISR_MotorControlHandler(void)
         FOC_CalculateOutput(0);
 
     }
-
+    TEST_PIN_RESET_dM;
     //TEST_ScalarMotorMovementHandler();
 
 //    TEST_SteppingHandler();
