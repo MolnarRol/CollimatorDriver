@@ -101,7 +101,7 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32){
     PI_id_current_controller.ref_value_f32 = Dcurrent;
 
     /* ud = output from PI Controller id - compensation of nonlinearity in the current component id */
-    trans_s.dq_s.d_F32 = 0;//(F32)( ( PI_ctrl_CalculateOutput(&PI_id_current_controller, MDA_GetData_ps()->currents_s.id__A__F32) )); //- CompensationCurrent_id);
+    trans_s.dq_s.d_F32 = (F32)( ( PI_ctrl_CalculateOutput(&PI_id_current_controller, MDA_GetData_ps()->currents_s.id__A__F32) )); //- CompensationCurrent_id);
 
     /* uq = output from PI Controller iq - compensation of nonlinearity in the current component iq + compensation of induced voltage*/
     trans_s.dq_s.q_F32 = (F32)( ( PI_ctrl_CalculateOutput(&PI_iq_current_controller, MDA_GetData_ps()->currents_s.iq__A__F32) )); //+ CompensationCurrent_iq + CompensationIndVoltage );

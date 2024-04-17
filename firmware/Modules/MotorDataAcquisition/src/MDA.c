@@ -205,8 +205,8 @@ static inline void MDA_UpdateData(void)
      * L3: Yellow
      * */
     MDA_GetRawPhaseCurrents( &current_transf_s.abc_s.a_F32,
-                             &current_transf_s.abc_s.c_F32,
-                             &current_transf_s.abc_s.b_F32 );
+                             &current_transf_s.abc_s.b_F32,
+                             &current_transf_s.abc_s.c_F32 );
 
     /* Current transformation UVW -> DQ */
     TRAN_AbcToDq(&current_transf_s);
@@ -222,7 +222,7 @@ static inline void MDA_UpdateData(void)
 static inline U16 MDA_EncoderGetPulseDelta_U16(const U16 prev_count_U16, const U16 current_count_U16)
 {
     U16 delta_U16 = 0;
-    if(EQep1Regs.QEPSTS.bit.QDF == (U16)1)
+    if(EQep1Regs.QEPSTS.bit.QDF == (U16)0)
     {
         if(current_count_U16 >= prev_count_U16) delta_U16 = current_count_U16 - prev_count_U16;
         else                                    delta_U16 = EQep1Regs.QPOSMAX - prev_count_U16 + current_count_U16;
@@ -245,7 +245,7 @@ static inline U16 MDA_GetRawRotorMechAngle_U16(void)
     const U16 pos_delta_U16 = MDA_EncoderGetPulseDelta_U16(s_prev_pos_U16, current_pos_U16);
     s_prev_pos_U16 = current_pos_U16;
 
-    if(EQep1Regs.QEPSTS.bit.QDF == (U16)1)  s_MDA_data_s.linear_position_enc_counter_U32 += pos_delta_U16;
+    if(EQep1Regs.QEPSTS.bit.QDF == (U16)0)  s_MDA_data_s.linear_position_enc_counter_U32 += pos_delta_U16;
     else                                    s_MDA_data_s.linear_position_enc_counter_U32 -= pos_delta_U16;
 
     return (U16)( ((U32)current_pos_U16 * (U32)U16_MAX) / (U32)(MDA_ENC_CPR_dU16 - (U16)1) );

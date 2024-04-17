@@ -57,7 +57,7 @@ void TRAN_DqToAlphaBeta(TRAN_struct * const tran_values_s)
             - sin_angle_F32 * tran_values_s->dq_s.q_F32;
 
     tran_values_s->alpha_beta_s.beta_F32 = sin_angle_F32 * tran_values_s->dq_s.d_F32
-            - cos_angle_F32 * tran_values_s->dq_s.q_F32;
+            + cos_angle_F32 * tran_values_s->dq_s.q_F32;
 }
 
 void TRAN_DqToAbc(TRAN_struct * const tran_values_s)

@@ -87,7 +87,8 @@ F32 PI_ctrl_CalculateOutput(PI_CTRL_s *controller, F32 y_ref_f32){
 void PI_ctrl_Init(PI_CTRL_s *controller){
 
     controller->I_previous_f32 = (F32)0.0f;
-
+    controller->action_value_f32 = (F32)0.0f;
+    controller->ref_value_f32 = (F32)0.0f;
 }
 
 PI_CTRL_s PI_id_current_controller =

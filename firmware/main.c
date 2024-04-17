@@ -22,6 +22,7 @@
 #include "InterruptServiceRoutines.h"
 #include "FOC.h"
 #include "TEST.h"
+#include <PI_Controller.h>
 
 extern TRAN_struct tran_s;
 extern boolean enable_FOC;
@@ -37,7 +38,7 @@ boolean output_en = True_b;
 //float BufferC[1000];
 
 Uint16 u16buffer_counter;
-
+Uint16 FOC_counter;
 
 void main(void)
 {
@@ -52,11 +53,20 @@ void main(void)
     MDA_CalibratePhaseCurrentsOffsets();
     CommutationAlignment();
 
-    enable_FOC = 1;
+    /*Redudant reset of PI controller structures*/
+
+    PI_ctrl_Init(&PI_id_current_controller);
+    PI_ctrl_Init(&PI_iq_current_controller);
+    PI_ctrl_Init(&PI_speed_controller);
+    PI_ctrl_Init(&PI_position_controller);
+
+    enable_FOC = 0;
 
     /* Main loop */
     while(1)
     {
+
+
 
         PWM_SetOutputEnable(output_en);
 //        ECOM_MainHandler();
