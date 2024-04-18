@@ -22,13 +22,13 @@ inline void ISR_MotorControlHandler(void)
 
     ATB_IncrementTime();
     /* Motor control functionality. Called every PWM cycle. */
-//    if(enable_FOC){
-//        kukam_prud();
-//        FOC_CalculateOutput(0);
-//
-//    }
-    TEST_PIN_RESET_dM;
-    TEST_ScalarMotorMovementHandler();
+    if(enable_FOC){
+        kukam_prud();
+        FOC_CalculateOutput(0);
+
+    }
+//    TEST_PIN_RESET_dM;
+//    TEST_ScalarMotorMovementHandler();
 
 //    TEST_SteppingHandler();
 

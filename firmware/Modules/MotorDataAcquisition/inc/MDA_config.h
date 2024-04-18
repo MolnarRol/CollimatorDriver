@@ -39,4 +39,5 @@
 #define MDA_ENC_DELTA_PULSE_SAMPLE_TIME__s__dF32        ( (F32)2E-3 )
 #define MDA_ENC_NO_PULSE_TIMEOUT__us__dU16              ( (U16)1900 )
 
+#define SPEED_SAMPLE_TIMEdF32                           ( (F32)1E-3 )
 #endif /* MODULES_MOTORDATAACQUISITION_INC_MDA_CONFIG_H_ */

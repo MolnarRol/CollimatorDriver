@@ -184,6 +184,10 @@ void MDA_CalibratePhaseCurrentsOffsets(void)
 static inline void MDA_UpdateData(void)
 {
     TRAN_struct current_transf_s = {0};
+    /*Counter for speed calculation each 1 milisecond = 20 interrupts*/
+    static U16 Speed_calc_intrr_counter = 0;
+    Speed_calc_intrr_counter++;
+
 
     /* Speed and motor position. */
     s_MDA_data_s.rotor_mech_angle__rad__F32 =  TWO_PI_dF32 * ((F32)MDA_GetRawRotorMechAngle_U16() / (F32)U16_MAX);
@@ -191,8 +195,12 @@ static inline void MDA_UpdateData(void)
     s_MDA_data_s.rotor_el_angle__rad__F32 = FM_RemainderAfterFloatDivision_F32(s_MDA_data_s.rotor_mech_angle__rad__F32 * (F32)MOTOR_POLE_PAIRS_dU16, TWO_PI_dF32);
     current_transf_s.angle__rad__F32 = s_MDA_data_s.rotor_el_angle__rad__F32;
 
-    s_MDA_data_s.rotor_mech_speed__rad_s1__F32 = LW_Filter_Speed_CalculateOutput(MDA_GetRawMechSpeed__rad_s1__F32());
-    s_MDA_data_s.rotor_el_speed__rad_s1__F32 = s_MDA_data_s.rotor_mech_speed__rad_s1__F32 * (F32)MOTOR_POLE_PAIRS_dU16;
+    if(Speed_calc_intrr_counter == 20){
+        s_MDA_data_s.rotor_mech_speed__rad_s1__F32 = LW_Filter_Speed_CalculateOutput(MDA_get_mech_speed_rads1_F32(MDA_delta_pos__pulses__S32()));
+        s_MDA_data_s.rotor_el_speed__rad_s1__F32 = s_MDA_data_s.rotor_mech_speed__rad_s1__F32 * (F32)MOTOR_POLE_PAIRS_dU16;
+        Speed_calc_intrr_counter = 0;
+    }
+
 
     /* Linear position calculation. */
     s_MDA_data_s.linear_position__mm__F32 = ((F32)s_MDA_data_s.linear_position_enc_counter_U32 / (F32)MDA_ENC_CPR_dU16) * MOTOR_LINEAR_TRANN_TRANSFER__rev_mm1__dF32;
@@ -274,13 +282,13 @@ static inline U16 MDA_GetRawRotorMechAngle_U16(void)
  * @param pulse_delta_count_U16/
  * @returns calculated speed in rad/s.
  */
-#pragma RETAIN ( MDA_CalcRawMechSpeedFromTimeDelta__rad_s1__F32 )
-#pragma FUNC_ALWAYS_INLINE ( MDA_CalcRawMechSpeedFromTimeDelta__rad_s1__F32 )
-static F32 MDA_CalcRawMechSpeedFromTimeDelta__rad_s1__F32(const F32 time_delta__s__F32)
-{
-    F32 k_F32 = ((F32)2.0 * (F32)M_PI) / (F32)MDA_ENC_CPR_dU16;
-    return (k_F32 * ((F32)1.0 / time_delta__s__F32));
-}
+//#pragma RETAIN ( MDA_CalcRawMechSpeedFromTimeDelta__rad_s1__F32 )
+//#pragma FUNC_ALWAYS_INLINE ( MDA_CalcRawMechSpeedFromTimeDelta__rad_s1__F32 )
+//static F32 MDA_CalcRawMechSpeedFromTimeDelta__rad_s1__F32(const F32 time_delta__s__F32)
+//{
+//    F32 k_F32 = ((F32)2.0 * (F32)M_PI) / (F32)MDA_ENC_CPR_dU16;
+//    return (k_F32 * ((F32)1.0 / time_delta__s__F32));
+//}
 
 /**
  * @brief Calculates mechanical speed using delta pulse count with fixed sampling interval.
@@ -293,57 +301,79 @@ static F32 MDA_CalcRawMechSpeedFromTimeDelta__rad_s1__F32(const F32 time_delta__
  * @param pulse_delta_count_U16/
  * @returns calculated speed in rad/s.
  */
-#pragma RETAIN ( MDA_CalcRawMechSpeedFromPulseDelta__rad_s1__F32 )
-static F32 MDA_CalcRawMechSpeedFromPulseDelta__rad_s1__F32(const U16 pulse_delta_count_U16)
-{
+//#pragma RETAIN ( MDA_CalcRawMechSpeedFromPulseDelta__rad_s1__F32 )
+//static F32 MDA_CalcRawMechSpeedFromPulseDelta__rad_s1__F32(const U16 pulse_delta_count_U16)
+//{
+//
+//    if(pulse_delta_count_U16 > 2600)
+//    {
+//        volatile U16 stop = 6;
+//    }
+//    const F32 k_F32 = ( (F32)2.0 * (F32)M_PI ) / ( (F32)MDA_ENC_CPR_dU16 * MDA_ENC_DELTA_PULSE_SAMPLE_TIME__s__dF32 );
+//
+//    return (k_F32 * (F32)pulse_delta_count_U16);
+//}
+//
+//static inline F32 MDA_GetRawMechSpeed__rad_s1__F32(void)
+//{
+//    static U16 s_last_position_U16 = (U16)0;                            /**< Quadrature encoder last counter value. */
+//    F32 calculated_speed__rad_s1__F32 = (F32)0.0;                       /**< Return value. */
+//    F32 delta_time_F32;
+//    U16 delta_pulse_U16;
+//
+//    if( EQep1Regs.QFLG.bit.UTO == (U16)1 )
+//    {
+//        EQep1Regs.QCLR.bit.UTO = (U16)1;
+//
+//        if( (EQep1Regs.QFLG.bit.WTO == (U16)1) || (EQep1Regs.QEPSTS.bit.CDEF == (U16)1) )
+//        {
+//            EQep1Regs.QCLR.bit.WTO = (U16)1;
+//            EQep1Regs.QEPSTS.bit.CDEF = (U16)0;
+//        }
+//        else
+//        {
+//            delta_time_F32 = MDA_ENC_TIME_BETWEEN_PULSES__s__dMF32(EQep1Regs.QCPRDLAT);
+//            delta_pulse_U16 = MDA_EncoderGetPulseDelta_U16(s_last_position_U16, EQep1Regs.QPOSLAT);
+//            s_last_position_U16 = EQep1Regs.QPOSLAT;
+//
+//            calculated_speed__rad_s1__F32 = MDA_CalcRawMechSpeedFromTimeDelta__rad_s1__F32(delta_time_F32);
+////            if(calculated_speed__rad_s1__F32 >= (F32)100.0)                                                                     /* TODO: Replace magic value with constant. */
+////            {
+////                calculated_speed__rad_s1__F32 = MDA_CalcRawMechSpeedFromPulseDelta__rad_s1__F32(delta_pulse_U16);
+////            }
+//
+//            if(EQep1Regs.QEPSTS.bit.QDF == (U16)0) calculated_speed__rad_s1__F32 = -calculated_speed__rad_s1__F32;
+//        }
+//    }
+//    else
+//    {
+//        calculated_speed__rad_s1__F32 = s_MDA_data_s.rotor_mech_speed__rad_s1__F32;
+//    }
+//
+//    return calculated_speed__rad_s1__F32;
+//}
 
-    if(pulse_delta_count_U16 > 2600)
-    {
-        volatile U16 stop = 6;
+S32 MDA_delta_pos__pulses__S32(){
+    static  S32 MDA_prev_pos__pulses__S32 = 0;   //predch. pozicia
+    S32 MDA_current_pos__pulses__S32 = EQep1Regs.QPOSCNT; //aktualna pos.
+
+    S32  MDA_delta_pos__pulses__ = MDA_current_pos__pulses__S32 - MDA_prev_pos__pulses__S32;
+
+    if(EQep1Regs.QEPSTS.bit.QDF == 1 && MDA_delta_pos__pulses__ < 0){
+        MDA_delta_pos__pulses__ += EQep1Regs.QPOSMAX;
     }
-    const F32 k_F32 = ( (F32)2.0 * (F32)M_PI ) / ( (F32)MDA_ENC_CPR_dU16 * MDA_ENC_DELTA_PULSE_SAMPLE_TIME__s__dF32 );
-
-    return (k_F32 * (F32)pulse_delta_count_U16);
+    if(EQep1Regs.QEPSTS.bit.QDF == 0 && MDA_delta_pos__pulses__ > 0){
+            MDA_delta_pos__pulses__ -= EQep1Regs.QPOSMAX;
+    }
+    MDA_prev_pos__pulses__S32 = MDA_current_pos__pulses__S32;
+    return MDA_delta_pos__pulses__;
 }
 
-static inline F32 MDA_GetRawMechSpeed__rad_s1__F32(void)
-{
-    static U16 s_last_position_U16 = (U16)0;                            /**< Quadrature encoder last counter value. */
-    F32 calculated_speed__rad_s1__F32 = (F32)0.0;                       /**< Return value. */
-    F32 delta_time_F32;
-    U16 delta_pulse_U16;
-
-    if( EQep1Regs.QFLG.bit.UTO == (U16)1 )
-    {
-        EQep1Regs.QCLR.bit.UTO = (U16)1;
-
-        if( (EQep1Regs.QFLG.bit.WTO == (U16)1) || (EQep1Regs.QEPSTS.bit.CDEF == (U16)1) )
-        {
-            EQep1Regs.QCLR.bit.WTO = (U16)1;
-            EQep1Regs.QEPSTS.bit.CDEF = (U16)0;
-        }
-        else
-        {
-            delta_time_F32 = MDA_ENC_TIME_BETWEEN_PULSES__s__dMF32(EQep1Regs.QCPRDLAT);
-            delta_pulse_U16 = MDA_EncoderGetPulseDelta_U16(s_last_position_U16, EQep1Regs.QPOSLAT);
-            s_last_position_U16 = EQep1Regs.QPOSLAT;
-
-            calculated_speed__rad_s1__F32 = MDA_CalcRawMechSpeedFromTimeDelta__rad_s1__F32(delta_time_F32);
-//            if(calculated_speed__rad_s1__F32 >= (F32)100.0)                                                                     /* TODO: Replace magic value with constant. */
-//            {
-//                calculated_speed__rad_s1__F32 = MDA_CalcRawMechSpeedFromPulseDelta__rad_s1__F32(delta_pulse_U16);
-//            }
-
-            if(EQep1Regs.QEPSTS.bit.QDF == (U16)0) calculated_speed__rad_s1__F32 = -calculated_speed__rad_s1__F32;
-        }
-    }
-    else
-    {
-        calculated_speed__rad_s1__F32 = s_MDA_data_s.rotor_mech_speed__rad_s1__F32;
-    }
-
-    return calculated_speed__rad_s1__F32;
+F32 MDA_get_mech_speed_rads1_F32(S32 delta_pos__pulses__S32){
+    F32 delta_angle__rad__F32 = (F32)delta_pos__pulses__S32*TWO_PI_dF32/(F32)(MDA_ENC_CPR_dU16);
+    return delta_angle__rad__F32/SPEED_SAMPLE_TIMEdF32;
 }
+
 
 //#pragma FUNC_ALWAYS_INLINE ( MDA_GetRawPhaseCurrents )
 void MDA_GetRawPhaseCurrents(F32 * const u_pF32, F32 * const v_pF32, F32 * const w_pF32)

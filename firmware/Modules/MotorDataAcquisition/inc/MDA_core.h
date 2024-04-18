@@ -45,7 +45,11 @@ static void MDA_UpdateData(void);
 
 /* Helper functions. */
 static U16 MDA_GetRawRotorMechAngle_U16(void);
-static F32 MDA_GetRawMechSpeed__rad_s1__F32(void);
+//static F32 MDA_GetRawMechSpeed__rad_s1__F32(void);
 void MDA_GetRawPhaseCurrents(F32 * const u_pF32, F32 * const v_pF32, F32 * const w_pF32);
+
+/*Pokus_2 QEP*/
+S32 MDA_delta_pos__pulses__S32();
+F32 MDA_get_mech_speed_rads1_F32(S32 delta_pos__pulses__S32);
 
 #endif /* MODULES_MOTORDATAACQUISITION_INC_MDA_CORE_H_ */
