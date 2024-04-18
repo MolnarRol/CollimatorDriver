@@ -93,7 +93,7 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32){
 //
     /* PI_iq_action = PI_speed_output */
 
-    Qcurrent= PI_ctrl_CalculateOutput(&PI_speed_controller, MDA_GetData_ps()->rotor_mech_speed__rad_s1__F32);
+//    Qcurrent= PI_ctrl_CalculateOutput(&PI_speed_controller, MDA_GetData_ps()->rotor_mech_speed__rad_s1__F32);
     PI_iq_current_controller.action_value_f32 = Qcurrent;
 //    /* PI_iq_ref = acceleration * Jm *kt */
 //    PI_iq_current_controller.ref_value_f32 = Acceleration__rad_s_2__F32 * MOTOTR_MOMENT_OF_INERTIA__kg_m2__df32 * MOTOR_TORQUE_CONSTANT__Nm_A__df32;

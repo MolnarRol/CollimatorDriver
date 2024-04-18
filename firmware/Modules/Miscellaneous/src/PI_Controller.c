@@ -21,6 +21,10 @@ F32 Id_out = 0;
 F32 W_out = 0;
 F32 Phi_out = 0;
 
+F32 Wout_a[1000];
+F32 Werr_a[1000];
+F32 Iqout_a[1000];
+U16 idx_U16 = 0;
 
 
 F32 PI_ctrl_CalculateOutput(PI_CTRL_s *controller, F32 y_ref_f32){
@@ -55,6 +59,14 @@ F32 PI_ctrl_CalculateOutput(PI_CTRL_s *controller, F32 y_ref_f32){
         Iq_error = error_f32;
         Iq_integrator = integrator_f32;
         Iq_out = u_out_f32;
+
+        if(idx_U16 < 1000)
+        {
+            Wout_a[idx_U16] = W_out;
+            Werr_a[idx_U16] = W_error;
+            Iqout_a[idx_U16] = Iq_out;
+            idx_U16++;
+        }
     }
     if(controller==&PI_speed_controller){
         W_error = error_f32;

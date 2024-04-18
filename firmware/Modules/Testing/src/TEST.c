@@ -33,6 +33,7 @@ void TEST_ScalarMotorMovementHandler(void)
 U16 index_prud=0;
 F32 mechangle[3000];
 
+
 void kukam_prud(){
     if(index_prud < 3000){
 //        MDA_GetRawPhaseCurrents( &current_a[index_prud],
@@ -41,7 +42,7 @@ void kukam_prud(){
 
         //current_d[index_prud] = MDA_GetData_ps()->currents_s.id__A__F32;
         //current_q[index_prud] = MDA_GetData_ps()->currents_s.iq__A__F32;
-        mechangle[index_prud] = MDA_GetData_ps()->rotor_mech_angle__rad__F32;
+        mechangle[index_prud] = MDA_GetData_ps()->rotor_mech_speed__rad_s1__F32;
         index_prud++;
     }
     else index_prud = 0;
