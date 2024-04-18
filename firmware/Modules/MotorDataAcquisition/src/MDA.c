@@ -191,7 +191,7 @@ static inline void MDA_UpdateData(void)
     s_MDA_data_s.rotor_el_angle__rad__F32 = FM_RemainderAfterFloatDivision_F32(s_MDA_data_s.rotor_mech_angle__rad__F32 * (F32)MOTOR_POLE_PAIRS_dU16, TWO_PI_dF32);
     current_transf_s.angle__rad__F32 = s_MDA_data_s.rotor_el_angle__rad__F32;
 
-    s_MDA_data_s.rotor_mech_speed__rad_s1__F32 = MDA_GetRawMechSpeed__rad_s1__F32();
+    s_MDA_data_s.rotor_mech_speed__rad_s1__F32 = LW_Filter_Speed_CalculateOutput(MDA_GetRawMechSpeed__rad_s1__F32());
     s_MDA_data_s.rotor_el_speed__rad_s1__F32 = s_MDA_data_s.rotor_mech_speed__rad_s1__F32 * (F32)MOTOR_POLE_PAIRS_dU16;
 
     /* Linear position calculation. */
