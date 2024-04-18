@@ -1,7 +1,7 @@
 /*
  * Controller.h
  *
- *  Created on: 14 мар. 2024 г.
+ *  Created on: 14 пїЅпїЅпїЅ. 2024 пїЅ.
  *      Author: vadym
  */
 
@@ -28,6 +28,7 @@
 #define MAX_SPEED__RPM__df32   ( (F32)475.0f )
 #define MIN_SPEED__RPM__df32   ( (F32)-475.0f )
 #define SAMPLING_TIME__s__df32 ( (F32)50.0e-6f )
+#define SAMPLING_TIME_SPEED_REG__s__dF32 ( (F32)2000e-6f )
 
 
 typedef struct {

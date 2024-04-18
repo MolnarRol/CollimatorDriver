@@ -222,7 +222,7 @@ static inline void MDA_UpdateData(void)
 static inline U16 MDA_EncoderGetPulseDelta_U16(const U16 prev_count_U16, const U16 current_count_U16)
 {
     U16 delta_U16 = 0;
-    if(EQep1Regs.QEPSTS.bit.QDF == (U16)0)
+    if(EQep1Regs.QEPSTS.bit.QDF == (U16)1)
     {
         if(current_count_U16 >= prev_count_U16) delta_U16 = current_count_U16 - prev_count_U16;
         else                                    delta_U16 = EQep1Regs.QPOSMAX - prev_count_U16 + current_count_U16;
@@ -303,7 +303,7 @@ static inline F32 MDA_GetRawMechSpeed__rad_s1__F32(void)
         if( (EQep1Regs.QFLG.bit.WTO == (U16)1) || (EQep1Regs.QEPSTS.bit.CDEF == (U16)1) )
         {
             EQep1Regs.QCLR.bit.WTO = (U16)1;
-            EQep1Regs.QEPSTS.bit.CDEF = (U16)1;
+            EQep1Regs.QEPSTS.bit.CDEF = (U16)0;
         }
         else
         {
@@ -311,11 +311,11 @@ static inline F32 MDA_GetRawMechSpeed__rad_s1__F32(void)
             delta_pulse_U16 = MDA_EncoderGetPulseDelta_U16(s_last_position_U16, EQep1Regs.QPOSLAT);
             s_last_position_U16 = EQep1Regs.QPOSLAT;
 
-            calculated_speed__rad_s1__F32 = MDA_CalcRawMechSpeedFromTimeDelta__rad_s1__F32(delta_time_F32);
-            if(calculated_speed__rad_s1__F32 >= (F32)100.0)                                                                     /* TODO: Replace magic value with constant. */
-            {
+//            calculated_speed__rad_s1__F32 = MDA_CalcRawMechSpeedFromTimeDelta__rad_s1__F32(delta_time_F32);
+//            if(calculated_speed__rad_s1__F32 >= (F32)100.0)                                                                     /* TODO: Replace magic value with constant. */
+//            {
                 calculated_speed__rad_s1__F32 = MDA_CalcRawMechSpeedFromPulseDelta__rad_s1__F32(delta_pulse_U16);
-            }
+//            }
 
             if(EQep1Regs.QEPSTS.bit.QDF == (U16)0) calculated_speed__rad_s1__F32 = -calculated_speed__rad_s1__F32;
         }

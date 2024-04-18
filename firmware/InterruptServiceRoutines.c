@@ -28,7 +28,7 @@ inline void ISR_MotorControlHandler(void)
 
     }
     TEST_PIN_RESET_dM;
-    //TEST_ScalarMotorMovementHandler();
+//    TEST_ScalarMotorMovementHandler();
 
 //    TEST_SteppingHandler();
 

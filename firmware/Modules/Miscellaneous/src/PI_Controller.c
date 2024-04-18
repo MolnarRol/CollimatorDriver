@@ -139,7 +139,7 @@ PI_CTRL_s PI_speed_controller =
       .out_max_f32 = MAX_CURRENT_Q__A__df32,
       .out_min_f32 = MIN_CURRENT_Q__A__df32
      },
-     .samp_period__s__f32 = SAMPLING_TIME__s__df32,
+     .samp_period__s__f32 = SAMPLING_TIME_SPEED_REG__s__dF32,
      .ref_value_f32 = ( (F32)0.0f ),
      .action_value_f32 = ( (F32)0.0f ),
      .I_previous_f32 = ( (F32)0.0f )

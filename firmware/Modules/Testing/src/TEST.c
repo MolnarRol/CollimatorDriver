@@ -20,7 +20,8 @@ void TEST_ScalarMotorMovementHandler(void)
 {
     current_forced_el_angle__rad__F32 += TWO_PI_dF32 * scalar_freq__Hz__F32 * (F32)50.0e-6;
     current_forced_el_angle__rad__F32 = FM_RemainderAfterFloatDivision_F32(current_forced_el_angle__rad__F32, TWO_PI_dF32);
-    PWM_ForceAngle(current_forced_el_angle__rad__F32, (F32)1.25, (F32)24.0);
+    PWM_ForceAngle(current_forced_el_angle__rad__F32, (F32)2, (F32)24.0);
+    kukam_prud();
 }
 
 //F32 current_a[512];
@@ -43,7 +44,7 @@ void kukam_prud(){
         mechangle[index_prud] = MDA_GetData_ps()->rotor_mech_angle__rad__F32;
         index_prud++;
     }
-    //else index_prud = 0;
+    else index_prud = 0;
 
 }
 
