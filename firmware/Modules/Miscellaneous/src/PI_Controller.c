@@ -132,7 +132,7 @@ PI_CTRL_s PI_speed_controller =
      .gain_s =
      {
      .Kp_f32 = SPEED_KP_df32,
-     .Ki_f32 = SPEED_KI_df32
+     .Ki_f32 = 0.0f
      },
      .limit_s =
      {
