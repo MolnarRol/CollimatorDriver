@@ -35,7 +35,8 @@ typedef struct
 
     /* Linear positioning. */
     F32 linear_position__mm__F32;               /**< Mechanism linear position from origin. */
-    U32 linear_position_enc_counter_U32;
+    S32 linear_position_enc_counter_U32;
+    F32 angular_position__rad__F32;
 } MDA_Data_struct;
 
 void MDA_Init(void);

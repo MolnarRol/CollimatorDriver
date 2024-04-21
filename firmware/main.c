@@ -45,13 +45,12 @@ void main(void)
     /* Initialization */
     mcu_vInitClocks();                                          /* Initialize uC clock system. */
     ATB_Init();
-    MDA_Init();
     PWM_Init();
     SCI_Init();
-
+    CommutationAlignment();
+    MDA_Init();
     TEST_PinInit();
     MDA_CalibratePhaseCurrentsOffsets();
-    CommutationAlignment();
 
     /*Redudant reset of PI controller structures*/
 

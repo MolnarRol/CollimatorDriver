@@ -42,7 +42,7 @@ void kukam_prud(){
 
         //current_d[index_prud] = MDA_GetData_ps()->currents_s.id__A__F32;
         //current_q[index_prud] = MDA_GetData_ps()->currents_s.iq__A__F32;
-        mechangle[index_prud] = MDA_GetData_ps()->rotor_mech_speed__rad_s1__F32;
+        mechangle[index_prud] = MDA_GetData_ps()->rotor_mech_angle__rad__F32;
         index_prud++;
     }
     else index_prud = 0;

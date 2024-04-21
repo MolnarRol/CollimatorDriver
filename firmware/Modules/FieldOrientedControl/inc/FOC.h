@@ -17,8 +17,8 @@
 #include <math.h>
 
 
-#define MAX_SPEED__rad_s__df32                             ( (F32)10.0f )
-#define MAX_ACCELERATON__rad_s_2__df32                     ( (F32)10.0f ) // (MAX TORQUE / INERTON)
+#define MAX_SPEED__rad_s__df32                             ( (F32)5.0f )
+#define MAX_ACCELERATON__rad_s_2__df32                     ( (F32)1.0f ) // (MAX TORQUE / INERTON)
 /* t1 = wmax/a */
 #define ACCELERATOIN_TIME__s__df32                         (F32)(MAX_SPEED__rad_s__df32 / MAX_ACCELERATON__rad_s_2__df32)
 /* phi1 = 0.5*a*samp_time^2 */
