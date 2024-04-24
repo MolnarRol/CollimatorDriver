@@ -1,28 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
-
-class ParamField:
-    def __init__(self, root, name='Placeholder', variable=None):
-        self.elmnt = ttk.Frame(root)
-        if variable is None:
-            self.inputVar = StringVar()
-        else:
-            self.inputVar = variable
-
-        self.elmnt.columnconfigure(0, weight=1)
-        self.elmnt.columnconfigure(1, weight=0)
-        label = ttk.Label(self.elmnt, text=name, justify=LEFT, anchor='w')
-        label.grid(row=0, column=0, sticky='EW')
-
-        input = Entry(self.elmnt, width=14, justify='center', textvariable=self.inputVar)
-        input.grid(row=0, column=1, sticky='EW')
-
-    def get_input(self):
-        return self.inputVar.get()
-
-    def set_input(self, input_text):
-        self.inputVar.set(input_text)
+from custom_elements import ParamField
 
 param_tab_el = None
 
@@ -38,6 +17,7 @@ parameters = {
     'max_force': None
 }
 
+
 def save_cmd():
     err_string = ""
     for key in parameters_strings:
@@ -49,7 +29,7 @@ def save_cmd():
 
     messagebox.showerror('We fcked up', err_string)
 
-    
+
 def parameter_tab(root):
     for key in parameters_strings:
         parameters_strings[key] = StringVar()

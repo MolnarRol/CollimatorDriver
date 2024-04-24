@@ -3,7 +3,6 @@ from tkinter import ttk
 from Communication.serial_utils import *
 from PIL import ImageTk, Image
 
-
 class ConnectionWindow:
     def __init__(self, root_element, config_handler, serial_handler, toplevel=False, info_text=""):
         self.root_element = root_element
@@ -18,7 +17,7 @@ class ConnectionWindow:
         self.connection_window.title('Connection window')
         self.connection_window.grab_set()
         self.connection_window.attributes("-topmost", True)
-
+        self.connection_window.resizable(False, False)
 
         # Widgets variables
         self.selected_port = StringVar()
@@ -104,3 +103,5 @@ class ConnectionWindow:
     def __window_close_handler__(self):
         if self.is_toplevel:
             self.root_element.destroy()
+        else:
+            self.connection_window.destroy()

@@ -16,7 +16,11 @@ serial_handler = SerialInterface(config_handler.config['serial_port']['port'],
 # Root tkinter element
 root = Tk()
 root.geometry('640x480')
+root.resizable(False, False)
 root.title('Collimator control interface')
+icon = ImageTk.PhotoImage(Image.open('img/logo_small.png'))
+root.wm_iconphoto(False, icon)
+
 root.rowconfigure(0, weight=1)
 root.columnconfigure(0, weight=1)
 
@@ -56,7 +60,7 @@ if __name__ == '__main__':
     tab_control.grid(row=0, column=0, sticky='NSEW')
 
     data_display_frame = data_display(root)
-    # data_display_frame.grid(row=0, column=1, sticky='NSEW')
+    data_display_frame.grid(row=0, column=1, sticky='NSEW')
 
     root.config(menu=top_bar_menu)
     root.mainloop()
