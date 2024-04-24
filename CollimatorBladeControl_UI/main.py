@@ -6,6 +6,7 @@ from Communication.threaded_serial import SerialInterface
 from simple_serial_tester import SerialTester
 from info_view import *
 from param_tab import parameter_tab
+from data_disp import data_display
 
 # Application variables
 config_handler = ConfigHandler(config_file_name='appconfig.json')
@@ -48,12 +49,14 @@ if __name__ == '__main__':
             del connection_window
 
     tab_control = ttk.Notebook(root)
-    tab_control.grid(row=0, column=0, sticky='NSEW')
     app_control_tab = ttk.Frame(tab_control)
     parameter_tab = parameter_tab(tab_control)
-
     tab_control.add(app_control_tab, text='App control')
     tab_control.add(parameter_tab, text='Parameters')
+    tab_control.grid(row=0, column=0, sticky='NSEW')
+
+    data_display_frame = data_display(root)
+    # data_display_frame.grid(row=0, column=1, sticky='NSEW')
 
     root.config(menu=top_bar_menu)
     root.mainloop()
