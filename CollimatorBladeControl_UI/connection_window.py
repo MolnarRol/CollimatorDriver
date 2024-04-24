@@ -5,10 +5,11 @@ from PIL import ImageTk, Image
 
 
 class ConnectionWindow:
-    def __init__(self, root_element, config_handler, serial_handler, info_text=""):
+    def __init__(self, root_element, config_handler, serial_handler, toplevel=False, info_text=""):
         self.root_element = root_element
         self.config_handler = config_handler
         self.serial_handler = serial_handler
+        self.is_toplevel = toplevel
 
         self.refresh_btn_img = ImageTk.PhotoImage(Image.open("img/refresh.png").resize((15, 15)))
 
@@ -16,6 +17,8 @@ class ConnectionWindow:
         self.connection_window = Toplevel(root_element)
         self.connection_window.title('Connection window')
         self.connection_window.grab_set()
+        self.connection_window.attributes("-topmost", True)
+
 
         # Widgets variables
         self.selected_port = StringVar()
@@ -99,4 +102,5 @@ class ConnectionWindow:
             self.connection_combobox.current(0)
 
     def __window_close_handler__(self):
-        self.root_element.destroy()
+        if self.is_toplevel:
+            self.root_element.destroy()
