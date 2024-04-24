@@ -22,7 +22,7 @@
 /* t1 = wmax/a */
 #define ACCELERATOIN_TIME__s__df32                         (F32)(MAX_SPEED__rad_s__df32 / MAX_ACCELERATON__rad_s_2__df32)
 /* phi1 = 0.5*a*samp_time^2 */
-#define DELTA_ACCELERATION_POSITION__rad__df32             ( 0.5 * MAX_ACCELERATON__rad_s_2__df32 * ACCELERATOIN_TIME__s__df32 * ACCELERATOIN_TIME__s__df32 )
+#define DELTA_ACCELERATION_POSITION__rad__df32             (F32)( 0.5 * MAX_ACCELERATON__rad_s_2__df32 * ACCELERATOIN_TIME__s__df32 * ACCELERATOIN_TIME__s__df32 )
 
 /*MOTOR CONSTANT*/
 #define MOTOTR_MOMENT_OF_INERTIA__kg_m2__df32              ( (F32)48.0e-6f )

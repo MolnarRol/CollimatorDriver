@@ -40,58 +40,147 @@ F32 fulltime = 0;
 F32 finalint1speed =0;
 F32 finalint1pos =0;
 
+F32 ref_position_regulator = 0;
+
+F32 Ticks = 0;
+F32 prev_request_pos__F32__ = 0;
+
+F32 start = 0;
+F32 posrad = 0;
+
 void FOC_CalculateOutput(F32 ReferencePosition__rad__F32){
 
 //    /* GENERATION S-CURVE*/
 
-    F32 DeltaMdlPosition__rad__F32 = requestposition - 2 * DELTA_ACCELERATION_POSITION__rad__df32;
-    F32 DeltaMdlTime__s__F32 = DeltaMdlPosition__rad__F32 / MAX_SPEED__rad_s__df32;
-    F32 FullTime__s__F32 = ( 2 * ACCELERATOIN_TIME__s__df32 ) + DeltaMdlTime__s__F32;
-    delta_time_middle = DeltaMdlTime__s__F32;
-    delta_pos_middle = DeltaMdlPosition__rad__F32;
-    fulltime = FullTime__s__F32;
-
+    static F32 DeltaMdlPosition__rad__F32 = 0;
+    static F32 DeltaMdlTime__s__F32 = 0;
+    static S16 Minus_Check = 0;
     static F32 Position__rad__F32 = 0;
     static F32 Speed__rad_s__F32 = 0;
     static F32 Acceleration__rad_s_2__F32 = 0;
+
     static F32 Ticks__s__F32 = 0;
+    static F32 Start_Absolute_position__rad__F32 = 0;
+    static F32 FullTime__s__F32 = 0;
 
-    Ticks__s__F32 += SAMPLING_TIME__s__df32;
+    static U16 ticks_enabled = 0;
+    static U16 strecha = 0;
 
-    if( Ticks__s__F32 <= ACCELERATOIN_TIME__s__df32 ){
 
-        Acceleration__rad_s_2__F32 = MAX_ACCELERATON__rad_s_2__df32;
-        Speed__rad_s__F32 += Acceleration__rad_s_2__F32 * SAMPLING_TIME__s__df32;
-        Position__rad__F32 += Speed__rad_s__F32 * SAMPLING_TIME__s__df32;        //0.5 * Acceleration__rad_s_2__F32 * SAMPLING_TIME__s__df32 * SAMPLING_TIME__s__df32;
-        interval1_final_ticks = Ticks__s__F32;
-        finalint1pos = Position__rad__F32;
-        finalint1speed = Speed__rad_s__F32;
+    if(Ticks__s__F32 == 0)
+    {
 
+
+        if(requestposition-prev_request_pos__F32__> 0.08 || requestposition-prev_request_pos__F32__ < -0.08){
+            ticks_enabled = 1;
+            prev_request_pos__F32__= requestposition;
+            Start_Absolute_position__rad__F32 = MDA_GetData_ps()->angular_position__rad__F32;
+
+            Position__rad__F32 = 0; //new line
+            if(requestposition > MDA_GetData_ps()->angular_position__rad__F32)
+            {
+                DeltaMdlPosition__rad__F32 = (requestposition - MDA_GetData_ps()->angular_position__rad__F32) - 2 * DELTA_ACCELERATION_POSITION__rad__df32;
+                DeltaMdlTime__s__F32 = DeltaMdlPosition__rad__F32 / MAX_SPEED__rad_s__df32;
+                Minus_Check = 1;
+            }
+            else
+            {
+                DeltaMdlPosition__rad__F32 = (requestposition - MDA_GetData_ps()->angular_position__rad__F32) + 2 * DELTA_ACCELERATION_POSITION__rad__df32;
+                DeltaMdlTime__s__F32 = -DeltaMdlPosition__rad__F32 / MAX_SPEED__rad_s__df32;
+                Minus_Check = -1;
+            }
+
+       }
+       /*overebie deltamidtime*/
+       if(DeltaMdlTime__s__F32 > 0){
+           strecha = 0;
+           FullTime__s__F32 = ( 2.0 * ACCELERATOIN_TIME__s__df32 ) + DeltaMdlTime__s__F32;
+           delta_time_middle = DeltaMdlTime__s__F32;
+           delta_pos_middle = DeltaMdlPosition__rad__F32;
+           fulltime = FullTime__s__F32;
+       }
+       else{
+           strecha = 1;
+           FullTime__s__F32 = 2.0*sqrt((Minus_Check*(requestposition - MDA_GetData_ps()->angular_position__rad__F32))/MAX_ACCELERATON__rad_s_2__df32);
+
+       }
     }
 
-    else if( ( Ticks__s__F32 > ACCELERATOIN_TIME__s__df32 ) && Ticks__s__F32 <= ( ACCELERATOIN_TIME__s__df32 + DeltaMdlTime__s__F32 ) ){
+    /*new lines*/
+    if(ticks_enabled){
+        Ticks__s__F32 += SAMPLING_TIME__s__df32;
+    }
+    /*end of new lines*/
 
-        Acceleration__rad_s_2__F32 = 0;
-        Speed__rad_s__F32 = MAX_SPEED__rad_s__df32;                      // Opytat sa
-        Position__rad__F32 += Speed__rad_s__F32 * SAMPLING_TIME__s__df32;
-        interval2_final_ticks = Ticks__s__F32;
+
+    /*rozhodnutie ci strecha anoo alebo nie*/
+
+    /*bez strechy*/
+    if(strecha == 0){
+
+        if( Ticks__s__F32 <= ACCELERATOIN_TIME__s__df32 && Ticks__s__F32 > 0){
+
+            Acceleration__rad_s_2__F32 = MAX_ACCELERATON__rad_s_2__df32 * Minus_Check;
+            Speed__rad_s__F32 += Acceleration__rad_s_2__F32 * SAMPLING_TIME__s__df32 ;
+            Position__rad__F32 += Speed__rad_s__F32 * SAMPLING_TIME__s__df32;        //0.5 * Acceleration__rad_s_2__F32 * SAMPLING_TIME__s__df32 * SAMPLING_TIME__s__df32;
+            interval1_final_ticks = Ticks__s__F32;
+            finalint1pos = Position__rad__F32;
+            finalint1speed = Speed__rad_s__F32;
+        }
+
+        else if( ( Ticks__s__F32 > ACCELERATOIN_TIME__s__df32 ) && Ticks__s__F32 <= ( ACCELERATOIN_TIME__s__df32 + DeltaMdlTime__s__F32 ) ){   //mozny bug
+
+            Acceleration__rad_s_2__F32 = 0;
+            Speed__rad_s__F32 = MAX_SPEED__rad_s__df32 * Minus_Check;                      // Opytat sa
+            Position__rad__F32 += Speed__rad_s__F32 * SAMPLING_TIME__s__df32;
+            interval2_final_ticks = Ticks__s__F32;
+        }
+
+        else if ( ( Ticks__s__F32 > ( ACCELERATOIN_TIME__s__df32 + DeltaMdlTime__s__F32 ) ) && ( Ticks__s__F32 <= FullTime__s__F32 ) ){       //mozny bug
+
+            Acceleration__rad_s_2__F32 = -MAX_ACCELERATON__rad_s_2__df32 * Minus_Check ;
+            Speed__rad_s__F32 += Acceleration__rad_s_2__F32 * SAMPLING_TIME__s__df32 ;
+            Position__rad__F32 += Speed__rad_s__F32 * SAMPLING_TIME__s__df32;        //0.5 * Acceleration__rad_s_2__F32 * SAMPLING_TIME__s__df32 * SAMPLING_TIME__s__df32;
+            interval3_final_ticks = Ticks__s__F32;
+        }
+    }
+    /*koniec bez strechy*/
+
+    /*so strechou*/
+
+    if(strecha == 1){
+        if( Ticks__s__F32 <= (FullTime__s__F32/2) && Ticks__s__F32 > 0){
+
+           Acceleration__rad_s_2__F32 = MAX_ACCELERATON__rad_s_2__df32 * Minus_Check;
+           Speed__rad_s__F32 += Acceleration__rad_s_2__F32 * SAMPLING_TIME__s__df32 ;
+           Position__rad__F32 += Speed__rad_s__F32 * SAMPLING_TIME__s__df32;        //0.5 * Acceleration__rad_s_2__F32 * SAMPLING_TIME__s__df32 * SAMPLING_TIME__s__df32;
+           interval1_final_ticks = Ticks__s__F32;
+           finalint1pos = Position__rad__F32;
+           finalint1speed = Speed__rad_s__F32;
+        }
+
+        else if ( ( Ticks__s__F32 > ( FullTime__s__F32/2 ) ) && ( Ticks__s__F32 <= FullTime__s__F32 ) ){
+
+           Acceleration__rad_s_2__F32 = -MAX_ACCELERATON__rad_s_2__df32 * Minus_Check ;
+           Speed__rad_s__F32 += Acceleration__rad_s_2__F32 * SAMPLING_TIME__s__df32 ;
+           Position__rad__F32 += Speed__rad_s__F32 * SAMPLING_TIME__s__df32;        //0.5 * Acceleration__rad_s_2__F32 * SAMPLING_TIME__s__df32 * SAMPLING_TIME__s__df32;
+           interval3_final_ticks = Ticks__s__F32;
+        }
     }
 
-    else if ( ( Ticks__s__F32 > ( ACCELERATOIN_TIME__s__df32 + DeltaMdlTime__s__F32 ) ) && ( Ticks__s__F32 <= FullTime__s__F32 ) ){
-
-        Acceleration__rad_s_2__F32 = -MAX_ACCELERATON__rad_s_2__df32;
-        Speed__rad_s__F32 += Acceleration__rad_s_2__F32 * SAMPLING_TIME__s__df32;
-        Position__rad__F32 += Speed__rad_s__F32 * SAMPLING_TIME__s__df32;        //0.5 * Acceleration__rad_s_2__F32 * SAMPLING_TIME__s__df32 * SAMPLING_TIME__s__df32;
-        interval3_final_ticks = Ticks__s__F32;
-    }
+    /*koniec strechy*/
 
     if(Ticks__s__F32 > FullTime__s__F32){
+        finalinterval_final_ticks = Ticks__s__F32;
         Ticks__s__F32 = 0;
         Acceleration__rad_s_2__F32 = 0;
         Speed__rad_s__F32 = 0;
-        finalinterval_final_ticks = Ticks__s__F32;;
+        //Position__rad__F32 = 0;
+
+        ticks_enabled = 0;
     }
 
+    Ticks = Ticks__s__F32;
     /*compensation of nonlinearity in the id current component = Lq*p*iq*wr* */
     F32 CompensationCurrent_id = (F32) ( (F32)MOTOR_POLE_PAIRS_dU16 * ( MOTOR_INDUCTANCE__H__df32 / 2 ) * MDA_GetData_ps()->currents_s.iq__A__F32 * MDA_GetData_ps()->rotor_mech_speed__rad_s1__F32 );
     DCompensation = CompensationCurrent_id;
@@ -102,11 +191,12 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32){
     F32 CompensationIndVoltage = (F32) ( (F32)MOTOR_POLE_PAIRS_dU16 * MOTOR_MAGNETIC_FLUX_OF_ROTOR_MAGNTES__Wb__df32 * MDA_GetData_ps()->rotor_mech_speed__rad_s1__F32);
     VCompensation = CompensationIndVoltage;
 
-
+    start = Start_Absolute_position__rad__F32;
+    posrad  = Position__rad__F32;
 
     /*Controllers*/
-
-    PI_position_controller.ref_value_f32 = Position__rad__F32;
+    ref_position_regulator = Start_Absolute_position__rad__F32 + Position__rad__F32;
+    PI_position_controller.ref_value_f32 = ref_position_regulator;
 
     /* PI_speed_action = PI_position_output */
     requestspeed = PI_ctrl_CalculateOutput(&PI_position_controller, MDA_GetData_ps()->angular_position__rad__F32);
