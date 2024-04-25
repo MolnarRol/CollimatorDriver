@@ -279,6 +279,11 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s
            finalint2pos_strecha = Position__rad__F32;
            finalint2speed_strecha = Speed__rad_s__F32;
 
+           if(Position__rad__F32*Minus_Check > 2.0f*start_ramp_rad + Minus_Check*DeltaMdlPosition__rad__F32){
+                           Position__rad__F32 = Minus_Check*2.0f*start_ramp_rad + DeltaMdlPosition__rad__F32;
+           }
+
+
            if(indexpredkorekcia<1000){
                            if(index_predkorekcia2 == 100){
                                speedpredkorekcia[indexpredkorekcia] = Speed__rad_s__F32;
