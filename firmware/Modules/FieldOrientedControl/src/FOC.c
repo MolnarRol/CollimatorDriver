@@ -78,6 +78,7 @@ F32 pospredkorekcia[1000];
 U16 indexpredkorekcia = 0;
 U16 index_predkorekcia2 = 0;
 
+extern boolean enable_FOC;
 
 void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s1_F32, F32 MaxAcc_rad_s2_F32){
 
@@ -96,6 +97,8 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s
 
     static U16 ticks_enabled = 0;
     static U16 strecha = 0;
+
+    static U16 error_moment_counter_U16 = 0;
 
     F32 start_ramp_rad = DELTA_ACCELERATION_POSITION__rad__df32(MaxAcc_rad_s2_F32,ACCELERATOIN_TIME__s__df32(MaxMechSpeed_rad_s1_F32,MaxAcc_rad_s2_F32));
 
@@ -351,6 +354,17 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s
 
     /* electric angle */
     trans_s.angle__rad__F32 = MDA_GetData_ps()->rotor_el_angle__rad__F32;
+
+    if( ( MDA_GetData_ps()->currents_s.iq__A__F32 * MOTOR_TORQUE_CONSTANT__Nm_A__df32 ) > MAX_MOMENT )
+    {
+        error_moment_counter_U16++;
+        if(error_moment_counter_U16 > 1000){
+            error_moment_counter_U16 = 0;
+            trans_s.dq_s.d_F32 = 0;
+            trans_s.dq_s.q_F32 = 0;
+            enable_FOC = 0;
+        }
+    }
 
     /* voltage limiter */
     Voltage_Limiter(&trans_s);

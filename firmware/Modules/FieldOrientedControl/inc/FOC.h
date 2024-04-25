@@ -31,7 +31,7 @@
 /* lambda = kt/(1.5*p) */
 #define MOTOR_MAGNETIC_FLUX_OF_ROTOR_MAGNTES__Wb__df32     (F32)( 1.414 * (MOTOR_TORQUE_CONSTANT__Nm_A__df32) / ( ( 3.0/2.0 ) * (F32)MOTOR_POLE_PAIRS_dU16 ) )
 
-
+#define MAX_MOMENT                                         ( (F32)0.1)
 void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s1_F32, F32 MaxAcc_rad_s2_F32);
 
 void CommutationAlignment();
