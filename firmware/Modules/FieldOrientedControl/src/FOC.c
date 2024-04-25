@@ -37,8 +37,7 @@ F32 delta_pos_middle = 0;
 F32 delta_time_middle = 0;
 F32 fulltime = 0;
 
-F32 finalint1speed =0;
-F32 finalint1pos =0;
+
 
 F32 ref_position_regulator = 0;
 
@@ -48,7 +47,39 @@ F32 prev_request_pos__F32__ = 0;
 F32 start = 0;
 F32 posrad = 0;
 
-void FOC_CalculateOutput(F32 ReferencePosition__rad__F32){
+F32 interval1strecha_final_ticks=0;
+F32 interval2strecha_final_ticks=0;
+
+F32 finalint1speed = 0;
+F32 finalint1pos = 0;
+
+F32 finalint2speed = 0;
+F32 finalint2pos = 0;
+
+
+F32 finalint3speed = 0;
+F32 finalint3pos = 0;
+
+
+F32 int3initspeed = -1000;
+
+F32 finalint1pos_strecha = 0;
+F32 finalint1speed_strecha = 0;
+
+
+F32 finalint2pos_strecha = 0;
+F32 finalint2speed_strecha = 0;
+
+F32 scnd3initspeed = -1000;
+
+
+F32 speedpredkorekcia[1000];
+F32 pospredkorekcia[1000];
+U16 indexpredkorekcia = 0;
+U16 index_predkorekcia2 = 0;
+
+
+void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s1_F32, F32 MaxAcc_rad_s2_F32){
 
 //    /* GENERATION S-CURVE*/
 
@@ -66,6 +97,7 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32){
     static U16 ticks_enabled = 0;
     static U16 strecha = 0;
 
+    F32 start_ramp_rad = DELTA_ACCELERATION_POSITION__rad__df32(MaxAcc_rad_s2_F32,ACCELERATOIN_TIME__s__df32(MaxMechSpeed_rad_s1_F32,MaxAcc_rad_s2_F32));
 
     if(Ticks__s__F32 == 0)
     {
@@ -79,14 +111,14 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32){
             Position__rad__F32 = 0; //new line
             if(requestposition > MDA_GetData_ps()->angular_position__rad__F32)
             {
-                DeltaMdlPosition__rad__F32 = (requestposition - MDA_GetData_ps()->angular_position__rad__F32) - 2 * DELTA_ACCELERATION_POSITION__rad__df32;
-                DeltaMdlTime__s__F32 = DeltaMdlPosition__rad__F32 / MAX_SPEED__rad_s__df32;
+                DeltaMdlPosition__rad__F32 = (requestposition - MDA_GetData_ps()->angular_position__rad__F32) - 2 * DELTA_ACCELERATION_POSITION__rad__df32(MaxAcc_rad_s2_F32,ACCELERATOIN_TIME__s__df32(MaxMechSpeed_rad_s1_F32,MaxAcc_rad_s2_F32));
+                DeltaMdlTime__s__F32 = DeltaMdlPosition__rad__F32 / MaxMechSpeed_rad_s1_F32;
                 Minus_Check = 1;
             }
             else
             {
-                DeltaMdlPosition__rad__F32 = (requestposition - MDA_GetData_ps()->angular_position__rad__F32) + 2 * DELTA_ACCELERATION_POSITION__rad__df32;
-                DeltaMdlTime__s__F32 = -DeltaMdlPosition__rad__F32 / MAX_SPEED__rad_s__df32;
+                DeltaMdlPosition__rad__F32 = (requestposition - MDA_GetData_ps()->angular_position__rad__F32) + 2 * DELTA_ACCELERATION_POSITION__rad__df32(MaxAcc_rad_s2_F32,ACCELERATOIN_TIME__s__df32(MaxMechSpeed_rad_s1_F32,MaxAcc_rad_s2_F32));
+                DeltaMdlTime__s__F32 = -DeltaMdlPosition__rad__F32 / MaxMechSpeed_rad_s1_F32;
                 Minus_Check = -1;
             }
 
@@ -94,14 +126,14 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32){
        /*overebie deltamidtime*/
        if(DeltaMdlTime__s__F32 > 0){
            strecha = 0;
-           FullTime__s__F32 = ( 2.0 * ACCELERATOIN_TIME__s__df32 ) + DeltaMdlTime__s__F32;
+           FullTime__s__F32 = ( 2.0 * ACCELERATOIN_TIME__s__df32(MaxMechSpeed_rad_s1_F32,MaxAcc_rad_s2_F32) ) + DeltaMdlTime__s__F32;
            delta_time_middle = DeltaMdlTime__s__F32;
            delta_pos_middle = DeltaMdlPosition__rad__F32;
            fulltime = FullTime__s__F32;
        }
        else{
            strecha = 1;
-           FullTime__s__F32 = 2.0*sqrt((Minus_Check*(requestposition - MDA_GetData_ps()->angular_position__rad__F32))/MAX_ACCELERATON__rad_s_2__df32);
+           FullTime__s__F32 = 2.0*sqrt((Minus_Check*(requestposition - MDA_GetData_ps()->angular_position__rad__F32))/MaxAcc_rad_s2_F32);
 
        }
     }
@@ -118,30 +150,91 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32){
     /*bez strechy*/
     if(strecha == 0){
 
-        if( Ticks__s__F32 <= ACCELERATOIN_TIME__s__df32 && Ticks__s__F32 > 0){
+        if( Ticks__s__F32 <= ACCELERATOIN_TIME__s__df32(MaxMechSpeed_rad_s1_F32,MaxAcc_rad_s2_F32) && Ticks__s__F32 > 0){
 
-            Acceleration__rad_s_2__F32 = MAX_ACCELERATON__rad_s_2__df32 * Minus_Check;
+            Acceleration__rad_s_2__F32 = MaxAcc_rad_s2_F32 * Minus_Check;
             Speed__rad_s__F32 += Acceleration__rad_s_2__F32 * SAMPLING_TIME__s__df32 ;
+
+
+            /*
+            if(Speed__rad_s__F32*Minus_Check  > MaxMechSpeed_rad_s1_F32){
+                Speed__rad_s__F32 = MaxMechSpeed_rad_s1_F32*Minus_Check;
+            }
+            */
             Position__rad__F32 += Speed__rad_s__F32 * SAMPLING_TIME__s__df32;        //0.5 * Acceleration__rad_s_2__F32 * SAMPLING_TIME__s__df32 * SAMPLING_TIME__s__df32;
+
+
+
             interval1_final_ticks = Ticks__s__F32;
             finalint1pos = Position__rad__F32;
             finalint1speed = Speed__rad_s__F32;
         }
 
-        else if( ( Ticks__s__F32 > ACCELERATOIN_TIME__s__df32 ) && Ticks__s__F32 <= ( ACCELERATOIN_TIME__s__df32 + DeltaMdlTime__s__F32 ) ){   //mozny bug
+        else if( ( Ticks__s__F32 > ACCELERATOIN_TIME__s__df32(MaxMechSpeed_rad_s1_F32,MaxAcc_rad_s2_F32) ) && Ticks__s__F32 <= ( ACCELERATOIN_TIME__s__df32(MaxMechSpeed_rad_s1_F32,MaxAcc_rad_s2_F32) + DeltaMdlTime__s__F32 ) ){   //mozny bug
 
             Acceleration__rad_s_2__F32 = 0;
-            Speed__rad_s__F32 = MAX_SPEED__rad_s__df32 * Minus_Check;                      // Opytat sa
+            Speed__rad_s__F32 = MaxMechSpeed_rad_s1_F32 * Minus_Check;                      // Opytat sa
             Position__rad__F32 += Speed__rad_s__F32 * SAMPLING_TIME__s__df32;
+
+
+
             interval2_final_ticks = Ticks__s__F32;
+            finalint2pos = Position__rad__F32;
+            finalint2speed = Speed__rad_s__F32;
+
+
+            if(indexpredkorekcia<500){
+                if(index_predkorekcia2 == 100){
+                    speedpredkorekcia[indexpredkorekcia] = Speed__rad_s__F32;
+                    pospredkorekcia[indexpredkorekcia] = Position__rad__F32;
+                    indexpredkorekcia++;
+                    index_predkorekcia2 = 0;
+                }
+                index_predkorekcia2++;
+            }
+            else{
+                indexpredkorekcia = 0;
+            }
+
+
         }
 
-        else if ( ( Ticks__s__F32 > ( ACCELERATOIN_TIME__s__df32 + DeltaMdlTime__s__F32 ) ) && ( Ticks__s__F32 <= FullTime__s__F32 ) ){       //mozny bug
+        else if ( ( Ticks__s__F32 > ( ACCELERATOIN_TIME__s__df32(MaxMechSpeed_rad_s1_F32,MaxAcc_rad_s2_F32) + DeltaMdlTime__s__F32 ) ) && ( Ticks__s__F32 <= FullTime__s__F32 ) ){       //mozny bug
 
-            Acceleration__rad_s_2__F32 = -MAX_ACCELERATON__rad_s_2__df32 * Minus_Check ;
+            if(int3initspeed == -1000){
+                int3initspeed = Speed__rad_s__F32;
+            }
+
+            Acceleration__rad_s_2__F32 = -MaxAcc_rad_s2_F32 * Minus_Check ;
             Speed__rad_s__F32 += Acceleration__rad_s_2__F32 * SAMPLING_TIME__s__df32 ;
+
+
+
+            if(Speed__rad_s__F32 * Minus_Check < 0){
+                Speed__rad_s__F32 = 0;
+            }
+
             Position__rad__F32 += Speed__rad_s__F32 * SAMPLING_TIME__s__df32;        //0.5 * Acceleration__rad_s_2__F32 * SAMPLING_TIME__s__df32 * SAMPLING_TIME__s__df32;
+
+            if(Position__rad__F32*Minus_Check > 2.0f*start_ramp_rad + Minus_Check*DeltaMdlPosition__rad__F32){
+                Position__rad__F32 = Minus_Check*2.0f*start_ramp_rad + DeltaMdlPosition__rad__F32;
+            }
+
+
             interval3_final_ticks = Ticks__s__F32;
+            finalint3pos = Position__rad__F32;
+            finalint3speed = Speed__rad_s__F32;
+
+            if(indexpredkorekcia<1000){
+                if(index_predkorekcia2 == 100){
+                    speedpredkorekcia[indexpredkorekcia] = Speed__rad_s__F32;
+                    pospredkorekcia[indexpredkorekcia] = Position__rad__F32;
+                    indexpredkorekcia++;
+                    index_predkorekcia2 = 0;
+                }
+                index_predkorekcia2++;
+            }
+
         }
     }
     /*koniec bez strechy*/
@@ -151,22 +244,55 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32){
     if(strecha == 1){
         if( Ticks__s__F32 <= (FullTime__s__F32/2) && Ticks__s__F32 > 0){
 
-           Acceleration__rad_s_2__F32 = MAX_ACCELERATON__rad_s_2__df32 * Minus_Check;
+           Acceleration__rad_s_2__F32 = MaxAcc_rad_s2_F32 * Minus_Check;
            Speed__rad_s__F32 += Acceleration__rad_s_2__F32 * SAMPLING_TIME__s__df32 ;
            Position__rad__F32 += Speed__rad_s__F32 * SAMPLING_TIME__s__df32;        //0.5 * Acceleration__rad_s_2__F32 * SAMPLING_TIME__s__df32 * SAMPLING_TIME__s__df32;
-           interval1_final_ticks = Ticks__s__F32;
-           finalint1pos = Position__rad__F32;
-           finalint1speed = Speed__rad_s__F32;
+           interval1strecha_final_ticks = Ticks__s__F32;
+           finalint1pos_strecha = Position__rad__F32;
+           finalint1speed_strecha = Speed__rad_s__F32;
+
+           if(indexpredkorekcia<500){
+                           if(index_predkorekcia2 == 100){
+                               speedpredkorekcia[indexpredkorekcia] = Speed__rad_s__F32;
+                               pospredkorekcia[indexpredkorekcia] = Position__rad__F32;
+                               indexpredkorekcia++;
+                               index_predkorekcia2 = 0;
+                           }
+                           index_predkorekcia2++;
+                       }
+           else{
+                           indexpredkorekcia = 0;
+           }
+
+
+
         }
 
         else if ( ( Ticks__s__F32 > ( FullTime__s__F32/2 ) ) && ( Ticks__s__F32 <= FullTime__s__F32 ) ){
 
-           Acceleration__rad_s_2__F32 = -MAX_ACCELERATON__rad_s_2__df32 * Minus_Check ;
+           Acceleration__rad_s_2__F32 = -MaxAcc_rad_s2_F32 * Minus_Check ;
            Speed__rad_s__F32 += Acceleration__rad_s_2__F32 * SAMPLING_TIME__s__df32 ;
+
+
            Position__rad__F32 += Speed__rad_s__F32 * SAMPLING_TIME__s__df32;        //0.5 * Acceleration__rad_s_2__F32 * SAMPLING_TIME__s__df32 * SAMPLING_TIME__s__df32;
-           interval3_final_ticks = Ticks__s__F32;
+           interval2strecha_final_ticks = Ticks__s__F32;
+           finalint2pos_strecha = Position__rad__F32;
+           finalint2speed_strecha = Speed__rad_s__F32;
+
+           if(indexpredkorekcia<1000){
+                           if(index_predkorekcia2 == 100){
+                               speedpredkorekcia[indexpredkorekcia] = Speed__rad_s__F32;
+                               pospredkorekcia[indexpredkorekcia] = Position__rad__F32;
+                               indexpredkorekcia++;
+                               index_predkorekcia2 = 0;
+                           }
+                           index_predkorekcia2++;
+                       }
         }
     }
+
+
+
 
     /*koniec strechy*/
 
