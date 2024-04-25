@@ -355,13 +355,19 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s
     /* electric angle */
     trans_s.angle__rad__F32 = MDA_GetData_ps()->rotor_el_angle__rad__F32;
 
-    if( ( MDA_GetData_ps()->currents_s.iq__A__F32 * MOTOR_TORQUE_CONSTANT__Nm_A__df32 ) > MAX_MOMENT )
+    if( ( MDA_GetData_ps()->currents_s.iq__A__F32 * MOTOR_TORQUE_CONSTANT__Nm_A__df32 ) > MAX_MOMENT
+       || ( MDA_GetData_ps()->currents_s.iq__A__F32 * MOTOR_TORQUE_CONSTANT__Nm_A__df32 ) < -MAX_MOMENT )
     {
         error_moment_counter_U16++;
         if(error_moment_counter_U16 > 1000){
             error_moment_counter_U16 = 0;
             trans_s.dq_s.d_F32 = 0;
             trans_s.dq_s.q_F32 = 0;
+            Ticks__s__F32 = 0;
+            Acceleration__rad_s_2__F32 = 0;
+            Speed__rad_s__F32 = 0;
+            Position__rad__F32 = 0;
+            ticks_enabled = 0;
             enable_FOC = 0;
         }
     }

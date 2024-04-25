@@ -43,6 +43,7 @@ Uint16 FOC_counter;
 void main(void)
 {
     /* Initialization */
+
     mcu_vInitClocks();                                          /* Initialize uC clock system. */
     ATB_Init();
     PWM_Init();
