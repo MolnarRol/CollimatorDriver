@@ -16,7 +16,7 @@ serial_handler = SerialInterface(config_handler.config['serial_port']['port'],
 
 # Root tkinter element
 root = Tk()
-root.geometry('640x480')
+# root.geometry('640x480')
 root.resizable(False, False)
 root.title('Collimator control interface')
 icon = ImageTk.PhotoImage(Image.open('img/logo_small.png'))
