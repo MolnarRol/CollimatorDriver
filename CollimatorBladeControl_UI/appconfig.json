@@ -1,1 +1,1 @@
-{"serial_port": {"port": "COM1", "baud_rate": 115200, "auto_connect": false}}
+{"serial_port": {"port": "COM1", "baud_rate": 115200, "auto_connect": true}}

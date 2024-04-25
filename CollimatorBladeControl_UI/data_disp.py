@@ -18,8 +18,11 @@ def data_display(root):
     speed_data = ParamField(mech_data_frame, 'Speed [rad/s]', entry_state='readonly')
     speed_data.elmnt.grid(row=0, column=0, sticky='NSEW')
 
+    position = ParamField(mech_data_frame, 'Position [mm]', entry_state='readonly')
+    position.elmnt.grid(row=1, column=0, sticky='NSEW')
+
     rotor_position = ParamField(mech_data_frame, 'Rotor position [deg]', entry_state='readonly')
-    rotor_position.elmnt.grid(row=1, column=0, sticky='NSEW')
+    rotor_position.elmnt.grid(row=2, column=0, sticky='NSEW')
 
     mech_data_frame.grid(row=0, column=0, sticky='NSEW')
 

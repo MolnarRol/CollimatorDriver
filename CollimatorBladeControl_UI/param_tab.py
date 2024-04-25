@@ -27,7 +27,8 @@ def save_cmd():
         except ValueError:
             err_string += '[' + key + '] = ' + parameters_strings[key].get() + ' -> Not a number.\n'
 
-    messagebox.showerror('We fcked up', err_string)
+    if len(err_string) != 0:
+        messagebox.showerror('We fcked up', err_string)
 
 
 def parameter_tab(root):
@@ -37,14 +38,21 @@ def parameter_tab(root):
 
     global param_tab_el
     param_tab_el = ttk.Frame(root)
-    load_btn = Button(param_tab_el, text='Load')
-    load_btn.grid(row=10, column=9)
+    param_tab_el.columnconfigure(0, weight=1)
+    param_tab_el.rowconfigure(0, weight=1)
 
-    save_btn = Button(param_tab_el, text='Save', command=save_cmd)
-    save_btn.grid(row=10, column=10)
+    btn_frame = Frame(param_tab_el)
+    btn_frame.grid(row=1, column=0, sticky='NSEW')
+    btn_frame.columnconfigure(0, weight=1)
+
+    load_btn = Button(btn_frame, text='Load')
+    load_btn.grid(row=0, column=1)
+
+    save_btn = Button(btn_frame, text='Save', command=save_cmd)
+    save_btn.grid(row=0, column=2)
 
     param_grp1 = ttk.LabelFrame(param_tab_el, text='Param group 1')
-    param_grp1.grid(row=0, column=0)
+    param_grp1.grid(row=0, column=0, columnspan=2, sticky='NSEW')
 
     param1 = ParamField(param_grp1, name='Max. speed [rad/s]', variable=parameters_strings['max_speed'])
     param1.elmnt.grid(row=0, column=0, sticky='NSEW')
