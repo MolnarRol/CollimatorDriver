@@ -22,7 +22,9 @@ typedef struct
     }buffer_state_s;
 } ECOM_Buffer_struct;
 
-void    ECOM_WriteBufferToAddress(ECOM_Buffer_struct * const buffer_ps, U16 * const dst_data_pU16, U16 read_size);
+#define ECOM_GET_BUFFER_LEN_dM(buffer_ps)       ( (buffer_ps)->top_U16 - (buffer_ps)->bottom_U16 )
+
+U16     ECOM_WriteBufferToAddress(ECOM_Buffer_struct * const buffer_ps, U16 * const dst_data_pU16, U16 read_size);
 void    ECOM_WriteDataToBuffer(ECOM_Buffer_struct * const buffer_ps, const U16 * data_pU16, U16 size_U16);
 void    ECOM_ResetBuffer(ECOM_Buffer_struct * const buffer_ps);
 

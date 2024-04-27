@@ -6,8 +6,6 @@
  */
 #include <ECOM_buffers.h>
 
-#define ECOM_GET_BUFFER_LEN_dM(buffer_ps)       ( buffer_ps->top_U16 - buffer_ps->bottom_U16 )
-
 void ECOM_WriteDataToBuffer(ECOM_Buffer_struct * const buffer_ps, const U16 * data_pU16, U16 write_size_U16)
 {
     while(write_size_U16 != (U16)0)
@@ -20,7 +18,7 @@ void ECOM_WriteDataToBuffer(ECOM_Buffer_struct * const buffer_ps, const U16 * da
     }
 }
 
-void ECOM_WriteBufferToAddress(ECOM_Buffer_struct * const buffer_ps, U16 * const dst_data_pU16, U16 read_size)
+U16 ECOM_WriteBufferToAddress(ECOM_Buffer_struct * const buffer_ps, U16 * const dst_data_pU16, U16 read_size)
 {
     U16 buffer_len_U16 = ECOM_GET_BUFFER_LEN_dM(buffer_ps);
     while( (read_size != (U16)0) && (buffer_len_U16 != (U16)0) )
@@ -30,11 +28,7 @@ void ECOM_WriteBufferToAddress(ECOM_Buffer_struct * const buffer_ps, U16 * const
         buffer_ps->bottom_U16 += (U16)1;
         buffer_len_U16 = ECOM_GET_BUFFER_LEN_dM(buffer_ps);
     }
-    if(buffer_len_U16 == (U16)0)
-    {
-        buffer_ps->buffer_state_s.buffer_rdy_flag = (U16)0;
-        ECOM_ResetBuffer(buffer_ps);
-    }
+    return buffer_len_U16;
 }
 
 void ECOM_ResetBuffer(ECOM_Buffer_struct * const buffer_ps)

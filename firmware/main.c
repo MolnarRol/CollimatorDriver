@@ -20,8 +20,10 @@
 #include <PWM_interface.h>
 #include <SCI.h>
 #include <TEST.h>
+#include <ByteConversions.h>
 
 boolean output_en = False_b;
+
 /**
  * @brief Main function
  */
@@ -38,9 +40,9 @@ void main(void)
     while(1)
     {
         PWM_SetOutputEnable(output_en);
-//        ECOM_MainHandler();
-//        AC_MainHandler();
-        /* Application control main handler. */
+        ECOM_MainHandler();
+//        AC_MainHandler();                                       /* Application control main handler. */
+//        ECOM_TxRequest(data_aU16, 12);
     }
 }
 
