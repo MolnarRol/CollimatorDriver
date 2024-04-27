@@ -28,7 +28,7 @@ class InputSlider:
         self.varFloat = DoubleVar()
 
         slider_frame = Frame(self.elmnt)
-        slider_frame.grid(row=0, column=0)
+        slider_frame.grid(row=0, column=0, sticky='NSEW')
         slider_frame.columnconfigure(1, weight=1)
 
         self.slider = ttk.Scale(slider_frame, command=self.__slider_moved__, variable=self.varFloat,
@@ -39,7 +39,7 @@ class InputSlider:
         higher_limit_label = Label(slider_frame, text=str(limits[1]), justify=RIGHT)
         higher_limit_label.grid(row=1, column=2)
 
-        self.input_box = Entry(self.elmnt, justify='center', textvariable=self.varString)
+        self.input_box = Entry(self.elmnt, justify='center', width=8, textvariable=self.varString, font=("Verdana", 16))
         self.input_box.grid(row=0, column=1, sticky='NSEW')
 
     def __slider_moved__(self, val):
@@ -59,7 +59,7 @@ class TwoStateBtn:
         self.btn_texts = texts
         self.callbacks = callbacks
 
-        self.elmnt = Button(root, textvariable=self.textVar, command=self.__onclick__)
+        self.elmnt = Button(root, textvariable=self.textVar, command=self.__onclick__, padx=10)
 
     def __onclick__(self):
         self.state ^= 1

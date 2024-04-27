@@ -15,7 +15,7 @@ def application_ctrl_tab(root):
     global app_tab_el
     app_tab_el = ttk.LabelFrame(root, text='Position control')
     app_tab_el.columnconfigure(0, weight=1)
-    app_tab_el.columnconfigure(1, weight=1)
+    app_tab_el.columnconfigure(1, weight=0)
 
     pos_input = InputSlider(app_tab_el)
     pos_input.elmnt.grid(row=0, column=0, sticky='NSEW')

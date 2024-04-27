@@ -8,6 +8,15 @@ from info_view import *
 from param_tab import parameter_tab
 from data_disp import data_display
 from app_tab import application_ctrl_tab
+from tkinter import messagebox
+
+INFO_String = ('Collimator blade control interface.\n'
+                   'Version: 0.1\n'
+                   'Company: ES3\n'
+                   'Authors:\n'
+                   '- Roland Molnar (Team leader)\n\temail: roland.molnar.3@student.tuke.sk\n'
+                   '- Bc. Samuel Fertal (Developer)\n\t email: samuel.fertal@student.tuke.sk\n'
+                   '- Bc. Vadym Holysh (Developer)\n\t email: vadym.holysh@student.tuke.sk')
 
 # Application variables
 config_handler = ConfigHandler(config_file_name='appconfig.json')
@@ -32,7 +41,8 @@ def __connection_settings_clicked__():
     pass
 
 def __info_menu_clicked__():
-    info_window = InfoView(root)
+    # info_window = InfoView(root)
+    messagebox.showinfo('Software information', INFO_String)
     pass
 
 
