@@ -19,6 +19,29 @@ class ParamField:
         input_entry.grid(row=0, column=1, sticky='EW')
 
 
+class DoubleEntry:
+    def __init__(self, root, value_changed_callback=None):
+        self.string_val = StringVar()
+        self.string_val.trace("w", lambda name, index, mode,
+                                          var=self.string_val: self.__str_value_changed__(var.get()))
+        self.callback = value_changed_callback
+
+        self.elmnt = Entry(root, justify='center', textvariable=self.string_val)
+        pass
+
+    def __str_value_changed__(self, var):
+        try:
+            double_out = float(var)
+            if self.callback is not None:
+                self.callback(double_out)
+        except ValueError:
+            pass
+        pass
+
+    def set_value(self, val: float):
+        self.string_val.set("%.2f" % val)
+
+
 class InputSlider:
     def __init__(self, root, limits=(0, 100)):
         self.elmnt = ttk.Frame(root)
@@ -28,26 +51,29 @@ class InputSlider:
         self.varFloat = DoubleVar()
 
         slider_frame = Frame(self.elmnt)
-        slider_frame.grid(row=0, column=0)
+        slider_frame.grid(row=0, column=0, sticky='NSEW')
         slider_frame.columnconfigure(1, weight=1)
 
         self.slider = ttk.Scale(slider_frame, command=self.__slider_moved__, variable=self.varFloat,
                                 from_=limits[0], to=limits[1])
-        self.slider.grid(row=0, column=0, columnspan=3, sticky='EW')
+        self.slider.grid(row=0, column=0, columnspan=3, sticky='NSEW')
         lower_limit_label = Label(slider_frame, text=str(limits[0]), justify=LEFT)
         lower_limit_label.grid(row=1, column=0)
         higher_limit_label = Label(slider_frame, text=str(limits[1]), justify=RIGHT)
         higher_limit_label.grid(row=1, column=2)
 
-        self.input_box = Entry(self.elmnt, justify='center', textvariable=self.varString)
-        self.input_box.grid(row=0, column=1, sticky='NSEW')
+        self.input_box = DoubleEntry(self.elmnt, self.__input_edited__)
+        self.input_box.elmnt.configure(width=8)
+        self.input_box.elmnt.configure(font='Verdana 14')
+        self.input_box.elmnt.grid(row=0, column=1, sticky='NSEW')
 
     def __slider_moved__(self, val):
-        self.varString.set("%.2f" % self.varFloat.get())
+        self.input_box.set_value(self.varFloat.get())
         pass
 
-    def __input_editted__(self):
-        print('edited')
+    def __input_edited__(self, val):
+        if self.limits[0] <= val <= self.limits[1]:
+            self.varFloat.set(val)
         pass
 
 
