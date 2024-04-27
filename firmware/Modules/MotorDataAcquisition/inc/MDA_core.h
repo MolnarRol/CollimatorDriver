@@ -24,7 +24,7 @@
 #define MDA_ADC_VALUE_TO_VOLTS__V__dMF32(adc_val)       ( MDA_ADC_VOLTAGE_REF__V__dF32 * ((F32)adc_val / (F32)MDA_ADC_MAX_VALUE_dU16) )
 
 /* Macro for calculating phase current from ADC reading. */
-#define MDA_PHASE_CURRENT_FROM_ADC_VAL_dMF32(adc_val)   ( (MDA_ADC_VALUE_TO_VOLTS__V__dMF32(adc_val) - MDA_PHASE_CURRENT_ZERO_OFFSET__V__dF32) / MDA_PHASE_CURRENT_SENSITIVITY_dF32 )
+#define MDA_PHASE_CURRENT_FROM_ADC_VAL_dMF32(adc_val)    (MDA_ADC_VALUE_TO_VOLTS__V__dMF32(adc_val) - MDA_PHASE_CURRENT_ZERO_OFFSET__V__dF32) / MDA_PHASE_CURRENT_SENSITIVITY_dF32
 
 /* Macro for calculating DC link voltage from ADC reading. */
 #define MDA_DC_LINK_VOLTAGE_FROM_ADC_VAL_dMF32(adc_val) ( MDA_ADC_VALUE_TO_VOLTS__V__dMF32(adc_val) / MDA_DC_LINK_VOLTAGE_SENSITIVITY_dF32 )
@@ -45,7 +45,11 @@ static void MDA_UpdateData(void);
 
 /* Helper functions. */
 static U16 MDA_GetRawRotorMechAngle_U16(void);
-static F32 MDA_GetRawMechSpeed__rad_s1__F32(void);
+//static F32 MDA_GetRawMechSpeed__rad_s1__F32(void);
+void MDA_GetRawPhaseCurrents(F32 * const u_pF32, F32 * const v_pF32, F32 * const w_pF32);
 
+/*Pokus_2 QEP*/
+S32 MDA_delta_pos__pulses__S32();
+F32 MDA_get_mech_speed_rads1_F32(S32 delta_pos__pulses__S32);
 
 #endif /* MODULES_MOTORDATAACQUISITION_INC_MDA_CORE_H_ */

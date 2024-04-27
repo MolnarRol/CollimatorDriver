@@ -17,5 +17,6 @@
 
 void TEST_ScalarMotorMovementHandler(void);
 void TEST_PinInit(void);
+void kukam_prud();
 
 #endif /* MODULES_TESTING_INC_TEST_H_ */

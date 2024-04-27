@@ -18,5 +18,6 @@
 
 F32 FM_sin_F32(const F32 angle__rad__F32);
 F32 FM_cos_F32(const F32 angle__rad__F32);
+F32 FM_sqrt_F32(const F32 num_F32);
 F32 FM_RemainderAfterFloatDivision_F32(const F32 value_F32, const F32 divisor_F32);
 #endif /* FAST_MATH_FUNC_H */
