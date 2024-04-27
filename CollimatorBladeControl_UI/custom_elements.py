@@ -85,7 +85,7 @@ class TwoStateBtn:
         self.btn_texts = texts
         self.callbacks = callbacks
 
-        self.elmnt = Button(root, textvariable=self.textVar, command=self.__onclick__)
+        self.elmnt = Button(root, textvariable=self.textVar, command=self.__onclick__, padx=10)
 
     def __onclick__(self):
         self.state ^= 1
