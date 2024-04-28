@@ -79,6 +79,8 @@ U16 indexpredkorekcia = 0;
 U16 index_predkorekcia2 = 0;
 
 extern boolean enable_FOC;
+extern boolean alarm_state;
+
 
 void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s1_F32, F32 MaxAcc_rad_s2_F32){
 
@@ -99,6 +101,22 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s
     static U16 strecha = 0;
 
     static U16 error_moment_counter_U16 = 0;
+    static F32 Requested_Positionn = 0;
+
+    if(!alarm_state)
+    {
+        Requested_Positionn = requestposition;
+    }
+    else
+    {
+        Requested_Positionn = 0;
+    }
+
+    if(alarm_state &&  MDA_GetData_ps()->angular_position__rad__F32 < 0.01 && MDA_GetData_ps()->angular_position__rad__F32 > -0.01)
+    {
+        alarm_state = 0;
+        enable_FOC = 0;
+    }
 
     F32 start_ramp_rad = DELTA_ACCELERATION_POSITION__rad__df32(MaxAcc_rad_s2_F32,ACCELERATOIN_TIME__s__df32(MaxMechSpeed_rad_s1_F32,MaxAcc_rad_s2_F32));
 
@@ -106,21 +124,21 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s
     {
 
 
-        if(requestposition-prev_request_pos__F32__> 0.08 || requestposition-prev_request_pos__F32__ < -0.08){
+        if(Requested_Positionn-prev_request_pos__F32__> 0.08 || Requested_Positionn-prev_request_pos__F32__ < -0.08){
             ticks_enabled = 1;
-            prev_request_pos__F32__= requestposition;
+            prev_request_pos__F32__= Requested_Positionn;
             Start_Absolute_position__rad__F32 = MDA_GetData_ps()->angular_position__rad__F32;
 
             Position__rad__F32 = 0; //new line
-            if(requestposition > MDA_GetData_ps()->angular_position__rad__F32)
+            if(Requested_Positionn > MDA_GetData_ps()->angular_position__rad__F32)
             {
-                DeltaMdlPosition__rad__F32 = (requestposition - MDA_GetData_ps()->angular_position__rad__F32) - 2 * DELTA_ACCELERATION_POSITION__rad__df32(MaxAcc_rad_s2_F32,ACCELERATOIN_TIME__s__df32(MaxMechSpeed_rad_s1_F32,MaxAcc_rad_s2_F32));
+                DeltaMdlPosition__rad__F32 = (Requested_Positionn - MDA_GetData_ps()->angular_position__rad__F32) - 2 * DELTA_ACCELERATION_POSITION__rad__df32(MaxAcc_rad_s2_F32,ACCELERATOIN_TIME__s__df32(MaxMechSpeed_rad_s1_F32,MaxAcc_rad_s2_F32));
                 DeltaMdlTime__s__F32 = DeltaMdlPosition__rad__F32 / MaxMechSpeed_rad_s1_F32;
                 Minus_Check = 1;
             }
             else
             {
-                DeltaMdlPosition__rad__F32 = (requestposition - MDA_GetData_ps()->angular_position__rad__F32) + 2 * DELTA_ACCELERATION_POSITION__rad__df32(MaxAcc_rad_s2_F32,ACCELERATOIN_TIME__s__df32(MaxMechSpeed_rad_s1_F32,MaxAcc_rad_s2_F32));
+                DeltaMdlPosition__rad__F32 = (Requested_Positionn - MDA_GetData_ps()->angular_position__rad__F32) + 2 * DELTA_ACCELERATION_POSITION__rad__df32(MaxAcc_rad_s2_F32,ACCELERATOIN_TIME__s__df32(MaxMechSpeed_rad_s1_F32,MaxAcc_rad_s2_F32));
                 DeltaMdlTime__s__F32 = -DeltaMdlPosition__rad__F32 / MaxMechSpeed_rad_s1_F32;
                 Minus_Check = -1;
             }
@@ -136,7 +154,7 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s
        }
        else{
            strecha = 1;
-           FullTime__s__F32 = 2.0*sqrt((Minus_Check*(requestposition - MDA_GetData_ps()->angular_position__rad__F32))/MaxAcc_rad_s2_F32);
+           FullTime__s__F32 = 2.0*sqrt((Minus_Check*(Requested_Positionn - MDA_GetData_ps()->angular_position__rad__F32))/MaxAcc_rad_s2_F32);
 
        }
     }
@@ -355,20 +373,22 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s
     /* electric angle */
     trans_s.angle__rad__F32 = MDA_GetData_ps()->rotor_el_angle__rad__F32;
 
+    /* torque limiter */
     if( ( MDA_GetData_ps()->currents_s.iq__A__F32 * MOTOR_TORQUE_CONSTANT__Nm_A__df32 ) > MAX_MOMENT
        || ( MDA_GetData_ps()->currents_s.iq__A__F32 * MOTOR_TORQUE_CONSTANT__Nm_A__df32 ) < -MAX_MOMENT )
     {
         error_moment_counter_U16++;
         if(error_moment_counter_U16 > 1000){
             error_moment_counter_U16 = 0;
-            trans_s.dq_s.d_F32 = 0;
-            trans_s.dq_s.q_F32 = 0;
             Ticks__s__F32 = 0;
             Acceleration__rad_s_2__F32 = 0;
             Speed__rad_s__F32 = 0;
             Position__rad__F32 = 0;
             ticks_enabled = 0;
-            enable_FOC = 0;
+            alarm_state = 1;
+//            trans_s.dq_s.d_F32 = 0;
+//            trans_s.dq_s.q_F32 = 0;
+//            enable_FOC = 0;
         }
     }
 

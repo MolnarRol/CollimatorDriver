@@ -26,7 +26,7 @@
 
 extern TRAN_struct tran_s;
 extern boolean enable_FOC;
-
+extern boolean alarm_state;
 
 boolean output_en = True_b;
 /**
