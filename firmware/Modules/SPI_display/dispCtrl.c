@@ -105,3 +105,48 @@ void dispCtrl_vSetPosition(Uint16 u16PosX, Uint16 u16PosY){
 }
 
 
+void float_to_char_array(F32 f, char* buffer, U16 precision) {
+    // Handle negative numbers
+    if (f < 0) {
+        *buffer++ = '-';
+        f = -f;
+    }
+
+    // Extract integer part
+    int int_part = (int)f;
+
+    // Extract fractional part
+    float fractional_part = f - int_part;
+
+    // Convert integer part to characters
+    int digits = 0;
+    do {
+        *buffer++ = '0' + int_part % 10;
+        int_part /= 10;
+        digits++;
+    } while (int_part > 0);
+
+    // Reverse integer part in the buffer
+    char *start = buffer - digits;
+    char *end = buffer - 1;
+    while (start < end) {
+        char temp = *start;
+        *start++ = *end;
+        *end-- = temp;
+    }
+
+    // Add decimal point
+    *buffer++ = '.';
+
+    // Convert fractional part to characters
+    int i = 0;
+    for (i = 0; i < precision; i++) {
+        fractional_part *= 10;
+        int digit = (int)fractional_part;
+        *buffer++ = '0' + digit;
+        fractional_part -= digit;
+    }
+
+    // Null-terminate the string
+    *buffer = '\0';
+}
