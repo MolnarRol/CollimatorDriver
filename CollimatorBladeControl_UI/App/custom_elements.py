@@ -43,12 +43,13 @@ class DoubleEntry:
 
 
 class InputSlider:
-    def __init__(self, root, limits=(0, 100)):
+    def __init__(self, root, limits=(0, 100), callback=None):
         self.elmnt = ttk.Frame(root)
         self.elmnt.columnconfigure(0, weight=1)
         self.limits = limits
         self.varString = StringVar()
         self.varFloat = DoubleVar()
+        self.callback = callback
 
         slider_frame = Frame(self.elmnt)
         slider_frame.grid(row=0, column=0, sticky='NSEW')
@@ -69,12 +70,16 @@ class InputSlider:
 
     def __slider_moved__(self, val):
         self.input_box.set_value(self.varFloat.get())
-        pass
+        if self.callback is not None:
+            self.callback(self.varFloat.get())
+
 
     def __input_edited__(self, val):
         if self.limits[0] <= val <= self.limits[1]:
             self.varFloat.set(val)
-        pass
+        if self.callback is not None:
+            self.callback(self.varFloat.get())
+
 
 
 class TwoStateBtn:

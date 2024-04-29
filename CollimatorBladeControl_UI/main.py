@@ -47,15 +47,7 @@ def __info_menu_clicked__():
 
 d = 0
 def send():
-    global d
-    data = struct.pack('>B', 2)
-    d += 1
-    bytes = construct_message(HeaderId.COMMAND_e, data)
-    res = serial_handler.transaction_start(bytes)
-    resp_dec = deconstruct_message(res)
-    resp_dec.payload
-    print(struct.unpack('>III', resp_dec.payload[1:]))
-    # print(resp_dec.payload.hex(' '))
+    serial_handler.transaction_queue.put((0, 'test'))
     pass
 
 

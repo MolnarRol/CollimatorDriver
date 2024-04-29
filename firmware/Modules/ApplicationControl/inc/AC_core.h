@@ -47,12 +47,24 @@ static void AC_CMD_SetMovementParameters( const void* const payload_p,
                                           U16 * response_data_pU16,
                                           U16 * response_data_size_pU16);
 
+static void AC_CMD_SetReferncePosition( const void* const payload_p,
+                                        const U16 payload_size_U16,
+                                        U16 * response_data_pU16,
+                                        U16 * response_data_size_pU16);
+
+static void AC_CMD_GetMechanicalData( const void* const payload_p,
+                                      const U16 payload_size_U16,
+                                      U16 * response_data_pU16,
+                                      U16 * response_data_size_pU16);
+
 static AC_ControlFunction_pF AC_Functions[] =
 {
      &AC_TestFunction,
      &AC_AddOne,
      &AC_CMD_GetMovementParameters,
-     &AC_CMD_SetMovementParameters
+     &AC_CMD_SetMovementParameters,
+     &AC_CMD_SetReferncePosition,
+     &AC_CMD_GetMechanicalData
 };
 
 

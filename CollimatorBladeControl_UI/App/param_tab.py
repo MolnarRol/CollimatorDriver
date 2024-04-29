@@ -22,38 +22,38 @@ parameters = {
 def save_cmd():
     err_string = ""
     for key in parameters_strings:
-        print(key, "->", parameters_strings[key].get())
         try:
             parameters[key] = float(parameters_strings[key].get()) * 1000
         except ValueError:
             err_string += '[' + key + '] = ' + parameters_strings[key].get() + ' -> Not a number.\n'
 
     if len(err_string) != 0:
-        messagebox.showerror('We fcked up', err_string)
+        messagebox.showerror('Value error: Parameter are floating point numbers.', err_string)
     else:
         data = struct.pack('>BIII',
                            3,
                            int(parameters['max_speed']),
                            int(parameters['max_accel']),
                            int(parameters['max_force']))
-        print(data.hex(' '))
-        print(struct.unpack('>BIII', data))
         bytes = construct_message(HeaderId.COMMAND_e, data)
-        res = serial_handler.transaction_start(bytes)
-        print(data)
+        serial_handler.new_transaction(bytes, priority=1)
+
+
+def load_cmd_callback(data):
+    resp_dec = deconstruct_message(data)
+    loc_parameters = struct.unpack('>III', resp_dec.payload[1:])
+    (parameters['max_speed'], parameters['max_accel'], parameters['max_force']) = struct.unpack('>III',
+                                                                                                resp_dec.payload[1:])
+    for key in parameters_strings:
+        parameters_strings[key].set(str(parameters[key] / 1000))
 
 
 def load_cmd():
     global parameters
     data = struct.pack('>B', 2)
     bytes = construct_message(HeaderId.COMMAND_e, data)
-    res = serial_handler.transaction_start(bytes)
-    resp_dec = deconstruct_message(res)
-    resp_dec.payload
-    loc_parameters = struct.unpack('>III', resp_dec.payload[1:])
-    (parameters['max_speed'], parameters['max_accel'], parameters['max_force']) = struct.unpack('>III', resp_dec.payload[1:])
-    for key in parameters_strings:
-        parameters_strings[key].set(str(parameters[key]/1000))
+    serial_handler.new_transaction(bytes, priority=1, callback=load_cmd_callback)
+
 
 def parameter_tab(root):
     for key in parameters_strings:

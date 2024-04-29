@@ -13,6 +13,7 @@
 #include <AC_core.h>
 #include <AC_interface.h>
 #include <ByteConversions.h>
+#include <MDA_interface.h>
 
 
 U32 receive_data_U32 = (U32)0;          /* Debug variable */
@@ -21,6 +22,7 @@ U32 receive_data_U32 = (U32)0;          /* Debug variable */
 F32 testParam1_F32 = 800.0f;
 F32 testParam2_F32 = 250.0f;
 F32 testParam3_F32 = 0.25f;
+F32 refPos_F32 = 0.0f;
 
 void AC_ExecuteCommand( const U16 * const command_payload_pU16,
                         const U16 payload_size_U16,
@@ -103,8 +105,6 @@ static void AC_CMD_GetMovementParameters( const void* const payload_p,
 
 }
 
-U32 xv = 80000;
-
 static void AC_CMD_SetMovementParameters( const void* const payload_p,
                                           const U16 payload_size_U16,
                                           U16 * response_data_pU16,
@@ -126,3 +126,47 @@ static void AC_CMD_SetMovementParameters( const void* const payload_p,
     *response_data_size_pU16 = 1;
 
 }
+
+static void AC_CMD_GetMechanicalData( const void* const payload_p,
+                                      const U16 payload_size_U16,
+                                      U16 * response_data_pU16,
+                                      U16 * response_data_size_pU16)
+{
+    if(payload_size_U16 != 0)
+    {
+        response_data_pU16[0] = INVALID_INPUT_e;
+        *response_data_size_pU16 = 1;
+        return;
+    }
+    *response_data_size_pU16 = 13;
+    response_data_pU16[0] = RESPONSE_OK_e;
+
+    const MDA_Data_struct* data_ps = MDA_GetData_ps();
+
+    U32 speed__rad_s2__U32 = (U32)(data_ps->rotor_mech_speed__rad_s1__F32 * 1000.0f);
+    U32 linear_position_mm_U32 = (U32)(data_ps->linear_position__mm__F32 * 1000.0f);
+    U32 rotor_position_rad_U32 = (U32)(data_ps->rotor_mech_angle__rad__F32 * 1000.0f);
+
+    BC_32BitDataTo4Bytes(&speed__rad_s2__U32, &response_data_pU16[1]);
+    BC_32BitDataTo4Bytes(&linear_position_mm_U32, &response_data_pU16[5]);
+    BC_32BitDataTo4Bytes(&rotor_position_rad_U32, &response_data_pU16[9]);
+
+}
+
+static void AC_CMD_SetReferncePosition( const void* const payload_p,
+                                        const U16 payload_size_U16,
+                                        U16 * response_data_pU16,
+                                        U16 * response_data_size_pU16)
+{
+    if(payload_size_U16 != 4)
+    {
+        response_data_pU16[0] = INVALID_INPUT_e;
+        *response_data_size_pU16 = 1;
+        return;
+    }
+
+    response_data_pU16[0] = RESPONSE_OK_e;
+    *response_data_size_pU16 = 1;
+    refPos_F32 = (F32)BC_4BytesTo32BitData(&((U16*)payload_p)[0]).val_U32 / 1000.0f;
+}
+
