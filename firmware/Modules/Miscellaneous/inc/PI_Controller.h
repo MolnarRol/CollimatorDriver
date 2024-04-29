@@ -14,7 +14,7 @@
 #define I_Q_KP_df32            ( (F32)1.2f )
 #define I_D_KP_df32            ( (F32)1.2f )
 #define SPEED_KP_df32          ( (F32)0.237f )
-#define POSITION_KP_df32       ( (F32)30.0f )
+#define POSITION_KP_df32       ( (F32)40.0f )
 #define I_Q_KI_df32            ( (F32)720.0f )
 #define I_D_KI_df32            ( (F32)720.0f )
 #define SPEED_KI_df32          ( (F32)4.0f )

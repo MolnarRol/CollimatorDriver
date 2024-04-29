@@ -25,7 +25,7 @@ inline void ISR_MotorControlHandler(void)
     /* Motor control functionality. Called every PWM cycle. */
     if(enable_FOC){
         kukam_prud();
-        FOC_CalculateOutput(0.0,20.0,10.0);
+        FOC_CalculateOutput(0.0,40.0,20.0);
 
     }
 //    TEST_PIN_RESET_dM;

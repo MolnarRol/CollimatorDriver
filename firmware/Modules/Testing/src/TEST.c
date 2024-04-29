@@ -31,7 +31,8 @@ void TEST_ScalarMotorMovementHandler(void)
 //F32 current_q[1024];
 
 U16 index_prud=0;
-F32 mechangle[3000];
+F32 prud_id[1500];
+F32 prud_iq[1500];
 
 
 void kukam_prud(){
@@ -40,9 +41,9 @@ void kukam_prud(){
 //                                 &current_b[index_prud],
 //                                 &current_c[index_prud] );
 
-        //current_d[index_prud] = MDA_GetData_ps()->currents_s.id__A__F32;
-        //current_q[index_prud] = MDA_GetData_ps()->currents_s.iq__A__F32;
-        mechangle[index_prud] = MDA_GetData_ps()->rotor_mech_angle__rad__F32;
+        prud_id[index_prud] = MDA_GetData_ps()->currents_s.id__A__F32;
+        prud_iq[index_prud] = MDA_GetData_ps()->currents_s.iq__A__F32;
+        //mechangle[index_prud] = MDA_GetData_ps()->rotor_mech_angle__rad__F32;
         index_prud++;
     }
     else index_prud = 0;

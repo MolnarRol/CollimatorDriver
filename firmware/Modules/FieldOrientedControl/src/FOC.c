@@ -78,6 +78,9 @@ F32 pospredkorekcia[1000];
 U16 indexpredkorekcia = 0;
 U16 index_predkorekcia2 = 0;
 
+U16 i = 0;
+F32 roof = 0;
+
 extern boolean enable_FOC;
 extern boolean alarm_state;
 
@@ -101,6 +104,7 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s
     static U16 strecha = 0;
 
     static U16 error_moment_counter_U16 = 0;
+    static U16 error_disable_FOC_counter_U16 = 0;
     static F32 Requested_Positionn = 0;
 
     if(!alarm_state)
@@ -109,13 +113,18 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s
     }
     else
     {
-        Requested_Positionn = 0;
+        Requested_Positionn = 0.0;
     }
 
-    if(alarm_state &&  MDA_GetData_ps()->angular_position__rad__F32 < 0.01 && MDA_GetData_ps()->angular_position__rad__F32 > -0.01)
+    if(alarm_state && MDA_GetData_ps()->angular_position__rad__F32 == 0.0)//MDA_GetData_ps()->angular_position__rad__F32 < 0.01 && MDA_GetData_ps()->angular_position__rad__F32 > -0.01)
     {
+        error_disable_FOC_counter_U16++;
+        if(error_disable_FOC_counter_U16 == 2000)
+        {
         alarm_state = 0;
         enable_FOC = 0;
+        error_disable_FOC_counter_U16 = 0;
+        }
     }
 
     F32 start_ramp_rad = DELTA_ACCELERATION_POSITION__rad__df32(MaxAcc_rad_s2_F32,ACCELERATOIN_TIME__s__df32(MaxMechSpeed_rad_s1_F32,MaxAcc_rad_s2_F32));
@@ -151,11 +160,12 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s
            delta_time_middle = DeltaMdlTime__s__F32;
            delta_pos_middle = DeltaMdlPosition__rad__F32;
            fulltime = FullTime__s__F32;
+           roof = 0;
        }
        else{
            strecha = 1;
            FullTime__s__F32 = 2.0*sqrt((Minus_Check*(Requested_Positionn - MDA_GetData_ps()->angular_position__rad__F32))/MaxAcc_rad_s2_F32);
-
+           roof = 1;
        }
     }
 
@@ -237,7 +247,7 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s
 
             Position__rad__F32 += Speed__rad_s__F32 * SAMPLING_TIME__s__df32;        //0.5 * Acceleration__rad_s_2__F32 * SAMPLING_TIME__s__df32 * SAMPLING_TIME__s__df32;
 
-            if(Position__rad__F32*Minus_Check > 2.0f*start_ramp_rad + Minus_Check*DeltaMdlPosition__rad__F32){
+            if(Position__rad__F32*Minus_Check >= 2.0f*start_ramp_rad + Minus_Check*DeltaMdlPosition__rad__F32){
                 Position__rad__F32 = Minus_Check*2.0f*start_ramp_rad + DeltaMdlPosition__rad__F32;
             }
 
@@ -263,7 +273,7 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s
     /*so strechou*/
 
     if(strecha == 1){
-        if( Ticks__s__F32 <= (FullTime__s__F32/2) && Ticks__s__F32 > 0){
+        if( Ticks__s__F32 <= (FullTime__s__F32/2.0) && Ticks__s__F32 > 0){
 
            Acceleration__rad_s_2__F32 = MaxAcc_rad_s2_F32 * Minus_Check;
            Speed__rad_s__F32 += Acceleration__rad_s_2__F32 * SAMPLING_TIME__s__df32 ;
@@ -289,7 +299,7 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s
 
         }
 
-        else if ( ( Ticks__s__F32 > ( FullTime__s__F32/2 ) ) && ( Ticks__s__F32 <= FullTime__s__F32 ) ){
+        else if ( ( Ticks__s__F32 > ( FullTime__s__F32/2.0 ) ) && ( Ticks__s__F32 <= FullTime__s__F32 ) ){
 
            Acceleration__rad_s_2__F32 = -MaxAcc_rad_s2_F32 * Minus_Check ;
            Speed__rad_s__F32 += Acceleration__rad_s_2__F32 * SAMPLING_TIME__s__df32 ;
@@ -300,7 +310,7 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s
            finalint2pos_strecha = Position__rad__F32;
            finalint2speed_strecha = Speed__rad_s__F32;
 
-           if(Position__rad__F32*Minus_Check > 2.0f*start_ramp_rad + Minus_Check*DeltaMdlPosition__rad__F32){
+           if(Position__rad__F32*Minus_Check >= 2.0f*start_ramp_rad + Minus_Check*DeltaMdlPosition__rad__F32){
                            Position__rad__F32 = Minus_Check*2.0f*start_ramp_rad + DeltaMdlPosition__rad__F32;
            }
 
@@ -323,13 +333,18 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s
     /*koniec strechy*/
 
     if(Ticks__s__F32 > FullTime__s__F32){
+
+        if(Position__rad__F32*Minus_Check < 2.0f*start_ramp_rad + Minus_Check*DeltaMdlPosition__rad__F32){
+            Position__rad__F32 = Minus_Check*2.0f*start_ramp_rad + DeltaMdlPosition__rad__F32;
+        }
+
         finalinterval_final_ticks = Ticks__s__F32;
         Ticks__s__F32 = 0;
         Acceleration__rad_s_2__F32 = 0;
         Speed__rad_s__F32 = 0;
         //Position__rad__F32 = 0;
-
         ticks_enabled = 0;
+
     }
 
     Ticks = Ticks__s__F32;
@@ -347,6 +362,12 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s
     posrad  = Position__rad__F32;
 
     /*Controllers*/
+    if(i<1000)
+    {
+    pospredkorekcia[i] = Start_Absolute_position__rad__F32 + Position__rad__F32;
+    i++;
+    }
+    else i = 0;
     ref_position_regulator = Start_Absolute_position__rad__F32 + Position__rad__F32;
     PI_position_controller.ref_value_f32 = ref_position_regulator;
 
@@ -386,9 +407,8 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s
             Position__rad__F32 = 0;
             ticks_enabled = 0;
             alarm_state = 1;
-//            trans_s.dq_s.d_F32 = 0;
-//            trans_s.dq_s.q_F32 = 0;
-//            enable_FOC = 0;
+            trans_s.dq_s.q_F32 = 0;
+            trans_s.dq_s.d_F32 = 0;
         }
     }
 
@@ -398,10 +418,12 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s
     /* transformation from dq to abc */
     TRAN_DqToAbc(&trans_s);
 
+    if(enable_FOC)
+    {
     PWM_SetCompareValues(PWM_DUTY_TO_CMP_dMU16( (trans_s.abc_s.a_F32 / MDA_GetData_ps()->dc_link_voltage__V__F32) + (F32)0.5 ),
                          PWM_DUTY_TO_CMP_dMU16( (trans_s.abc_s.b_F32 / MDA_GetData_ps()->dc_link_voltage__V__F32) + (F32)0.5 ),
                          PWM_DUTY_TO_CMP_dMU16( (trans_s.abc_s.c_F32 / MDA_GetData_ps()->dc_link_voltage__V__F32) + (F32)0.5 ));
-
+    }
 
 }
 

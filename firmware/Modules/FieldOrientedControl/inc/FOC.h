@@ -20,7 +20,7 @@
 //#define MAX_SPEED__rad_s__df32                             ( (F32)5.0f )
 //#define MAX_ACCELERATON__rad_s_2__df32                     ( (F32)1.0f ) // (MAX TORQUE / INERTON)
 /* t1 = wmax/a */
-#define ACCELERATOIN_TIME__s__df32(MaxMechSpeed_rad_s1_F32,MaxAcc_rad_s2_F32)                       (F32)(MaxMechSpeed_rad_s1_F32 / MaxAcc_rad_s2_F32)
+#define ACCELERATOIN_TIME__s__df32(MaxMechSpeed_rad_s1_F32,MaxAcc_rad_s2_F32)                   (F32)(MaxMechSpeed_rad_s1_F32 / MaxAcc_rad_s2_F32)
 /* phi1 = 0.5*a*samp_time^2 */
 #define DELTA_ACCELERATION_POSITION__rad__df32(MaxAcc_rad_s2_F32,acceleration_time)             (F32)( 0.5 * MaxAcc_rad_s2_F32 * acceleration_time * acceleration_time )
 
