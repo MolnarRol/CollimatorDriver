@@ -41,8 +41,6 @@ void main(void)
     {
         PWM_SetOutputEnable(output_en);
         ECOM_MainHandler();
-//        AC_MainHandler();                                       /* Application control main handler. */
-//        ECOM_TxRequest(data_aU16, 12);
     }
 }
 

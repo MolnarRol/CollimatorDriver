@@ -19,9 +19,9 @@
 U32 receive_data_U32 = (U32)0;          /* Debug variable */
 
 /* Test parameters - for debug. */
-F32 testParam1_F32 = 800.0f;
-F32 testParam2_F32 = 250.0f;
-F32 testParam3_F32 = 0.25f;
+F32 max_speed_F32 = 800.0f;
+F32 max_accel_F32 = 250.0f;
+F32 max_force_F32 = 0.25f;
 F32 refPos_F32 = 0.0f;
 
 void AC_ExecuteCommand( const U16 * const command_payload_pU16,
@@ -93,9 +93,9 @@ static void AC_CMD_GetMovementParameters( const void* const payload_p,
     }
 
     /* Local variables. */
-    U32 v1 = (U32)(testParam1_F32 * 1000.0f);
-    U32 v2 = (U32)(testParam2_F32 * 1000.0f);
-    U32 v3 = (U32)(testParam3_F32 * 1000.0f);
+    U32 v1 = (U32)(max_speed_F32 * 1000.0f);
+    U32 v2 = (U32)(max_accel_F32 * 1000.0f);
+    U32 v3 = (U32)(max_force_F32 * 1000.0f);
 
     response_data_pU16[0] = RESPONSE_OK_e;
     *response_data_size_pU16 = 13;
@@ -118,9 +118,9 @@ static void AC_CMD_SetMovementParameters( const void* const payload_p,
     }
     U16* data_pU16 = (U16*)payload_p;
 
-    testParam1_F32 = (F32)BC_4BytesTo32BitData(&data_pU16[0]).val_U32 / 1000.0f;
-    testParam2_F32 = (F32)BC_4BytesTo32BitData(&data_pU16[4]).val_U32 / 1000.0f;
-    testParam3_F32 = (F32)BC_4BytesTo32BitData(&data_pU16[8]).val_U32 / 1000.0f;
+    max_speed_F32 = (F32)BC_4BytesTo32BitData(&data_pU16[0]).val_U32 / 1000.0f;
+    max_accel_F32 = (F32)BC_4BytesTo32BitData(&data_pU16[4]).val_U32 / 1000.0f;
+    max_force_F32 = (F32)BC_4BytesTo32BitData(&data_pU16[8]).val_U32 / 1000.0f;
 
     response_data_pU16[0] = RESPONSE_OK_e;
     *response_data_size_pU16 = 1;
@@ -150,6 +150,32 @@ static void AC_CMD_GetMechanicalData( const void* const payload_p,
     BC_32BitDataTo4Bytes(&speed__rad_s2__U32, &response_data_pU16[1]);
     BC_32BitDataTo4Bytes(&linear_position_mm_U32, &response_data_pU16[5]);
     BC_32BitDataTo4Bytes(&rotor_position_rad_U32, &response_data_pU16[9]);
+
+}
+
+static void AC_CMD_GetElectricalData( const void* const payload_p,
+                                      const U16 payload_size_U16,
+                                      U16 * response_data_pU16,
+                                      U16 * response_data_size_pU16)
+{
+    if(payload_size_U16 != 0)
+    {
+        response_data_pU16[0] = INVALID_INPUT_e;
+        *response_data_size_pU16 = 1;
+        return;
+    }
+    *response_data_size_pU16 = 13;
+    response_data_pU16[0] = RESPONSE_OK_e;
+
+    const MDA_Data_struct* data_ps = MDA_GetData_ps();
+
+    U32 id__A__U32 = (U32)(data_ps->currents_s.id__A__F32 * 1000.0f);
+    U32 iq__A__U32 = (U32)(data_ps->currents_s.iq__A__F32 * 1000.0f);
+    U32 dc_link_voltage__V__F32 = (U32)(data_ps->dc_link_voltage__V__F32 * 1000.0f);
+
+    BC_32BitDataTo4Bytes(&id__A__U32, &response_data_pU16[1]);
+    BC_32BitDataTo4Bytes(&iq__A__U32, &response_data_pU16[5]);
+    BC_32BitDataTo4Bytes(&dc_link_voltage__V__F32, &response_data_pU16[9]);
 
 }
 

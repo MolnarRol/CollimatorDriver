@@ -12,8 +12,9 @@ class SerialInterface:
         self.serial_baud = serial_baud
         self.serial_if = serial.Serial()
         self.serial_if.timeout = self.serial_transaction_timeout
+        self.is_open = False
 
-        self.transaction_queue = queue.PriorityQueue(maxsize=10)
+        self.transaction_queue = queue.PriorityQueue(maxsize=100)
         self.transaction_thread = threading.Thread(target=self.__interface_handler_thread__, daemon=True)
         self.transaction_thread.start()
 
@@ -28,28 +29,26 @@ class SerialInterface:
             self.serial_if.open()
         except serial.SerialException:
             return False
+
+        self.is_open = True
         return True
 
-    def transaction_start(self, out_bytes=[]):
-        if len(out_bytes) == 0:
-            return None
-        self.serial_if.write(out_bytes)
-        return self.serial_if.read(256)
-
     def new_transaction(self, data: list, priority=0, callback=None):
-        if (len(data) == 0) or self.transaction_queue.full():
+        if (len(data) == 0) or self.transaction_queue.full() or self.is_open is False:
             return False
-        self.transaction_queue.put((priority, {'data': data, 'callback': callback}))
+        loc_data = data.copy()
+        transaction_data = (loc_data, callback)
+        self.transaction_queue.put((priority, transaction_data))
         return True
 
     def __interface_handler_thread__(self):
         while True:
             if self.transaction_queue.qsize() != 0:
                 (prio, transaction) = self.transaction_queue.get()
-                self.serial_if.write(transaction['data'])
+                self.serial_if.write(transaction[0])
                 response = self.serial_if.read(256)
-                if transaction['callback'] is not None:
-                    transaction['callback'](response)
+                if transaction[1] is not None:
+                    transaction[1](response)
             time.sleep(0.01)
 
 

@@ -45,11 +45,6 @@ def __info_menu_clicked__():
     messagebox.showinfo('Software information', INFO_String)
     pass
 
-d = 0
-def send():
-    serial_handler.transaction_queue.put((0, 'test'))
-    pass
-
 
 if __name__ == '__main__':
     # Application menu
@@ -75,10 +70,6 @@ if __name__ == '__main__':
 
     data_display_frame = data_display(root)
     data_display_frame.grid(row=1, column=1, sticky='NSEW')
-
-    # Debug
-    send_btn = Button(root, text='send', command=send)
-    send_btn.grid(row=2, column=1, sticky='NSEW')
 
     root.config(menu=top_bar_menu)
     root.mainloop()
