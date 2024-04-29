@@ -1,3 +1,4 @@
+import struct
 from tkinter import *
 from tkinter import ttk
 from App.config_file_handler import ConfigHandler
@@ -7,6 +8,7 @@ from App.param_tab import parameter_tab
 from App.data_disp import data_display
 from App.app_tab import application_ctrl_tab
 from tkinter import messagebox
+from Communication.Protocol import *
 
 INFO_String = ('Collimator blade control interface.\n'
                'Version: 0.1\n'
@@ -43,6 +45,16 @@ def __info_menu_clicked__():
     messagebox.showinfo('Software information', INFO_String)
     pass
 
+d = 0
+def send():
+    global d
+    data = struct.pack('>BH', 1, d)
+    d += 1
+    bytes = construct_message(HeaderId.COMMAND_e, data)
+    res = serial_handler.transaction_start(bytes)
+    print(res.hex(' '))
+    pass
+
 
 if __name__ == '__main__':
     # Application menu
@@ -68,6 +80,9 @@ if __name__ == '__main__':
 
     data_display_frame = data_display(root)
     data_display_frame.grid(row=1, column=1, sticky='NSEW')
+
+    send_btn = Button(root, text='send', command=send)
+    send_btn.grid(row=2, column=1, sticky='NSEW')
 
     root.config(menu=top_bar_menu)
     root.mainloop()

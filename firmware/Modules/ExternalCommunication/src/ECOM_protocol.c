@@ -11,6 +11,9 @@
 U16 s_ECOM_protocol_state_machine_state_U16 = ECOM_PROTO_SM_STATE_IDLE_dU16;
 ECOM_Packet_struct s_rx_packet;
 static U16 s_response_data_aU16[64];
+static U16 s_response_data_size_U16 = 0;
+
+static U16 s_response_packet_aU16[64];
 
 extern ECOM_Buffer_struct s_ECOM_rx_buffer_s;
 
@@ -34,41 +37,31 @@ void ECOM_DataRecievedCallback(void)
 
 void ECOM_ProtocolStateMachineHandler(void)
 {
-    /*
-    static U32 s_last_time_idle_state_ticks_U32 = (U32)0;
-    if( ATB_CheckTicksPassed_U16(s_last_time_idle_state_ticks_U32, ATB_MS_TO_TICKS_dM_U32(50)) )
-    {
-        s_ECOM_protocol_state_machine_state_U16 = ECOM_PROTO_SM_STATE_RESPONDED_dU16;
-        s_last_time_idle_state_ticks_U32 = ATB_GetTicks_U32();
-    }
-    */
-
     switch(s_ECOM_protocol_state_machine_state_U16)
     {
         case ECOM_PROTO_SM_STATE_IDLE_dU16:
-//            s_last_time_idle_state_ticks_U32 = ATB_GetTicks_U32();
             break;
 
         case ECOM_PROTO_SM_STATE_PROCESSING_dU16:
-            ECOM_ParsePacket(&s_rx_packet, s_ECOM_rx_buffer_s.data_aU16, ECOM_GET_BUFFER_LEN_dM(&s_ECOM_rx_buffer_s));   /* Parsing incoming packet. */
+            /* Parsing incoming packet. */
+            ECOM_ParsePacket(&s_rx_packet, s_ECOM_rx_buffer_s.data_aU16, ECOM_GET_BUFFER_LEN_dM(&s_ECOM_rx_buffer_s));
 
-            if( ECOM_ProtocolCheckMsg(&s_rx_packet, &s_ECOM_rx_buffer_s) != (U16)0 )                                    /* Checking if packet is OK. */
+            /* Checking if packet is OK. */
+            if( ECOM_ProtocolCheckMsg(&s_rx_packet, &s_ECOM_rx_buffer_s) != (U16)0 )
             {
                 s_response_paU16 = (U16*)s_ECOM_msg_transfer_fail_response_aU16;
             }
             else
             {
-                s_response_paU16 = ECOM_ProtocolRespond_pU16(&s_rx_packet);
+                ECOM_ProtocolRespond(&s_rx_packet);
+                ECOM_CreatePacket(COMMAND_RES_e, s_response_packet_aU16, s_response_data_aU16, s_response_data_size_U16);
             }
             s_ECOM_protocol_state_machine_state_U16 = ECOM_PROTO_SM_STATE_RESPONDING_dU16;                             /* Set next state. */
 
         case ECOM_PROTO_SM_STATE_RESPONDING_dU16:
-            if(s_response_paU16 != (U16*)0)
+            if( ECOM_TxRequest(s_response_packet_aU16, s_response_packet_aU16[1]) != OK_e )
             {
-                if( ECOM_TxRequest(s_response_paU16, s_response_paU16[1]) != OK_e )
-                {
-                    break;
-                }
+                break;
             }
             s_ECOM_protocol_state_machine_state_U16 = ECOM_PROTO_SM_STATE_RESPONDED_dU16;
 
@@ -85,20 +78,20 @@ void ECOM_ProtocolStateMachineHandler(void)
     }
 }
 
-static U16* ECOM_ProtocolRespond_pU16(const ECOM_Packet_struct * const packet_ps)
+static void ECOM_ProtocolRespond(const ECOM_Packet_struct * const packet_ps)
 {
-    U16* resp_pU16 = (U16*)0;
-
     switch(packet_ps->header_s.packet_id_e)
     {
         case HELLO_MSG_e:
         {
-            resp_pU16 = (U16*)s_ECOM_msg_hello_response_aU16;
             break;
         }
         case COMMAND_e:
         {
-//            AC_ExecuteCommand_U16(packet_ps->payload_pU16, packet_ps->header_s.packet_size_U16 - 3);
+            AC_ExecuteCommand(packet_ps->payload_pU16,
+                              packet_ps->header_s.packet_size_U16 - 3,
+                              s_response_data_aU16,
+                              &s_response_data_size_U16);
             break;
         }
         default:
@@ -106,7 +99,6 @@ static U16* ECOM_ProtocolRespond_pU16(const ECOM_Packet_struct * const packet_ps
             break;
         }
     }
-    return resp_pU16;
 }
 
 static U16 ECOM_ProtocolCheckMsg(const ECOM_Packet_struct * const parsed_packet_ps, const ECOM_Buffer_struct * const buffer_ps)
@@ -122,8 +114,8 @@ static U16 ECOM_ProtocolCheckMsg(const ECOM_Packet_struct * const parsed_packet_
     {
         ret_status_code_U16 = (U16)2;                                               /* Invalid message length. */
     }
-    else if(CRC8_CCITT_Verify_b( buffer_ps->data_aU16,
-                                 parsed_packet_ps->header_s.packet_size_U16,
+    else if(CRC8_CCITT_Verify_b( &buffer_ps->data_aU16,
+                                 parsed_packet_ps->header_s.packet_size_U16 - 1,
                                  parsed_packet_ps->crc8_U16) == False_b )
     {
         ret_status_code_U16 = (U16)3;
@@ -139,10 +131,10 @@ static U16 ECOM_ProtocolCheckMsg(const ECOM_Packet_struct * const parsed_packet_
 
 static void ECOM_ParsePacket(ECOM_Packet_struct * const parsed_packet_s, U16* packet_raw_U16, const U16 packet_size_U16)
 {
-    parsed_packet_s->header_s.packet_id_e = (ECOM_ProtocolHeader_enum)*(packet_raw_U16++);
-    parsed_packet_s->header_s.packet_size_U16 = *(packet_raw_U16++);
-    parsed_packet_s->payload_pU16 = packet_raw_U16;
-    parsed_packet_s->crc8_U16 = *((U16*)packet_raw_U16 + (packet_size_U16 - 1));
+    parsed_packet_s->header_s.packet_id_e = (ECOM_ProtocolHeader_enum)packet_raw_U16[0];
+    parsed_packet_s->header_s.packet_size_U16 = packet_raw_U16[1];
+    parsed_packet_s->payload_pU16 = &packet_raw_U16[2];
+    parsed_packet_s->crc8_U16 = packet_raw_U16[packet_size_U16 - 1];
 }
 
 static void ECOM_CreatePacket(const ECOM_ProtocolHeader_enum header_e, U16 * dst_buff_pU16, const U16 * payload_pU16, const U16 payload_size_U16)

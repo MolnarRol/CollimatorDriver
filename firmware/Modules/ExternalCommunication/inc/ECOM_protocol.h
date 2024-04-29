@@ -46,6 +46,6 @@ typedef struct
 void        ECOM_ProtocolStateMachineHandler(void);
 static void ECOM_ParsePacket(ECOM_Packet_struct * const parsed_packet_s, U16* packet_raw_U16, const U16 packet_size_U16);
 static U16  ECOM_ProtocolCheckMsg(const ECOM_Packet_struct * const parsed_packet_ps, const ECOM_Buffer_struct * const buffer_ps);
-static U16* ECOM_ProtocolRespond_pU16(const ECOM_Packet_struct * const packet_ps);
+static void ECOM_ProtocolRespond(const ECOM_Packet_struct * const packet_ps);
 static void ECOM_CreatePacket(const ECOM_ProtocolHeader_enum header_e, U16 * const dst_buff_pU16, const U16 * data_pU16, const U16 data_size_U16);
 #endif /* MODULES_EXTERNALCOMMUNICATION_INC_ECOM_PROTO_H_ */

@@ -15,18 +15,32 @@
 #ifndef AC_CORE_H_
 #define AC_CORE_H_
 
-#define AC_CORE_CHECK_INDEX_BOUND_dM_b(idx)   ( idx < (sizeof(AC_Funtions) / sizeof(AC_ControlFunction_pF)) )
+#define AC_CORE_CHECK_INDEX_BOUND_dM_b(idx)   ( idx < (sizeof(AC_Functions) / sizeof(AC_ControlFunction_pF)) )
 
 typedef void (*AC_ControlFunction_pF)(const void* const, const U16, U16*, U16*);
+
+typedef enum
+{
+    RESPONSE_OK_e   = 0,
+    INVALID_CMD_e   = 1,
+    INVALID_INPUT_e = 2,
+    ERROR_e         = 3
+} ControlFunctionResponseStatus_enum;
 
 static void AC_TestFunction(const void* const payload_p,
                             const U16 payload_size_U16,
                             U16 * response_data_pU16,
                             U16 * response_data_size_pU16);
 
-static AC_ControlFunction_pF AC_Funtions[] =
+static void AC_AddOne(const void* const payload_p,
+                             const U16 payload_size_U16,
+                             U16 * response_data_pU16,
+                             U16 * response_data_size_pU16);
+
+static AC_ControlFunction_pF AC_Functions[] =
 {
-     &AC_TestFunction
+     &AC_TestFunction,
+     &AC_AddOne
 };
 
 
