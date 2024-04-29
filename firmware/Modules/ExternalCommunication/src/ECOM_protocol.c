@@ -17,12 +17,6 @@ static U16 s_response_packet_aU16[64];
 
 extern ECOM_Buffer_struct s_ECOM_rx_buffer_s;
 
-/* Constant responses. */
-static const U16 s_ECOM_msg_transfer_fail_response_aU16[] = {TRANSFER_ERR_e, 0x2};
-static const U16 s_ECOM_msg_hello_response_aU16[] = {HELLO_MSG_e, 0x2};
-static const U16 s_ECOM_msg_cmd_success_response_aU16[] = {COMMAND_RES_e, 0x3, 0x0};
-static const U16 s_ECOM_msg_cmd_fail_response_aU16[] = {COMMAND_RES_e, 0x3, 0x1};
-
 static U16* s_response_paU16 = (U16*)0;
 
 void ECOM_DataRecievedCallback(void)
@@ -49,12 +43,12 @@ void ECOM_ProtocolStateMachineHandler(void)
             /* Checking if packet is OK. */
             if( ECOM_ProtocolCheckMsg(&s_rx_packet, &s_ECOM_rx_buffer_s) != (U16)0 )
             {
-                s_response_paU16 = (U16*)s_ECOM_msg_transfer_fail_response_aU16;
+                ECOM_CreatePacket(TRANSFER_ERR_e, s_response_packet_aU16, 0, 0);
             }
             else
             {
                 ECOM_ProtocolRespond(&s_rx_packet);
-                ECOM_CreatePacket(COMMAND_RES_e, s_response_packet_aU16, s_response_data_aU16, s_response_data_size_U16);
+
             }
             s_ECOM_protocol_state_machine_state_U16 = ECOM_PROTO_SM_STATE_RESPONDING_dU16;                             /* Set next state. */
 
@@ -84,6 +78,9 @@ static void ECOM_ProtocolRespond(const ECOM_Packet_struct * const packet_ps)
     {
         case HELLO_MSG_e:
         {
+            s_response_data_aU16[0] = 0;
+            s_response_data_size_U16 = 1;
+            ECOM_CreatePacket(HELLO_MSG_e, s_response_packet_aU16, s_response_data_aU16, s_response_data_size_U16);
             break;
         }
         case COMMAND_e:
@@ -92,6 +89,7 @@ static void ECOM_ProtocolRespond(const ECOM_Packet_struct * const packet_ps)
                               packet_ps->header_s.packet_size_U16 - 3,
                               s_response_data_aU16,
                               &s_response_data_size_U16);
+            ECOM_CreatePacket(COMMAND_RES_e, s_response_packet_aU16, s_response_data_aU16, s_response_data_size_U16);
             break;
         }
         default:

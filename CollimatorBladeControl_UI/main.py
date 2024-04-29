@@ -50,8 +50,9 @@ def send():
     global d
     data = struct.pack('>BH', 1, d)
     d += 1
-    bytes = construct_message(HeaderId.COMMAND_e, data)
+    bytes = construct_message(HeaderId.HELLO_MSG_e, data)
     res = serial_handler.transaction_start(bytes)
+    resp_dec = deconstruct_message(res)
     print(res.hex(' '))
     pass
 

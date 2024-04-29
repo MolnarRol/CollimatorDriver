@@ -49,18 +49,20 @@ static void AC_TestFunction(const void* const payload_p,
     receive_data_U32 = BC_4BytesTo32BitData(payload_p).val_U32;
 }
 
+/* TestFunction */
 static void AC_AddOne(const void* const payload_p,
                       const U16 payload_size_U16,
                       U16 * response_data_pU16,
                       U16 * response_data_size_pU16)
 {
-    volatile U16 num;
+    U16 num;
     /* Check command input validity. */
     if(payload_size_U16 != 2){
         response_data_pU16[0] = INVALID_INPUT_e;
         *response_data_size_pU16 = 1;
         return;
     }
+    /* Input is OK -> Respond with data */
     else
     {
         num = BC_2BytesTo16BitData(payload_p).val_U16;
