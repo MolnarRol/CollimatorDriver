@@ -1,8 +1,15 @@
-/*
- * CRC.c
+/**
+ * @file CRC.c
+ * @brief Cyclic redundancy checks
  *
- *  Created on: 3. 3. 2024
- *      Author: samof
+ * =================================================================
+ * @author Bc. Samuel Fertal
+ *
+ * =================================================================
+ * KEM, FEI, TUKE
+ * @date 30.03.2024
+ * @defgroup CRC Cyclic redundancy check
+ * @{
  */
 
 /*function for crc calculation*/
@@ -52,3 +59,7 @@ U16 CRC_CrcVerificationReceive_U16(const U16 *Data_U16,  U16 DataLength_U16, U16
     return 1;
 
 }
+
+/**
+ * @}
+ */

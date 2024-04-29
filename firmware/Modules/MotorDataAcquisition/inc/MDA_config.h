@@ -9,6 +9,8 @@
  * =================================================================
  * KEM, FEI, TUKE
  * @date 30.03.2024
+ * @addtogroup MDA MDA config
+ * @{
  */
 
 #ifndef MODULES_MOTORDATAACQUISITION_INC_MDA_CONFIG_H_
@@ -41,3 +43,7 @@
 
 #define SPEED_SAMPLE_TIMEdF32                           ( (F32)250E-6 )
 #endif /* MODULES_MOTORDATAACQUISITION_INC_MDA_CONFIG_H_ */
+
+/**
+ * @}
+ */

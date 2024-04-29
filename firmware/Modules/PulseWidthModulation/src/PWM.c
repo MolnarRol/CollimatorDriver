@@ -9,6 +9,8 @@
  * =================================================================
  * KEM, FEI, TUKE
  * @date 17.03.2024
+ * @defgroup PWM Pulse width modulator
+ * @{
  */
 #include <PWM_core.h>
 #include <TRAN.h>
@@ -167,3 +169,6 @@ void PWM_ForceAngle(const F32 forced_angle__rad__F32, const F32 voltage_amplitud
                          PWM_DUTY_TO_CMP_dMU16( (local_transf_s.abc_s.c_F32 / dc_link__V__F32) + (F32)0.5 ));
 }
 
+/*
+ * @}
+ */

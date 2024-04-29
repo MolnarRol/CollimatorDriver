@@ -1,8 +1,16 @@
-/*
- * PWM_core.h
+/**
+ * @file pwm_core.h
+ * @brief Pulse width modulation core
+ * @details Details
  *
- *  Created on: Mar 13, 2024
- *      Author: roland
+ * =================================================================
+ * @author Bc. Roland Molnar
+ *
+ * =================================================================
+ * KEM, FEI, TUKE
+ * @date 17.03.2024
+ * @addtogroup PWM PWM core
+ * @{
  */
 
 #ifndef MODULES_PULSEWIDTHMODULATION_INC_PWM_CORE_H_
@@ -15,3 +23,7 @@
 static void PWM_InitGpioPins(void);
 
 #endif /* MODULES_PULSEWIDTHMODULATION_INC_PWM_CORE_H_ */
+
+/**
+ * @}
+ */

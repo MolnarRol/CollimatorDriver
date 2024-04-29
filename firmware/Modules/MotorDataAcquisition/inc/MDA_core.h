@@ -9,6 +9,8 @@
  * =================================================================
  * KEM, FEI, TUKE
  * @date 30.03.2024
+ * @addtogroup MDA MDA core
+ * @{
  */
 
 #ifndef MODULES_MOTORDATAACQUISITION_INC_MDA_CORE_H_
@@ -53,3 +55,7 @@ S32 MDA_delta_pos__pulses__S32();
 F32 MDA_get_mech_speed_rads1_F32(S32 delta_pos__pulses__S32);
 
 #endif /* MODULES_MOTORDATAACQUISITION_INC_MDA_CORE_H_ */
+
+/**
+ * @}
+ */

@@ -1,5 +1,7 @@
 /**
  * @file ATB.c
+ *
+ * @section ATB ATB Application time base module
  * @brief Application time base module
  * @details Module for keeping up time. It can be used for precise enough non critical execution of functions in non blocking manner.
  *
@@ -9,17 +11,15 @@
  * =================================================================
  * KEM, FEI, TUKE
  * @date 29.02.2024
- */
-//test
-#include <ATB_core.h>
-
-volatile U64 s_ATB_ticks_U64;                                /**< Application tick timer variable. */
-static U16 s_ATB_Initialized_U16 = 0;                               /**< Module initialization status. */
-
-/**
- * @defgroup ATB_InterfaceFunctions ATB Interface functions
+ * @defgroup ATB Application time base module
  * @{
  */
+#include <ATB_core.h>
+
+static volatile U64 s_ATB_ticks_U64;                                /**< Application tick timer variable. */
+static U16 s_ATB_Initialized_U16 = 0;                               /**< Module initialization status. */
+
+
 
 /**
  * @brief   ATB module initialization function.
@@ -94,18 +94,6 @@ U16  ATB_CheckTicksPassed_U16(const uint32_t ref_ticks_U32, const uint32_t check
     return status_U16;
 }
 
-/**
- * @}
- */
-
-/**
- * @defgroup ATB_CoreFunctions ATB Core functions
- * @{
- */
-
-/**
- * @brief   Incrementing the s_ATB_ticks_U64 variable.
- */
 void ATB_IncrementTime(void)
 {
     s_ATB_ticks_U64 += (U64)1;

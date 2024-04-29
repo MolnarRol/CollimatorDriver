@@ -9,6 +9,8 @@
  * =================================================================
  * KEM, FEI, TUKE
  * @date 30.03.2024
+ * @addtogroup MDA MDA interface
+ * @{
  */
 
 #ifndef MODULES_MOTORDATAACQUISITION_INC_MDA_INTERFACE_H_
@@ -45,3 +47,7 @@ void MDA_ResetLinearPosition(void);
 void MDA_CalibratePhaseCurrentsOffsets(void);
 
 #endif /* MODULES_MOTORDATAACQUISITION_INC_MDA_INTERFACE_H_ */
+
+/**
+ * @}
+ */

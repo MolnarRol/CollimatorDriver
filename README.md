@@ -18,23 +18,23 @@ they only open when a snapshot is requested and then close again. From the point
 - Mechanism to signal errors to operator
 
 ## Tasks
-- - [ ] Serial communication (4. week):
-	-  [ ] Hardware setup for communication (Initialization and interface functions)
-	-  [ ] Communication protocol design
-	-  [ ] Implementation of protocol
-- - [ ] PC application (5. week):
-	- [ ] Communication protocol implementation 
-	- [ ] GUI design
+- - [x] Serial communication (4. week):
+	-  [x] Hardware setup for communication (Initialization and interface functions)
+	-  [x] Communication protocol design
+	-  [x] Implementation of protocol
+- - [x] PC application (5. week):
+	- [x] Communication protocol implementation 
+	- [x] GUI design
 - - [ ] Direct control (6. week):
-	-  [ ] Buttons
+	- [ ] Buttons
 	- [ ] LCD 
-- - [ ] Motor control (6. - 8. week):
-	-  [ ] Scalar control
-	- [ ] FOC control
-	-  [ ] Regulator tuning:
-		-  [ ] Current regulation 
-		-  [ ] Speed regulation
-		-  [ ] Position regulator 
+- - [x] Motor control (6. - 8. week):
+	- [x] Scalar control
+	- [x] FOC control
+	-  [x] Regulator tuning:
+		-  [x] Current regulation 
+		-  [x] Speed regulation
+		-  [x] Position regulator 
 	-  [ ] Safety and error checks:
 		-  [ ] Maximum torque limit and error
 - - [ ] Testing and tuning (9. week)

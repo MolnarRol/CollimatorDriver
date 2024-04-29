@@ -9,6 +9,8 @@
  * =================================================================
  * KEM, FEI, TUKE
  * @date 07.04.2024
+ * @defgroup FM Fast math fuctions
+ * @{
  */
 #include <FAST_MATH_FUNC.h>
 
@@ -131,3 +133,7 @@ F32 FM_sqrt_F32(const F32 num_F32)
 
     return sqrt_F32;
 }
+
+/**
+ * @}
+ */

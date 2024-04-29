@@ -1,8 +1,16 @@
-/*
- * PWM_interface.h
+/**
+ * @file pwm_interface.h
+ * @brief Pulse width modulation core
+ * @details Details
  *
- *  Created on: Mar 13, 2024
- *      Author: roland
+ * =================================================================
+ * @author Bc. Roland Molnar
+ *
+ * =================================================================
+ * KEM, FEI, TUKE
+ * @date 17.03.2024
+ * @addtogroup PWM PWM interface
+ * @{
  */
 #include <app_types.h>
 
@@ -21,3 +29,7 @@ void PWM_SetOutputEnable(const boolean enable_b);
 void PWM_ForceAngle(const F32 forced_angle__rad__F32, const F32 voltage_amplitude__V__F32, const F32 dc_link__V__F32);
 
 #endif /* MODULES_PULSEWIDTHMODULATION_INC_PWM_INTERFACE_H_ */
+
+/**
+ * @}
+ */
