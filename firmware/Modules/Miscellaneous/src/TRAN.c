@@ -1,8 +1,15 @@
-/*
- * TRAN.c
+/**
+ * @file TRAN.c
+ * @brief Vector control transformations
  *
- *  Created on: Mar 14, 2024
- *      Author: roland
+ * =================================================================
+ * @author Bc. Roland Molnar
+ *
+ * =================================================================
+ * KEM, FEI, TUKE
+ * @date 07.04.2024
+ * @defgroup TRAN Transformaions
+ * @{
  */
 #include <math.h>
 #include <FAST_MATH_FUNC.h>
@@ -66,3 +73,6 @@ void TRAN_DqToAbc(TRAN_struct * const tran_values_s)
     TRAN_AlphaBetaToAbc(tran_values_s);
 }
 
+/**
+ * @}
+ */

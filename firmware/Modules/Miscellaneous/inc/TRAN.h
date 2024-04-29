@@ -1,8 +1,15 @@
-/*
- * TRAN.h
+/**
+ * @file TRAN.h
+ * @brief Vector control transformations
  *
- *  Created on: Mar 14, 2024
- *      Author: roland
+ * =================================================================
+ * @author Bc. Roland Molnar
+ *
+ * =================================================================
+ * KEM, FEI, TUKE
+ * @date 07.04.2024
+ * @addtogroup TRAN Transformaion declarations
+ * @{
  */
 
 #ifndef MODULES_MISCELANEOUS_INC_TRAN_H_
@@ -45,5 +52,8 @@ void TRAN_AlphaBetaToAbc(TRAN_struct * const tran_values_s);
 void TRAN_DqToAlphaBeta(TRAN_struct * const tran_values_s);
 void TRAN_DqToAbc(TRAN_struct * const tran_values_s);
 
-
 #endif /* MODULES_MISCELANEOUS_INC_TRAN_H_ */
+
+/**
+ * @}
+ */
