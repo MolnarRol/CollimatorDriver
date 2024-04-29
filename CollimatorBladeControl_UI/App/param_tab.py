@@ -2,7 +2,8 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 from App.custom_elements import ParamField
-
+from Communication.Protocol import *
+from App.global_vars import serial_handler
 param_tab_el = None
 
 parameters_strings = {
@@ -12,9 +13,9 @@ parameters_strings = {
 }
 
 parameters = {
-    'max_speed': None,
-    'max_accel': None,
-    'max_force': None
+    'max_speed': float,
+    'max_accel': float,
+    'max_force': float
 }
 
 
@@ -23,13 +24,36 @@ def save_cmd():
     for key in parameters_strings:
         print(key, "->", parameters_strings[key].get())
         try:
-            parameters[key] = float(parameters_strings[key].get())
+            parameters[key] = float(parameters_strings[key].get()) * 1000
         except ValueError:
             err_string += '[' + key + '] = ' + parameters_strings[key].get() + ' -> Not a number.\n'
 
     if len(err_string) != 0:
         messagebox.showerror('We fcked up', err_string)
+    else:
+        data = struct.pack('>BIII',
+                           3,
+                           int(parameters['max_speed']),
+                           int(parameters['max_accel']),
+                           int(parameters['max_force']))
+        print(data.hex(' '))
+        print(struct.unpack('>BIII', data))
+        bytes = construct_message(HeaderId.COMMAND_e, data)
+        res = serial_handler.transaction_start(bytes)
+        print(data)
 
+
+def load_cmd():
+    global parameters
+    data = struct.pack('>B', 2)
+    bytes = construct_message(HeaderId.COMMAND_e, data)
+    res = serial_handler.transaction_start(bytes)
+    resp_dec = deconstruct_message(res)
+    resp_dec.payload
+    loc_parameters = struct.unpack('>III', resp_dec.payload[1:])
+    (parameters['max_speed'], parameters['max_accel'], parameters['max_force']) = struct.unpack('>III', resp_dec.payload[1:])
+    for key in parameters_strings:
+        parameters_strings[key].set(str(parameters[key]/1000))
 
 def parameter_tab(root):
     for key in parameters_strings:
@@ -45,7 +69,7 @@ def parameter_tab(root):
     btn_frame.grid(row=1, column=0, sticky='NSEW')
     btn_frame.columnconfigure(0, weight=1)
 
-    load_btn = Button(btn_frame, text='Load')
+    load_btn = Button(btn_frame, text='Load', command=load_cmd)
     load_btn.grid(row=0, column=1)
 
     save_btn = Button(btn_frame, text='Save', command=save_cmd)

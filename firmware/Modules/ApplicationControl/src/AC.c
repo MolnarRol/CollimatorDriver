@@ -17,6 +17,11 @@
 
 U32 receive_data_U32 = (U32)0;          /* Debug variable */
 
+/* Test parameters - for debug. */
+F32 testParam1_F32 = 800.0f;
+F32 testParam2_F32 = 250.0f;
+F32 testParam3_F32 = 0.25f;
+
 void AC_ExecuteCommand( const U16 * const command_payload_pU16,
                         const U16 payload_size_U16,
                         U16 * response_data_pU16,
@@ -71,4 +76,53 @@ static void AC_AddOne(const void* const payload_p,
         response_data_pU16[1] = num;
         *response_data_size_pU16 = 2;
     }
+}
+
+static void AC_CMD_GetMovementParameters( const void* const payload_p,
+                                          const U16 payload_size_U16,
+                                          U16 * response_data_pU16,
+                                          U16 * response_data_size_pU16)
+{
+    if(payload_size_U16 != 0)
+    {
+        response_data_pU16[0] = INVALID_INPUT_e;
+        *response_data_size_pU16 = 1;
+        return;
+    }
+
+    /* Local variables. */
+    U32 v1 = (U32)(testParam1_F32 * 1000.0f);
+    U32 v2 = (U32)(testParam2_F32 * 1000.0f);
+    U32 v3 = (U32)(testParam3_F32 * 1000.0f);
+
+    response_data_pU16[0] = RESPONSE_OK_e;
+    *response_data_size_pU16 = 13;
+    BC_32BitDataTo4Bytes(&v1, &response_data_pU16[1]);
+    BC_32BitDataTo4Bytes(&v2, &response_data_pU16[5]);
+    BC_32BitDataTo4Bytes(&v3, &response_data_pU16[9]);
+
+}
+
+U32 xv = 80000;
+
+static void AC_CMD_SetMovementParameters( const void* const payload_p,
+                                          const U16 payload_size_U16,
+                                          U16 * response_data_pU16,
+                                          U16 * response_data_size_pU16)
+{
+    if(payload_size_U16 != 12)
+    {
+        response_data_pU16[0] = INVALID_INPUT_e;
+        *response_data_size_pU16 = 1;
+        return;
+    }
+    U16* data_pU16 = (U16*)payload_p;
+
+    testParam1_F32 = (F32)BC_4BytesTo32BitData(&data_pU16[0]).val_U32 / 1000.0f;
+    testParam2_F32 = (F32)BC_4BytesTo32BitData(&data_pU16[4]).val_U32 / 1000.0f;
+    testParam3_F32 = (F32)BC_4BytesTo32BitData(&data_pU16[8]).val_U32 / 1000.0f;
+
+    response_data_pU16[0] = RESPONSE_OK_e;
+    *response_data_size_pU16 = 1;
+
 }

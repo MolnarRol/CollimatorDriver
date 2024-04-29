@@ -1,14 +1,16 @@
 import struct
 from tkinter import *
 from tkinter import ttk
-from App.config_file_handler import ConfigHandler
+
 from App.connection_window import *
-from Communication.threaded_serial import SerialInterface
+
 from App.param_tab import parameter_tab
 from App.data_disp import data_display
 from App.app_tab import application_ctrl_tab
 from tkinter import messagebox
 from Communication.Protocol import *
+
+from App.global_vars import *
 
 INFO_String = ('Collimator blade control interface.\n'
                'Version: 0.1\n'
@@ -19,9 +21,7 @@ INFO_String = ('Collimator blade control interface.\n'
                '- Bc. Vadym Holysh (Developer)\n\t email: vadym.holysh@student.tuke.sk')
 
 # Application variables
-config_handler = ConfigHandler(config_file_name='appconfig.json')
-serial_handler = SerialInterface(config_handler.config['serial_port']['port'],
-                                 config_handler.config['serial_port']['baud_rate'])
+
 
 # Root tkinter element
 root = Tk()
@@ -48,12 +48,14 @@ def __info_menu_clicked__():
 d = 0
 def send():
     global d
-    data = struct.pack('>BH', 1, d)
+    data = struct.pack('>B', 2)
     d += 1
-    bytes = construct_message(HeaderId.HELLO_MSG_e, data)
+    bytes = construct_message(HeaderId.COMMAND_e, data)
     res = serial_handler.transaction_start(bytes)
     resp_dec = deconstruct_message(res)
-    print(res.hex(' '))
+    resp_dec.payload
+    print(struct.unpack('>III', resp_dec.payload[1:]))
+    # print(resp_dec.payload.hex(' '))
     pass
 
 
@@ -82,6 +84,7 @@ if __name__ == '__main__':
     data_display_frame = data_display(root)
     data_display_frame.grid(row=1, column=1, sticky='NSEW')
 
+    # Debug
     send_btn = Button(root, text='send', command=send)
     send_btn.grid(row=2, column=1, sticky='NSEW')
 
