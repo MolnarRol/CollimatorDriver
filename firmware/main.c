@@ -60,7 +60,7 @@ void main(void)
     PI_ctrl_Init(&PI_speed_controller);
     PI_ctrl_Init(&PI_position_controller);
 
-    enable_FOC = 0;
+    enable_FOC = 1;
 
     /* Main loop */
     while(1)

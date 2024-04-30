@@ -109,7 +109,7 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s
 
     if(!alarm_state)
     {
-        Requested_Positionn = requestposition;
+        Requested_Positionn = ReferencePosition__rad__F32;
     }
     else
     {

@@ -19,8 +19,8 @@
 U32 receive_data_U32 = (U32)0;          /* Debug variable */
 
 /* Test parameters - for debug. */
-F32 max_speed_F32 = 800.0f;
-F32 max_accel_F32 = 250.0f;
+F32 max_speed_F32 = 40.0f;
+F32 max_accel_F32 = 20.0f;
 F32 max_force_F32 = 0.25f;
 F32 refPos_F32 = 0.0f;
 
