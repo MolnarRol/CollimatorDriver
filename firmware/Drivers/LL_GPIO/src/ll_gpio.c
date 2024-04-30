@@ -18,3 +18,36 @@ void LL_GPIO_Init(LL_LED_struct* led_config_s)
 //
 //    EDIS;
 }
+
+
+
+void gpio_vSetLed(LED_NUM led_num, Uint16 state)
+{
+    switch(led_num)
+    {
+        case LED2:
+            if(state == 0)
+            {
+                //clear
+            }
+            else
+            {
+                //set
+            }
+            break;
+
+        case LED3:
+            if(state == 0)
+            {
+                //clear
+            }
+            else
+            {
+                //set
+            }
+            break;
+
+        default: break;
+    }
+
+}
