@@ -101,7 +101,7 @@ void dispCtrl_u16PutString(char* pcData){
 void dispCtrl_vSetPosition(Uint16 u16PosX, Uint16 u16PosY){
     char cAddress = (char)( ( ( (Uint16)u16PosY - 1 )*(Uint16)32 ) + ( (Uint16)u16PosX - 1 ) ) ;
     dispCtrl_vSendInstruction(0,0,((char)0x80 + (char)cAddress)); /*set DDRAM on position 0:0*/
-    DELAY_US(1000);
+    //DELAY_US(1000);
 }
 
 

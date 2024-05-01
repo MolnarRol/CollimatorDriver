@@ -49,10 +49,10 @@ void main(void)
     mcu_vInitClocks();                                          /* Initialize uC clock system. */
     ATB_Init();
     PWM_Init();
-    SCI_Init();
     spi_vInit(9600);
     dispCtrl_vInitDisplay();
     DELAY_US(50000);
+    SCI_Init();
     CommutationAlignment();
     MDA_Init();
     TEST_PinInit();
@@ -62,6 +62,8 @@ void main(void)
     dispCtrl_u16PutString("Collimator Blade");
     dispCtrl_vSetPosition(1,2);
     dispCtrl_u16PutString("Position: ");
+    dispCtrl_vSetPosition(1,4);
+    dispCtrl_u16PutString("<-5 mm    +5 mm>");
 
     /*Redudant reset of PI controller structures*/
 

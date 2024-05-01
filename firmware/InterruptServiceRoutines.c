@@ -40,6 +40,7 @@ inline void ISR_MotorControlHandler(void)
         dispCtrl_vSetPosition(1,3);
         float_to_char_array(MDA_GetData_ps()->angular_position__rad__F32, &buffer, 2);
         dispCtrl_u16PutString(&buffer);
+        dispCtrl_u16PutString(" mm");
     }
 //    TEST_PIN_RESET_dM;
 //    TEST_ScalarMotorMovementHandler();

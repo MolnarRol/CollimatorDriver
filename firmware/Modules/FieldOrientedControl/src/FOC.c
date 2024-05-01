@@ -72,7 +72,7 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s
 
     /* PI_speed_action = PI_position_output */
     requestspeed = PI_ctrl_CalculateOutput(&PI_position_controller, MDA_GetData_ps()->angular_position__rad__F32);
-    PI_speed_controller.action_value_f32 = PI_ctrl_CalculateOutput(&PI_position_controller, MDA_GetData_ps()->rotor_mech_angle__rad__F32);
+    PI_speed_controller.action_value_f32 = PI_ctrl_CalculateOutput(&PI_position_controller, MDA_GetData_ps()->angular_position__rad__F32);
     PI_speed_controller.ref_value_f32 = PC_GetData_ps()->tj.Speed__rad_s__F32;
 
     /* PI_iq_action = PI_speed_output */
