@@ -72,11 +72,10 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s
 
     /* PI_speed_action = PI_position_output */
     requestspeed = PI_ctrl_CalculateOutput(&PI_position_controller, MDA_GetData_ps()->angular_position__rad__F32);
-    PI_speed_controller.action_value_f32 = requestspeed;//PI_ctrl_CalculateOutput(&PI_position_controller, MDA_GetData_ps()->rotor_mech_angle__rad__F32);
+    PI_speed_controller.action_value_f32 = PI_ctrl_CalculateOutput(&PI_position_controller, MDA_GetData_ps()->rotor_mech_angle__rad__F32);
     PI_speed_controller.ref_value_f32 = PC_GetData_ps()->tj.Speed__rad_s__F32;
 
     /* PI_iq_action = PI_speed_output */
-
     Qcurrent= PI_ctrl_CalculateOutput(&PI_speed_controller, MDA_GetData_ps()->rotor_mech_speed__rad_s1__F32);
     PI_iq_current_controller.action_value_f32 = Qcurrent;
     /* PI_iq_ref = acceleration * Jm *kt */
@@ -86,10 +85,8 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s
 
     /* ud = output from PI Controller id - compensation of nonlinearity in the current component id */
     trans_s.dq_s.d_F32 = (F32)( ( PI_ctrl_CalculateOutput(&PI_id_current_controller, MDA_GetData_ps()->currents_s.id__A__F32) - CompensationCurrent_id ) );
-
     /* uq = output from PI Controller iq - compensation of nonlinearity in the current component iq + compensation of induced voltage*/
     trans_s.dq_s.q_F32 = (F32)( ( PI_ctrl_CalculateOutput(&PI_iq_current_controller, MDA_GetData_ps()->currents_s.iq__A__F32) + CompensationCurrent_iq + CompensationIndVoltage ) );
-
     /* electric angle */
     trans_s.angle__rad__F32 = MDA_GetData_ps()->rotor_el_angle__rad__F32;
 

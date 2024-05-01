@@ -23,6 +23,8 @@
 #include "FOC.h"
 #include "TEST.h"
 #include <PI_Controller.h>
+#include "spi.h"
+#include "dispCtrl.h"
 
 extern TRAN_struct tran_s;
 extern boolean enable_FOC;
@@ -48,10 +50,18 @@ void main(void)
     ATB_Init();
     PWM_Init();
     SCI_Init();
+    spi_vInit(115200);
+    dispCtrl_vInitDisplay();
     CommutationAlignment();
     MDA_Init();
     TEST_PinInit();
     MDA_CalibratePhaseCurrentsOffsets();
+
+    dispCtrl_vSetPosition(1,1);
+    dispCtrl_u16PutString("Collimator Blade");
+    dispCtrl_vSetPosition(1,2);
+    dispCtrl_u16PutString("Position: ");
+    dispCtrl_vSetPosition(1,3);
 
     /*Redudant reset of PI controller structures*/
 
