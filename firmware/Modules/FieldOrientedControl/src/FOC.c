@@ -105,6 +105,7 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s
 
     static U16 error_moment_counter_U16 = 0;
     static U16 error_disable_FOC_counter_U16 = 0;
+    static U16 total_stop_counter_U16 = 0;
     static F32 Requested_Positionn = 0;
 
     if(!alarm_state)
@@ -395,22 +396,38 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s
     trans_s.angle__rad__F32 = MDA_GetData_ps()->rotor_el_angle__rad__F32;
 
     /* torque limiter */
-    if( ( MDA_GetData_ps()->currents_s.iq__A__F32 * MOTOR_TORQUE_CONSTANT__Nm_A__df32 ) > MAX_MOMENT
-       || ( MDA_GetData_ps()->currents_s.iq__A__F32 * MOTOR_TORQUE_CONSTANT__Nm_A__df32 ) < -MAX_MOMENT )
-    {
-        error_moment_counter_U16++;
-        if(error_moment_counter_U16 > 1000){
-            error_moment_counter_U16 = 0;
-            Ticks__s__F32 = 0;
-            Acceleration__rad_s_2__F32 = 0;
-            Speed__rad_s__F32 = 0;
-            Position__rad__F32 = 0;
-            ticks_enabled = 0;
-            alarm_state = 1;
-            trans_s.dq_s.q_F32 = 0;
-            trans_s.dq_s.d_F32 = 0;
-        }
-    }
+
+     if( ( MDA_GetData_ps()->currents_s.iq__A__F32 * MOTOR_TORQUE_CONSTANT__Nm_A__df32 ) > MAX_MOMENT
+          || ( MDA_GetData_ps()->currents_s.iq__A__F32 * MOTOR_TORQUE_CONSTANT__Nm_A__df32 ) < -MAX_MOMENT )
+     {
+         error_moment_counter_U16++;
+         if(!alarm_state){
+         if(error_moment_counter_U16 > 3000){
+             error_moment_counter_U16 = 0;
+             Ticks__s__F32 = 0;
+             Acceleration__rad_s_2__F32 = 0;
+             Speed__rad_s__F32 = 0;
+             Position__rad__F32 = 0;
+             ticks_enabled = 0;
+             alarm_state = 1;
+         }
+         }
+         else{
+             error_moment_counter_U16++;
+            if(error_moment_counter_U16 > 10000){
+                error_moment_counter_U16 = 0;
+                Ticks__s__F32 = 0;
+                Acceleration__rad_s_2__F32 = 0;
+                Speed__rad_s__F32 = 0;
+                Position__rad__F32 = 0;
+                ticks_enabled = 0;
+                alarm_state = 0;
+                enable_FOC = 0;
+                trans_s.dq_s.q_F32 = 0;
+                trans_s.dq_s.d_F32 = 0;
+            }
+         }
+       }
 
     /* voltage limiter */
     Voltage_Limiter(&trans_s);
@@ -418,12 +435,11 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s
     /* transformation from dq to abc */
     TRAN_DqToAbc(&trans_s);
 
-    if(enable_FOC)
-    {
+
     PWM_SetCompareValues(PWM_DUTY_TO_CMP_dMU16( (trans_s.abc_s.a_F32 / MDA_GetData_ps()->dc_link_voltage__V__F32) + (F32)0.5 ),
                          PWM_DUTY_TO_CMP_dMU16( (trans_s.abc_s.b_F32 / MDA_GetData_ps()->dc_link_voltage__V__F32) + (F32)0.5 ),
                          PWM_DUTY_TO_CMP_dMU16( (trans_s.abc_s.c_F32 / MDA_GetData_ps()->dc_link_voltage__V__F32) + (F32)0.5 ));
-    }
+
 
 }
 
