@@ -37,6 +37,7 @@ inline void ISR_MotorControlHandler(void)
     if(display_counter_U16 > 5000)
     {
         display_counter_U16 = 0;
+        dispCtrl_vSetPosition(1,3);
         float_to_char_array(MDA_GetData_ps()->angular_position__rad__F32, &buffer, 2);
         dispCtrl_u16PutString(&buffer);
     }

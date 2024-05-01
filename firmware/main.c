@@ -50,8 +50,9 @@ void main(void)
     ATB_Init();
     PWM_Init();
     SCI_Init();
-    spi_vInit(115200);
+    spi_vInit(9600);
     dispCtrl_vInitDisplay();
+    DELAY_US(50000);
     CommutationAlignment();
     MDA_Init();
     TEST_PinInit();
@@ -61,7 +62,6 @@ void main(void)
     dispCtrl_u16PutString("Collimator Blade");
     dispCtrl_vSetPosition(1,2);
     dispCtrl_u16PutString("Position: ");
-    dispCtrl_vSetPosition(1,3);
 
     /*Redudant reset of PI controller structures*/
 
