@@ -32,10 +32,31 @@
 #define MOTOR_MAGNETIC_FLUX_OF_ROTOR_MAGNTES__Wb__df32     (F32)( 1.414 * (MOTOR_TORQUE_CONSTANT__Nm_A__df32) / ( ( 3.0/2.0 ) * (F32)MOTOR_POLE_PAIRS_dU16 ) )
 
 #define MAX_MOMENT                                         ( (F32)0.1)
+
 void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s1_F32, F32 MaxAcc_rad_s2_F32);
 
 void CommutationAlignment();
 
 void Voltage_Limiter(TRAN_struct * const tran_values_s);
+
+static void PC_CalculateData(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s1_F32, F32 MaxAcc_rad_s2_F32);
+
+typedef struct
+{
+    F32 Start_Absolute_Position__rad__F32;
+    F32 Ticks__s__F32;
+    boolean ticks_enabled;
+    struct
+    {
+        F32 Acceleration__rad_s_2__F32;
+        F32  Speed__rad_s__F32;
+        F32 Position__rad__F32;
+    } tj;
+
+}PC_Data_struct;
+
+const PC_Data_struct* PC_GetData_ps(void);
+
+static inline void PC_Reset_Data(boolean Full_Reset);
 
 #endif /* MODULES_FIELDORIENTEDCONTROL_INC_FOC_H_ */
