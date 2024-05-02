@@ -74,7 +74,6 @@ void main(void)
     {
         PWM_SetOutputEnable(True_b);
         ECOM_MainHandler();
-
 //        if(display_counter_U16 > 10000)
 //        {
 //            display_counter_U16 = 0;
