@@ -49,11 +49,11 @@ void main(void)
     /* Initialization */
 
     mcu_vInitClocks();                                          /* Initialize uC clock system. */
-    spi_vInit(900000);
+    spi_vInit(1000);
     dispCtrl_vInitDisplay();
     ATB_Init();
     PWM_Init();
-    SCI_Init();
+ //   SCI_Init();
     CommutationAlignment();
     MDA_Init();
     TEST_PinInit();
@@ -86,8 +86,8 @@ void main(void)
     while(1)
     {
         PWM_SetOutputEnable(output_en);
-        ECOM_MainHandler();
-        //DisplayRefresh();
+        //ECOM_MainHandler();
+        DisplayRefresh();
 //        counter++;
 //        if(counter > 100000){
 //        counter = 0;

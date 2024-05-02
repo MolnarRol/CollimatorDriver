@@ -201,7 +201,7 @@ void DisplayRefresh(void)
     {
         ref_ticks_U32 = ATB_GetTicks_U32();
         GpioDataRegs.GPCSET.bit.GPIO72 = 1;
-        dispCtrl_u16PutString("huiiiiii");
+        dispCtrl_u16PutString(&buffer);
         GpioDataRegs.GPCCLEAR.bit.GPIO72 = 1;
        // dispCtrl_u16PutString(" mm  ");
     }

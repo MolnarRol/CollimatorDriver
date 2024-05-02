@@ -30,7 +30,7 @@ inline void ISR_MotorControlHandler(void)
 
     ATB_IncrementTime();
     /* Motor control functionality. Called every PWM cycle. */
-    DisplayRefresh();
+    //DisplayRefresh();
     if(enable_FOC){
         kukam_prud();
         FOC_CalculateOutput(refPos_F32, max_speed_F32, max_accel_F32);
