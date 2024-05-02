@@ -7,7 +7,7 @@
 #include "dispCtrl.h"
 
  char buffer[12] = {};
-
+ F32 test_F32 = 0;
  unsigned char reverse(unsigned char b) {
 //   b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
 //   b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
@@ -185,62 +185,62 @@ void DisplayRefresh(void)
     static U32 ref_ticks_U32 = 0;
     static U16 display_refresh_state = 0;
 
+                if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(100)) )
+                {
+                    ref_ticks_U32 = ATB_GetTicks_U32();
+                    dispCtrl_vSetPosition(1,3);
+                    float_to_char_array(MDA_GetData_ps()->angular_position__rad__F32, &buffer, 1);
+                    dispCtrl_u16PutString(&buffer);
+                }
 
-    switch(display_refresh_state)
-    {
-        case 0:
-            if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(100)) )
-            {
-                ref_ticks_U32 = ATB_GetTicks_U32();
-                dispCtrl_vSetPosition(1,3);
-                display_refresh_state = 1;
-            }
-            break;
-        case 1:
-            if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(100)) )
-            {
-                ref_ticks_U32 = ATB_GetTicks_U32();
-                float_to_char_array(MDA_GetData_ps()->angular_position__rad__F32, &buffer, 1);
-                display_refresh_state = 2;
-            }
-            break;
-        case 2:
-            if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(300)) )
-            {
-                ref_ticks_U32 = ATB_GetTicks_U32();
-                GpioDataRegs.GPCSET.bit.GPIO72 = 1;
-                dispCtrl_u16PutString(&buffer);
-                GpioDataRegs.GPCCLEAR.bit.GPIO72 = 1;
-                display_refresh_state = 0;
-            }
-            break;
-        default:
-            display_refresh_state = 0;
-            break;
-
-    }
-
-
-//    if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(100)) )
-//    //if(CpuTimer1Regs.TCR.bit.TIF == 1)
+//    switch(display_refresh_state)
 //    {
-//        //ref_ticks_U32 = ATB_GetTicks_U32();
-//        //CpuTimer1Regs.TCR.bit.TIF = 1;
-//        /* 100ms */
-//        dispCtrl_vSetPosition(1,3);
-//    }
+//        case 0:
+//            if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(100)) )
+//            {
+//                ref_ticks_U32 = ATB_GetTicks_U32();
+//                display_refresh_state = 1;
+//            }
+//            break;
+//        case 1:
+//            if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(100)) )
+//            {
+//                ref_ticks_U32 = ATB_GetTicks_U32();
+//                dispCtrl_vSetPosition(1,3);
+//                float_to_char_array(MDA_GetData_ps()->angular_position__rad__F32, &buffer, 1);
+//                display_refresh_state = 2;
+//            }
+//            break;
+//        case 2:
+//            if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(300)) )
+//            {
+//                ref_ticks_U32 = ATB_GetTicks_U32();
+//                GpioDataRegs.GPCSET.bit.GPIO72 = 1;
+//                dispCtrl_u16PutString(&buffer);
+//                GpioDataRegs.GPCCLEAR.bit.GPIO72 = 1;
+//                display_refresh_state = 0;
+//            }
+//            break;
+//        default:
+//            display_refresh_state = 0;
+//            break;
 //
-//    if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(200)) )
-//    {
-//        float_to_char_array(MDA_GetData_ps()->angular_position__rad__F32, &buffer, 1);
 //    }
-//
-//    if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(500)) )
-//    {
-//        ref_ticks_U32 = ATB_GetTicks_U32();
+
+
+    //if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(100)) )
+    //if(CpuTimer1Regs.TCR.bit.TIF == 1)
+    //{
+        //ref_ticks_U32 = ATB_GetTicks_U32();
+        //CpuTimer1Regs.TCR.bit.TIF = 1;
+        /* 100ms */
 //        GpioDataRegs.GPCSET.bit.GPIO72 = 1;
+//        dispCtrl_vSetPosition(1,3);
+//        float_to_char_array(test_F32, &buffer, 1);
 //        dispCtrl_u16PutString(&buffer);
-//        GpioDataRegs.GPCCLEAR.bit.GPIO72 = 1;
-//       // dispCtrl_u16PutString(" mm  ");
-//    }
+////        GpioDataRegs.GPCCLEAR.bit.GPIO72 = 1;
+//        dispCtrl_u16PutString(" mm  ");
+//        DELAY_US(100000);
+
+    //}
 }

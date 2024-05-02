@@ -174,7 +174,7 @@ static void PC_CalculateData(F32 Requested_Position__rad__F32, F32 MaxMechSpeed_
         else
         {
             roof = 1;
-            FullTime__s__F32 = 2.0*sqrt((Minus_Check*(Requested_Position__rad__F32 - MDA_GetData_ps()->angular_position__rad__F32))/MaxAcc_rad_s2_F32);
+            FullTime__s__F32 = 2.0*FM_sqrt_F32((Minus_Check*(Requested_Position__rad__F32 - MDA_GetData_ps()->angular_position__rad__F32))/MaxAcc_rad_s2_F32);
         }
 
         }
@@ -280,12 +280,12 @@ inline const PC_Data_struct* PC_GetData_ps(void)
 
 void Voltage_Limiter(TRAN_struct * const tran_values_s){
 
-    if( sqrt( ( tran_values_s->dq_s.d_F32 * tran_values_s->dq_s.d_F32 ) + ( tran_values_s->dq_s.q_F32 * tran_values_s->dq_s.q_F32 ) ) > ( 0.5 * MDA_GetData_ps()->dc_link_voltage__V__F32 ) )
+    if( FM_sqrt_F32( ( tran_values_s->dq_s.d_F32 * tran_values_s->dq_s.d_F32 ) + ( tran_values_s->dq_s.q_F32 * tran_values_s->dq_s.q_F32 ) ) > ( 0.5 * MDA_GetData_ps()->dc_link_voltage__V__F32 ) )
     {
         if(trans_s.dq_s.q_F32 > 0)
-        tran_values_s->dq_s.q_F32 = (F32) sqrt( ( 0.5 * MDA_GetData_ps()->dc_link_voltage__V__F32 ) - ( tran_values_s->dq_s.d_F32 * tran_values_s->dq_s.d_F32 ) );   /*  sqrt(12*12 - Ud^2) */
+        tran_values_s->dq_s.q_F32 = (F32) FM_sqrt_F32( ( 0.5 * MDA_GetData_ps()->dc_link_voltage__V__F32 ) - ( tran_values_s->dq_s.d_F32 * tran_values_s->dq_s.d_F32 ) );   /*  sqrt(12*12 - Ud^2) */
         else
-        tran_values_s->dq_s.q_F32 = (F32)-sqrt( ( 0.5 * MDA_GetData_ps()->dc_link_voltage__V__F32 ) - ( tran_values_s->dq_s.d_F32 * tran_values_s->dq_s.d_F32 ) );   /*  sqrt(12*12 - Ud^2) */
+        tran_values_s->dq_s.q_F32 = (F32)-FM_sqrt_F32( ( 0.5 * MDA_GetData_ps()->dc_link_voltage__V__F32 ) - ( tran_values_s->dq_s.d_F32 * tran_values_s->dq_s.d_F32 ) );   /*  sqrt(12*12 - Ud^2) */
 
     }
 }

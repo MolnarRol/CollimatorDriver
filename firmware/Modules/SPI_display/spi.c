@@ -9,7 +9,7 @@
 void spi_vInit(float u16BaudRate){
 
     EALLOW;
-    ClkCfgRegs.LOSPCP.bit.LSPCLKDIV = 1; /* set LSPCLK divider on =/2 - 50*/
+    ClkCfgRegs.LOSPCP.bit.LSPCLKDIV = 2; /* set LSPCLK divider on =/2 - 50*/
     CpuSysRegs.PCLKCR8.bit.SPI_B = 1;
 
     GpioCtrlRegs.GPBGMUX2.bit.GPIO58 = 1;
@@ -54,7 +54,7 @@ void spi_vInit(float u16BaudRate){
     SpibRegs.SPICCR.bit.SPILBK = 1 ;           /*loop-back mode*/
     SpibRegs.SPICTL.bit.TALK = 1;              /*enable transmit data*/
     SpibRegs.SPIBRR.bit.SPI_BIT_RATE =
-    (Uint16)(((float)MCU_FREQ/2) / ((long)u16BaudRate) - 1) ;     /*bit rate*/
+    (Uint16)(((float)MCU_FREQ/4) / ((long)u16BaudRate) - 1) ;     /*bit rate*/
     SpibRegs.SPIPRI.bit.FREE = 1;              /*free mode debug*/
     SpibRegs.SPISTS.bit.INT_FLAG = 1;
     SpibRegs.SPISTS.bit.OVERRUN_FLAG = 1;

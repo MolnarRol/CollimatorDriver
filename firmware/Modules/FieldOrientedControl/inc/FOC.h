@@ -16,6 +16,7 @@
 #include <PWM_interface.h>
 #include <math.h>
 #include "dispCtrl.h"
+#include "FAST_MATH_FUNC.h"
 
 
 //#define MAX_SPEED__rad_s__df32                             ( (F32)5.0f )
