@@ -1,8 +1,14 @@
-/*
- * FOC.h
+/**
+ * @file FOC.h
+ * @brief Field oriented control
  *
- *  Created on: 4 ��. 2024 �.
- *      Author: vadym
+ * =================================================================
+ * @author Bc. Samuel Fertal
+ * @author Bc. Vadym Holysh
+ *
+ * =================================================================
+ * KEM, FEI, TUKE
+ * @date 02.05.2024
  */
 
 #ifndef MODULES_FIELDORIENTEDCONTROL_INC_FOC_H_

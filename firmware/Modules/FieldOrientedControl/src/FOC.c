@@ -1,8 +1,14 @@
-/*
- * FOC.c
+/**
+ * @file FOC.c
+ * @brief Field oriented control
  *
- *  Created on: 4 ap. 2024 �.
- *      Author: vadym
+ * =================================================================
+ * @author Bc. Samuel Fertal
+ * @author Bc. Vadym Holysh
+ *
+ * =================================================================
+ * KEM, FEI, TUKE
+ * @date 02.05.2024
  */
 
 #include "FOC.h"

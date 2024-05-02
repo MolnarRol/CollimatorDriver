@@ -24,5 +24,7 @@ typedef enum
     POSITION_CTRL_e     = 1,
 } MTCL_ControlType_enum;
 
+boolean MTCL_SetMovementParams(const F32 max_speed__rad_s__F32, const F32 max_accel__rad_s2__F32, const F32 max_torque__Nm__F32);
+void    MTCL_GetMovementParams(F32 * const max_speed__rad_s__F32, F32 * const max_accel__rad_s2__F32, F32 * const max_torque__Nm__F32);
 
 #endif /* MODULES_MOTORCONTROL_INC_MTCL_INTERFACE_H_ */
