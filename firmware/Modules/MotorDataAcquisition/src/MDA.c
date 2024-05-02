@@ -27,7 +27,6 @@ const static F32 s_MDA_phase_u_offset_current__A__dF32  = (F32)0.0;
 const static F32 s_MDA_phase_v_offset_current__A__dF32  = (F32)0.0;
 const static F32 s_MDA_phase_w_offset_current__A__dF32  = (F32)0.0;
 
-U16 display_counter_U16 = 0;;
 /*********************************************************************************************************************************************
  *                                                      Static functions                                                                     *
  *********************************************************************************************************************************************/
@@ -41,7 +40,6 @@ interrupt void MDA_AdcConverstionCompleteIsr(void)
     EINT;
     MDA_UpdateData();
     ISR_MotorControlHandler();
-    display_counter_U16++;
     AdcaRegs.ADCINTFLGCLR.bit.ADCINT1   = (U16)1;                                   /* Clear interrupt flag. */
     PieCtrlRegs.PIEACK.bit.ACK1         = (U16)1;
 

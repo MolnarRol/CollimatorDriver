@@ -6,22 +6,33 @@
  */
 #include "dispCtrl.h"
 
+ char buffer[12] = {};
+
  unsigned char reverse(unsigned char b) {
-   b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
-   b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
-   b = (b & 0xAA) >> 1 | (b & 0x55) << 1;
+//   b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
+//   b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
+//   b = (b & 0xAA) >> 1 | (b & 0x55) << 1;
+     b = (b * 0x0202020202ULL & 0x010884422010ULL) % 1023;
    return b;
 }
 
-void dispCtrl_vSendInstruction(Uint16 u16RW, Uint16 u16RS, char data){
+void dispCtrl_vSendInstruction(Uint16 u16RW, Uint16 u16RS, char cData){
 
-    char packet_3_byte [4];
-    char reverse_data = reverse(data);
-    packet_3_byte[0] = (0xF8^(u16RW << 2)^(u16RS << 1));
-    packet_3_byte[1] = (reverse_data & 0xF0);
-    packet_3_byte[2] = (reverse_data & 0x0F) << 4;
+    unsigned int Instruction[3];
+    Instruction[0] = (0xF8|((u16RW) << 2)|((u16RS) << 1)) << 8; //FIRST BYTE
+    Instruction[1] = (0x00|((cData&0x1) << 7)|((cData&0x2) << 5)|((cData&0x4) << 3)|((cData&0x8) << 1)) << 8; //SECOND BYTE
+    Instruction[2] = (0x00|((cData&0x10) << 3)|((cData&0x20) << 1)|((cData&0x40) >> 1)|((cData&0x80) >> 3)) <<8; //THIRD BYTE
+    spi_vSendChar(Instruction[0]); //SENDCHAR FOR SENDING 1 BYTE
+    spi_vSendChar(Instruction[1]);
+    spi_vSendChar(Instruction[2]);
 
-    spi_u16SendData(packet_3_byte,3);
+//    char packet_3_byte [4];
+//    char reverse_data = reverse(cData);
+//    packet_3_byte[0] = (0xF8^(u16RW << 2)^(u16RS << 1));
+//    packet_3_byte[1] = (reverse_data & 0xF0);
+//    packet_3_byte[2] = (reverse_data & 0x0F) << 4;
+//
+//    spi_u16SendData(packet_3_byte,3);
 }
 
 void dispCtrl_vSendInitInstruction(char data){
@@ -39,6 +50,11 @@ void dispCtrl_vInitDisplay(void){
 
     DELAY_US(7000);
     /* set RESET pin for display*/
+
+    GpioCtrlRegs.GPCGMUX1.bit.GPIO72 = 1;
+    GpioCtrlRegs.GPCGMUX1.bit.GPIO72 = 0;
+    GpioCtrlRegs.GPCDIR.bit.GPIO72 = 1;
+    GpioDataRegs.GPCCLEAR.bit.GPIO72 = 1;
 
     GpioCtrlRegs.GPAGMUX2.bit.GPIO30 = 1;
     GpioCtrlRegs.GPAGMUX2.bit.GPIO30 = 0;
@@ -82,28 +98,40 @@ void dispCtrl_vInitDisplay(void){
     dispCtrl_vSendInstruction(0,0,(char)0x80); /*set DDRAM on position 0:0*/
     DELAY_US(1000);
 
-    DELAY_US(5000);
+    DELAY_US(55000);
 
 }
 
 void dispCtrl_u16PutString(char* pcData){
-
-    Uint16 i = 0;
-    spi_vSendChar( (0xF8 ^ ( (char)0 << 2 ) ^ ( (char)1 << 1) ) ); /*start byte - 5 high,RW,RS*/
-    while(pcData[i] != '\0')
+    unsigned int counter;
+    for (counter = 0; pcData[counter] != '\0'; counter++)
     {
-        spi_vSendChar(reverse(pcData[i]) & 0xF0);
-        spi_vSendChar((reverse(pcData[i]) & 0x0F) << 4);
-        i++;
+
+        dispCtrl_vSendInstruction(0,1,pcData[counter]);
+
     }
+//    Uint16 i = 0;
+//    spi_vSendChar( (0xF8 ^ ( (char)0 << 2 ) ^ ( (char)1 << 1) ) ); /*start byte - 5 high,RW,RS*/
+//    while(pcData[i] != '\0')
+//    {
+//        spi_vSendChar(reverse(pcData[i]) & 0xF0);
+//        spi_vSendChar((reverse(pcData[i]) & 0x0F) << 4);
+//        i++;
+//    }
 }
 
-void dispCtrl_vSetPosition(Uint16 u16PosX, Uint16 u16PosY){
+void dispCtrl_vSetPosition(Uint16 u16PosX, Uint16 u16PosY)
+{
     char cAddress = (char)( ( ( (Uint16)u16PosY - 1 )*(Uint16)32 ) + ( (Uint16)u16PosX - 1 ) ) ;
     dispCtrl_vSendInstruction(0,0,((char)0x80 + (char)cAddress)); /*set DDRAM on position 0:0*/
     //DELAY_US(1000);
 }
 
+
+void dispCtrl_clear()
+{
+    dispCtrl_vSendInstruction(0,0,0x01);
+}
 
 void float_to_char_array(F32 f, char* buffer, U16 precision) {
     // Handle negative numbers
@@ -149,4 +177,32 @@ void float_to_char_array(F32 f, char* buffer, U16 precision) {
 
     // Null-terminate the string
     *buffer = '\0';
+}
+
+void DisplayRefresh(void)
+{
+//    char buffer[12] = {};
+    static U32 ref_ticks_U32 = 0;
+    if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(100)) )
+    //if(CpuTimer1Regs.TCR.bit.TIF == 1)
+    {
+        //ref_ticks_U32 = ATB_GetTicks_U32();
+        //CpuTimer1Regs.TCR.bit.TIF = 1;
+        /* 100ms */
+        dispCtrl_vSetPosition(1,3);
+    }
+
+    if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(200)) )
+    {
+        float_to_char_array(MDA_GetData_ps()->angular_position__rad__F32, &buffer, 1);
+    }
+
+    if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(500)) )
+    {
+        ref_ticks_U32 = ATB_GetTicks_U32();
+        GpioDataRegs.GPCSET.bit.GPIO72 = 1;
+        dispCtrl_u16PutString("huiiiiii");
+        GpioDataRegs.GPCCLEAR.bit.GPIO72 = 1;
+       // dispCtrl_u16PutString(" mm  ");
+    }
 }
