@@ -1,7 +1,7 @@
 /*
  * dispCtrl.c
  *
- *  Created on: 10 mar. 2024 ã.
+ *  Created on: 10 mar. 2024 ï¿½.
  *      Author: vadym
  */
 #include "dispCtrl.h"
@@ -183,26 +183,64 @@ void DisplayRefresh(void)
 {
 //    char buffer[12] = {};
     static U32 ref_ticks_U32 = 0;
-    if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(100)) )
-    //if(CpuTimer1Regs.TCR.bit.TIF == 1)
+    static U16 display_refresh_state = 0;
+
+
+    switch(display_refresh_state)
     {
-        //ref_ticks_U32 = ATB_GetTicks_U32();
-        //CpuTimer1Regs.TCR.bit.TIF = 1;
-        /* 100ms */
-        dispCtrl_vSetPosition(1,3);
+        case 0:
+            if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(100)) )
+            {
+                ref_ticks_U32 = ATB_GetTicks_U32();
+                dispCtrl_vSetPosition(1,3);
+                display_refresh_state = 1;
+            }
+            break;
+        case 1:
+            if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(100)) )
+            {
+                ref_ticks_U32 = ATB_GetTicks_U32();
+                float_to_char_array(MDA_GetData_ps()->angular_position__rad__F32, &buffer, 1);
+                display_refresh_state = 2;
+            }
+            break;
+        case 2:
+            if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(300)) )
+            {
+                ref_ticks_U32 = ATB_GetTicks_U32();
+                GpioDataRegs.GPCSET.bit.GPIO72 = 1;
+                dispCtrl_u16PutString(&buffer);
+                GpioDataRegs.GPCCLEAR.bit.GPIO72 = 1;
+                display_refresh_state = 0;
+            }
+            break;
+        default:
+            display_refresh_state = 0;
+            break;
+
     }
 
-    if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(200)) )
-    {
-        float_to_char_array(MDA_GetData_ps()->angular_position__rad__F32, &buffer, 1);
-    }
 
-    if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(500)) )
-    {
-        ref_ticks_U32 = ATB_GetTicks_U32();
-        GpioDataRegs.GPCSET.bit.GPIO72 = 1;
-        dispCtrl_u16PutString(&buffer);
-        GpioDataRegs.GPCCLEAR.bit.GPIO72 = 1;
-       // dispCtrl_u16PutString(" mm  ");
-    }
+//    if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(100)) )
+//    //if(CpuTimer1Regs.TCR.bit.TIF == 1)
+//    {
+//        //ref_ticks_U32 = ATB_GetTicks_U32();
+//        //CpuTimer1Regs.TCR.bit.TIF = 1;
+//        /* 100ms */
+//        dispCtrl_vSetPosition(1,3);
+//    }
+//
+//    if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(200)) )
+//    {
+//        float_to_char_array(MDA_GetData_ps()->angular_position__rad__F32, &buffer, 1);
+//    }
+//
+//    if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(500)) )
+//    {
+//        ref_ticks_U32 = ATB_GetTicks_U32();
+//        GpioDataRegs.GPCSET.bit.GPIO72 = 1;
+//        dispCtrl_u16PutString(&buffer);
+//        GpioDataRegs.GPCCLEAR.bit.GPIO72 = 1;
+//       // dispCtrl_u16PutString(" mm  ");
+//    }
 }
