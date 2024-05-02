@@ -15,6 +15,7 @@
 #include <Modules/Miscellaneous/inc/TRAN.h>
 #include <PWM_interface.h>
 #include <math.h>
+#include "dispCtrl.h"
 
 
 //#define MAX_SPEED__rad_s__df32                             ( (F32)5.0f )
@@ -25,7 +26,7 @@
 #define DELTA_ACCELERATION_POSITION__rad__df32(MaxAcc_rad_s2_F32,acceleration_time)             (F32)( 0.5 * MaxAcc_rad_s2_F32 * acceleration_time * acceleration_time )
 
 /*MOTOR CONSTANT*/
-#define MOTOTR_MOMENT_OF_INERTIA__kg_m2__df32              ( (F32)48.0e-6f )
+#define MOTOTR_MOMENT_OF_INERTIA__kg_m2__df32              ( (F64)48.0e-6f )
 #define MOTOR_TORQUE_CONSTANT__Nm_A__df32                  ( (F32)0.036f ) // kt
 #define MOTOR_INDUCTANCE__H__df32                          ( (F32)0.6e-3f )
 /* lambda = kt/(1.5*p) */

@@ -27,8 +27,8 @@
 #define MIN_CURRENT_Q__A__df32 ( (F32)-15.0f )
 #define MAX_SPEED__RPM__df32   ( (F32)475.0f )
 #define MIN_SPEED__RPM__df32   ( (F32)-475.0f )
-#define SAMPLING_TIME__s__df32 ( (F32)50.0e-6f )
-#define SAMPLING_TIME_SPEED_REG__s__dF32 ( (F32)250e-6f )
+#define SAMPLING_TIME__s__df32 ( (F64)50.0e-6f )
+#define SAMPLING_TIME_SPEED_REG__s__dF32 ( (F64)250e-6f )
 
 
 typedef struct {

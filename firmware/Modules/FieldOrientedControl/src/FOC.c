@@ -26,6 +26,9 @@ F32 requestspeed=0;
 F32 requestposition = 0;
 
 F32 prev_request_pos__F32__ = 0;
+U16 error_moment_counter_U16 = 0;
+
+F64 samp = SAMPLING_TIME__s__df32;
 
 extern boolean enable_FOC;
 extern boolean alarm_state;
@@ -33,7 +36,7 @@ extern boolean alarm_state;
 
 void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s1_F32, F32 MaxAcc_rad_s2_F32){
 
-    static U16 error_moment_counter_U16 = 0;
+//    static U16 error_moment_counter_U16 = 0;
     static U16 error_disable_FOC_counter_U16 = 0;
     static F32 Requested_Positionn = 0;
 
@@ -69,7 +72,7 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s
 
     /*Controllers*/
     PI_position_controller.ref_value_f32 = PC_GetData_ps()->Start_Absolute_Position__rad__F32 + PC_GetData_ps()->tj.Position__rad__F32;;
-
+    PI_position_controller.action_value_f32 = 0.0;
     /* PI_speed_action = PI_position_output */
     requestspeed = PI_ctrl_CalculateOutput(&PI_position_controller, MDA_GetData_ps()->angular_position__rad__F32);
     PI_speed_controller.action_value_f32 = PI_ctrl_CalculateOutput(&PI_position_controller, MDA_GetData_ps()->angular_position__rad__F32);
@@ -126,8 +129,6 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s
     PWM_SetCompareValues(PWM_DUTY_TO_CMP_dMU16( (trans_s.abc_s.a_F32 / MDA_GetData_ps()->dc_link_voltage__V__F32) + (F32)0.5 ),
                          PWM_DUTY_TO_CMP_dMU16( (trans_s.abc_s.b_F32 / MDA_GetData_ps()->dc_link_voltage__V__F32) + (F32)0.5 ),
                          PWM_DUTY_TO_CMP_dMU16( (trans_s.abc_s.c_F32 / MDA_GetData_ps()->dc_link_voltage__V__F32) + (F32)0.5 ));
-
-
 }
 
 
@@ -201,7 +202,7 @@ static void PC_CalculateData(F32 Requested_Position__rad__F32, F32 MaxMechSpeed_
             {
                 s_PC_data_s.tj.Acceleration__rad_s_2__F32 = 0;
                 s_PC_data_s.tj.Speed__rad_s__F32 = MaxMechSpeed_rad_s1_F32 * Minus_Check;                            // Opytat sa
-                s_PC_data_s.tj.Position__rad__F32 += s_PC_data_s.tj.Speed__rad_s__F32 * SAMPLING_TIME__s__df32;
+                s_PC_data_s.tj.Position__rad__F32 += (F32)( s_PC_data_s.tj.Speed__rad_s__F32 * SAMPLING_TIME__s__df32 );
             }
 
             else if ( ( s_PC_data_s.Ticks__s__F32 > ( ACCELERATOIN_TIME__s__df32(MaxMechSpeed_rad_s1_F32,MaxAcc_rad_s2_F32) + DeltaMdlTime__s__F32 ) ) //maybe bug
@@ -255,7 +256,7 @@ static void PC_CalculateData(F32 Requested_Position__rad__F32, F32 MaxMechSpeed_
             {
                 s_PC_data_s.tj.Position__rad__F32 = Minus_Check*2.0f*start_ramp_rad + DeltaMdlPosition__rad__F32;
             }
-
+            error_moment_counter_U16 = 0;
             PC_Reset_Data(0);
         }
 }

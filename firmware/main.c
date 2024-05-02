@@ -42,16 +42,19 @@ boolean output_en = True_b;
 Uint16 u16buffer_counter;
 Uint16 FOC_counter;
 
+char buffer[12] = {};
+extern U16 display_counter_U16;
+
 void main(void)
 {
     /* Initialization */
 
     mcu_vInitClocks();                                          /* Initialize uC clock system. */
-    ATB_Init();
-    PWM_Init();
-    spi_vInit(9600);
+    spi_vInit(976000);
     dispCtrl_vInitDisplay();
     DELAY_US(50000);
+    ATB_Init();
+    PWM_Init();
     SCI_Init();
     CommutationAlignment();
     MDA_Init();
@@ -79,6 +82,16 @@ void main(void)
     {
         PWM_SetOutputEnable(output_en);
         ECOM_MainHandler();
+
+//        if(display_counter_U16 > 10000)
+//        {
+//            display_counter_U16 = 0;
+//            dispCtrl_vSetPosition(1,3);
+//            float_to_char_array(MDA_GetData_ps()->angular_position__rad__F32, &buffer, 2);
+//            dispCtrl_u16PutString(&buffer);
+//            dispCtrl_u16PutString(" mm  ");
+//        }
+
     }
 }
 
