@@ -27,17 +27,8 @@
 #include "dispCtrl.h"
 
 extern TRAN_struct tran_s;
-extern boolean enable_FOC;
 extern boolean alarm_state;
 
-boolean output_en = True_b;
-/**
- * @brief Main function
- */
-
-//float BufferA[1000];
-//float BufferB[1000];
-//float BufferC[1000];
 
 Uint16 u16buffer_counter;
 Uint16 FOC_counter;
@@ -75,12 +66,13 @@ void main(void)
     PI_ctrl_Init(&PI_speed_controller);
     PI_ctrl_Init(&PI_position_controller);
 
-    enable_FOC = 1;
+
+    FOC_SetEnableState(True_b);
 
     /* Main loop */
     while(1)
     {
-        PWM_SetOutputEnable(output_en);
+        PWM_SetOutputEnable(True_b);
         ECOM_MainHandler();
 
 //        if(display_counter_U16 > 10000)

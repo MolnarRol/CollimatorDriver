@@ -1,7 +1,7 @@
 /*
  * FOC.h
  *
- *  Created on: 4 ар. 2024 г.
+ *  Created on: 4 пїЅпїЅ. 2024 пїЅ.
  *      Author: vadym
  */
 
@@ -59,5 +59,8 @@ typedef struct
 const PC_Data_struct* PC_GetData_ps(void);
 
 static inline void PC_Reset_Data(boolean Full_Reset);
+
+void FOC_SetEnableState(boolean new_state_b);
+boolean FOC_GetEnableState(void);
 
 #endif /* MODULES_FIELDORIENTEDCONTROL_INC_FOC_H_ */

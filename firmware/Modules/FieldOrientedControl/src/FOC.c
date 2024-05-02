@@ -7,19 +7,13 @@
 
 #include "FOC.h"
 
-TRAN_struct trans_s =
-{
-    .dq_s =
-    {
-         .d_F32 = (F32)0.0,
-         .q_F32 = (F32)0.0
-    },
-    .angle__rad__F32 = (F32)0.0
-};
+boolean s_FOC_EnableState_b = False_b;
 
+TRAN_struct trans_s = {0};
 
 PC_Data_struct s_PC_data_s;
 
+/* Debug variables. */
 F32 Qcurrent=0;
 F32 Dcurrent=0;
 F32 requestspeed=0;
@@ -30,7 +24,6 @@ U16 error_moment_counter_U16 = 0;
 
 F64 samp = SAMPLING_TIME__s__df32;
 
-extern boolean enable_FOC;
 extern boolean alarm_state;
 
 
@@ -39,6 +32,12 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s
 //    static U16 error_moment_counter_U16 = 0;
     static U16 error_disable_FOC_counter_U16 = 0;
     static F32 Requested_Positionn = 0;
+
+    /* Exit when FOC is disabled. */
+    if(s_FOC_EnableState_b != False_b)
+    {
+        return;
+    }
 
     if(!alarm_state)
     {
@@ -55,7 +54,7 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s
         if(error_disable_FOC_counter_U16 == 2000)
         {
         alarm_state = 0;
-        enable_FOC = 0;
+        FOC_SetEnableState(False_b);
         error_disable_FOC_counter_U16 = 0;
         }
     }
@@ -112,7 +111,7 @@ void FOC_CalculateOutput(F32 ReferencePosition__rad__F32, F32 MaxMechSpeed_rad_s
                 error_moment_counter_U16 = 0;
                 PC_Reset_Data(1);
                 alarm_state = 0;
-                enable_FOC = 0;
+                FOC_SetEnableState(False_b);
                 trans_s.dq_s.q_F32 = 0;
                 trans_s.dq_s.d_F32 = 0;
             }
@@ -288,6 +287,16 @@ void Voltage_Limiter(TRAN_struct * const tran_values_s){
         tran_values_s->dq_s.q_F32 = (F32)-sqrt( ( 0.5 * MDA_GetData_ps()->dc_link_voltage__V__F32 ) - ( tran_values_s->dq_s.d_F32 * tran_values_s->dq_s.d_F32 ) );   /*  sqrt(12*12 - Ud^2) */
 
     }
+}
+
+void FOC_SetEnableState(boolean new_state_b)
+{
+    s_FOC_EnableState_b = new_state_b;
+}
+
+boolean FOC_GetEnableState(void)
+{
+    return s_FOC_EnableState_b;
 }
 
 
