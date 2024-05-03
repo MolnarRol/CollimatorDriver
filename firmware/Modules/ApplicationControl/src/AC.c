@@ -14,15 +14,7 @@
 #include <AC_interface.h>
 #include <ByteConversions.h>
 #include <MDA_interface.h>
-
-
-U32 receive_data_U32 = (U32)0;          /* Debug variable */
-
-/* Test parameters - for debug. */
-F32 max_speed_F32 = 40.0f;
-F32 max_accel_F32 = 20.0f;
-F32 max_force_F32 = 0.25f;
-F32 refPos_F32 = 0.0f;
+#include <MTCL_interface.h>
 
 void AC_ExecuteCommand( const U16 * const command_payload_pU16,
                         const U16 payload_size_U16,
@@ -53,7 +45,6 @@ static void AC_TestFunction(const void* const payload_p,
     {
         return;
     }
-    receive_data_U32 = BC_4BytesTo32BitData(payload_p).val_U32;
 }
 
 /* TestFunction */
@@ -93,6 +84,11 @@ static void AC_CMD_GetMovementParameters( const void* const payload_p,
     }
 
     /* Local variables. */
+    F32 max_speed_F32;
+    F32 max_accel_F32;
+    F32 max_force_F32;
+    MTCL_GetMovementParams(&max_speed_F32, &max_accel_F32, &max_force_F32);
+
     U32 v1 = (U32)(max_speed_F32 * 1000.0f);
     U32 v2 = (U32)(max_accel_F32 * 1000.0f);
     U32 v3 = (U32)(max_force_F32 * 1000.0f);
@@ -118,11 +114,11 @@ static void AC_CMD_SetMovementParameters( const void* const payload_p,
     }
     U16* data_pU16 = (U16*)payload_p;
 
-    max_speed_F32 = (F32)BC_4BytesTo32BitData(&data_pU16[0]).val_U32 / 1000.0f;
-    max_accel_F32 = (F32)BC_4BytesTo32BitData(&data_pU16[4]).val_U32 / 1000.0f;
-    max_force_F32 = (F32)BC_4BytesTo32BitData(&data_pU16[8]).val_U32 / 1000.0f;
+    F32 max_speed_F32 = (F32)BC_4BytesTo32BitData(&data_pU16[0]).val_U32 / 1000.0f;
+    F32 max_accel_F32 = (F32)BC_4BytesTo32BitData(&data_pU16[4]).val_U32 / 1000.0f;
+    F32 max_force_F32 = (F32)BC_4BytesTo32BitData(&data_pU16[8]).val_U32 / 1000.0f;
 
-    response_data_pU16[0] = RESPONSE_OK_e;
+    response_data_pU16[0] = MTCL_SetMovementParams(max_speed_F32, max_accel_F32, max_force_F32) ? RESPONSE_OK_e : INVALID_INPUT_e;
     *response_data_size_pU16 = 1;
 
 }
@@ -191,8 +187,8 @@ static void AC_CMD_SetReferncePosition( const void* const payload_p,
         return;
     }
 
-    response_data_pU16[0] = RESPONSE_OK_e;
     *response_data_size_pU16 = 1;
-    refPos_F32 = (F32)BC_4BytesTo32BitData(&((U16*)payload_p)[0]).val_U32 / 1000.0f;
+    response_data_pU16[0] = MTCL_SetReferencePosition((F32)BC_4BytesTo32BitData(&((U16*)payload_p)[0]).val_U32 / 1000.0f)
+            ? RESPONSE_OK_e : INVALID_INPUT_e;
 }
 

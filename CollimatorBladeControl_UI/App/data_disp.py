@@ -20,21 +20,25 @@ parameters_strings = {
 
 
 def write_new_mech_data(data):
-    resp_dec = deconstruct_message(data)
-    loc_parameters = struct.unpack('>III', resp_dec.payload[1:])
-    parameters_strings['speed'].set(str(loc_parameters[0] / 1000))
-    parameters_strings['pos'].set(str(loc_parameters[1] / 1000))
-    parameters_strings['rotor_pos'].set(str(loc_parameters[2] / 1000))
-    del data
+    try:
+        resp_dec = deconstruct_message(data)
+        loc_parameters = struct.unpack('>III', resp_dec.payload[1:])
+        parameters_strings['speed'].set(str(loc_parameters[0] / 1000))
+        parameters_strings['pos'].set(str(loc_parameters[1] / 1000))
+        parameters_strings['rotor_pos'].set(str(loc_parameters[2] / 1000))
+    except:
+        pass
 
 
 def write_new_electrical_data(data):
-    resp_dec = deconstruct_message(data)
-    loc_parameters = struct.unpack('>III', resp_dec.payload[1:])
-    parameters_strings['id'].set(str(loc_parameters[0] / 1000))
-    parameters_strings['iq'].set(str(loc_parameters[1] / 1000))
-    parameters_strings['link_voltage'].set(str(loc_parameters[2] / 1000))
-    del data
+    try:
+        resp_dec = deconstruct_message(data)
+        loc_parameters = struct.unpack('>III', resp_dec.payload[1:])
+        parameters_strings['id'].set(str(loc_parameters[0] / 1000))
+        parameters_strings['iq'].set(str(loc_parameters[1] / 1000))
+        parameters_strings['link_voltage'].set(str(loc_parameters[2] / 1000))
+    except:
+        pass
 
 def update_data():
     data = struct.pack('>B', 5)
