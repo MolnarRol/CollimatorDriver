@@ -27,11 +27,16 @@ void MTCL_MainHandler(void)
     {
         reference_position__rad__F32 = 0.0f;
 
-        if( (MDA_GetData_ps()->angular_position__rad__F32 > -0.01f)
-             && (MDA_GetData_ps()->angular_position__rad__F32 < 0.01f))
+        if( (MDA_GetData_ps()->angular_position__rad__F32 > -0.1f)
+             && (MDA_GetData_ps()->angular_position__rad__F32 < 0.1f))
         {
-            s_MTCL_Control_s.over_torque_error_f1 = 0;
-            FOC_SetEnableState(False_b);
+            s_Torque_check_s.error_state_torque_exceed_counter_U16++;
+            if(s_Torque_check_s.error_state_torque_exceed_counter_U16 == 1000)
+            {
+                s_MTCL_Control_s.over_torque_error_f1 = 0;
+                FOC_SetEnableState(False_b);
+                s_Torque_check_s.error_state_torque_exceed_counter_U16 = 0;
+            }
         }
     }
 
@@ -95,7 +100,7 @@ static void MTCL_CalculateTrajectory(F32 Requested_Position__rad__F32, F32 MaxMe
     /*end of new lines*/
 
     /*not roof*/
-    if(roof == True_b){
+    if(roof == 0){
 
         if( s_PC_data_s.Ticks__s__F32 <= ACCELERATOIN_TIME__s__df32(MaxMechSpeed_rad_s1_F32,MaxAcc_rad_s2_F32)
             && s_PC_data_s.Ticks__s__F32 > 0.0f)
@@ -204,12 +209,20 @@ boolean MTCL_TorqueExceedCheck(void)
              && (s_Torque_check_s.torque_exceed_counter_U16 > 3000) )
         {
             s_Torque_check_s.torque_exceed_counter_U16 = 0;
-            // PC_Reset_data(True_b);
+            PC_Reset_Data(True_b);
             s_MTCL_Control_s.over_torque_error_f1 = 1;
         }
         else
         {
-
+            s_Torque_check_s.torque_exceed_counter_U16 += (U16)1;
+            if(s_Torque_check_s.torque_exceed_counter_U16 > 10000)
+            {
+                s_Torque_check_s.torque_exceed_counter_U16 = 0;
+                PC_Reset_Data(True_b);
+                s_MTCL_Control_s.over_torque_error_f1 = 0;
+                FOC_SetEnableState(False_b);
+                PWM_SetCompareValues(0,0,0);
+            }
         }
     }
     return True_b;

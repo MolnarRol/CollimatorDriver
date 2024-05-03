@@ -32,9 +32,9 @@ typedef struct
     struct
     {
         F32 Acceleration__rad_s_2__F32;
-        F32  Speed__rad_s__F32;
+        F32 Speed__rad_s__F32;
         F32 Position__rad__F32;
-    } tj;
+    }tj;
 
 }PC_Data_struct;
 

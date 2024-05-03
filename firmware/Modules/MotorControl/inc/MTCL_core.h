@@ -21,6 +21,7 @@
 typedef struct
 {
     U16     torque_exceed_counter_U16;
+    U16     error_state_torque_exceed_counter_U16;
 } MTCL_TorqueCheck_struct;
 
 boolean MTCL_TorqueExceedCheck(void);
