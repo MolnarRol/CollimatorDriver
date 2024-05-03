@@ -49,7 +49,7 @@ void main(void)
     /* Initialization */
 
     mcu_vInitClocks();                                          /* Initialize uC clock system. */
-    spi_vInit(500000);
+    spi_vInit(800000);
     dispCtrl_vInitDisplay();
     ATB_Init();
     PWM_Init();

@@ -192,6 +192,7 @@ void DisplayRefresh(void)
                     float_to_char_array(MDA_GetData_ps()->angular_position__rad__F32, &buffer, 1);
                     GpioDataRegs.GPCSET.bit.GPIO72 = 1;
                     dispCtrl_u16PutString(&buffer);
+                    dispCtrl_u16PutString("     ");
                     GpioDataRegs.GPCCLEAR.bit.GPIO72 = 1;
 
                 }
