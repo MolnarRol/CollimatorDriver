@@ -24,9 +24,26 @@ typedef enum
     POSITION_CTRL_e     = 1,
 } MTCL_ControlType_enum;
 
+typedef struct
+{
+    F32 Start_Absolute_Position__rad__F32;
+    F32 Ticks__s__F32;
+    boolean ticks_enabled;
+    struct
+    {
+        F32 Acceleration__rad_s_2__F32;
+        F32  Speed__rad_s__F32;
+        F32 Position__rad__F32;
+    } tj;
+
+}PC_Data_struct;
+
+
 boolean MTCL_SetMovementParams(const F32 max_speed__rad_s__F32, const F32 max_accel__rad_s2__F32, const F32 max_torque__Nm__F32);
 void    MTCL_GetMovementParams(F32 * const max_speed__rad_s__F32, F32 * const max_accel__rad_s2__F32, F32 * const max_torque__Nm__F32);
 boolean MTCL_SetReferencePosition(const F32 new_position__rad__F32);
 void    MTCL_MainHandler(void);
+
+const   PC_Data_struct* PC_GetData_ps(void);
 
 #endif /* MODULES_MOTORCONTROL_INC_MTCL_INTERFACE_H_ */

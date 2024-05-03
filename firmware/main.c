@@ -47,7 +47,7 @@ void main(void)
     ATB_Init();
     PWM_Init();
     SCI_Init();
-    CommutationAlignment();
+    FOC_CommutationAlignment();
     MDA_Init();
     TEST_PinInit();
     MDA_CalibratePhaseCurrentsOffsets();

@@ -18,5 +18,13 @@
 
 #define TORQUE_EXCEED_ALARM_DURATION__s__dF32   ( 0.1f )
 
+typedef struct
+{
+    U16     torque_exceed_counter_U16;
+} MTCL_TorqueCheck_struct;
+
+boolean MTCL_TorqueExceedCheck(void);
+static void MTCL_CalculateTrajectory(F32 Requested_Position__rad__F32, F32 MaxMechSpeed_rad_s1_F32, F32 MaxAcc_rad_s2_F32);
+static void PC_Reset_Data(boolean Full_Reset);
 
 #endif /* MODULES_MOTORCONTROL_INC_MTCL_CORE_H_ */
