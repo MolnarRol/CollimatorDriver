@@ -53,7 +53,7 @@ void main(void)
     dispCtrl_vInitDisplay();
     ATB_Init();
     PWM_Init();
- //   SCI_Init();
+    SCI_Init();
     CommutationAlignment();
     MDA_Init();
     TEST_PinInit();
@@ -86,7 +86,7 @@ void main(void)
     while(1)
     {
         PWM_SetOutputEnable(output_en);
-        //ECOM_MainHandler();
+        ECOM_MainHandler();
         DisplayRefresh();
 //        counter++;
 //        if(counter > 100000){

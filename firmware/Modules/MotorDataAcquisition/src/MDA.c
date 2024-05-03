@@ -37,13 +37,12 @@ const static F32 s_MDA_phase_w_offset_current__A__dF32  = (F32)0.0;
 interrupt void MDA_AdcConverstionCompleteIsr(void)
 {
 
-    GpioDataRegs.GPCSET.bit.GPIO72 = 1;
+
     EINT;
     MDA_UpdateData();
     ISR_MotorControlHandler();
     AdcaRegs.ADCINTFLGCLR.bit.ADCINT1   = (U16)1;                                   /* Clear interrupt flag. */
     PieCtrlRegs.PIEACK.bit.ACK1         = (U16)1;
-    GpioDataRegs.GPCCLEAR.bit.GPIO72 = 1;
 
 }
 

@@ -26,7 +26,7 @@ void SCI_Init(void)
 
     // Clock config
     CpuSysRegs.PCLKCR7.bit.SCI_A = 1;
-    ClkCfgRegs.LOSPCP.bit.LSPCLKDIV = 1;
+    ClkCfgRegs.LOSPCP.bit.LSPCLKDIV = 2;
 
     /* SCIA Setup */
     SciaRegs.SCICCR.bit.STOPBITS = 0;               /* 1 stop bit. */
@@ -40,7 +40,7 @@ void SCI_Init(void)
     SciaRegs.SCICTL1.bit.TXENA = 1;                 /* Enable TX. */
 
     /* Baud config */
-    U16 BRR_U16 = 109;
+    U16 BRR_U16 = 53;
     SciaRegs.SCIHBAUD.bit.BAUD = (BRR_U16 >> 8);
     SciaRegs.SCILBAUD.bit.BAUD = BRR_U16 & (0x00FF);
 

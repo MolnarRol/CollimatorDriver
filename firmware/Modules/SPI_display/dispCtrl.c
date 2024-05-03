@@ -18,21 +18,21 @@
 
 void dispCtrl_vSendInstruction(Uint16 u16RW, Uint16 u16RS, char cData){
 
-    unsigned int Instruction[3];
-    Instruction[0] = (0xF8|((u16RW) << 2)|((u16RS) << 1)) << 8; //FIRST BYTE
-    Instruction[1] = (0x00|((cData&0x1) << 7)|((cData&0x2) << 5)|((cData&0x4) << 3)|((cData&0x8) << 1)) << 8; //SECOND BYTE
-    Instruction[2] = (0x00|((cData&0x10) << 3)|((cData&0x20) << 1)|((cData&0x40) >> 1)|((cData&0x80) >> 3)) <<8; //THIRD BYTE
-    spi_vSendChar(Instruction[0]); //SENDCHAR FOR SENDING 1 BYTE
-    spi_vSendChar(Instruction[1]);
-    spi_vSendChar(Instruction[2]);
+//    unsigned int Instruction[3];
+//    Instruction[0] = (0xF8|((u16RW) << 2)|((u16RS) << 1)) << 8; //FIRST BYTE
+//    Instruction[1] = (0x00|((cData&0x1) << 7)|((cData&0x2) << 5)|((cData&0x4) << 3)|((cData&0x8) << 1)) << 8; //SECOND BYTE
+//    Instruction[2] = (0x00|((cData&0x10) << 3)|((cData&0x20) << 1)|((cData&0x40) >> 1)|((cData&0x80) >> 3)) <<8; //THIRD BYTE
+//    spi_vSendChar(Instruction[0]); //SENDCHAR FOR SENDING 1 BYTE
+//    spi_vSendChar(Instruction[1]);
+//    spi_vSendChar(Instruction[2]);
 
-//    char packet_3_byte [4];
-//    char reverse_data = reverse(cData);
-//    packet_3_byte[0] = (0xF8^(u16RW << 2)^(u16RS << 1));
-//    packet_3_byte[1] = (reverse_data & 0xF0);
-//    packet_3_byte[2] = (reverse_data & 0x0F) << 4;
-//
-//    spi_u16SendData(packet_3_byte,3);
+    char packet_3_byte [4];
+    char reverse_data = reverse(cData);
+    packet_3_byte[0] = (0xF8^(u16RW << 2)^(u16RS << 1));
+    packet_3_byte[1] = (reverse_data & 0xF0);
+    packet_3_byte[2] = (reverse_data & 0x0F) << 4;
+
+    spi_u16SendData(packet_3_byte,3);
 }
 
 void dispCtrl_vSendInitInstruction(char data){
@@ -103,21 +103,21 @@ void dispCtrl_vInitDisplay(void){
 }
 
 void dispCtrl_u16PutString(char* pcData){
-    unsigned int counter;
-    for (counter = 0; pcData[counter] != '\0'; counter++)
-    {
-
-        dispCtrl_vSendInstruction(0,1,pcData[counter]);
-
-    }
-//    Uint16 i = 0;
-//    spi_vSendChar( (0xF8 ^ ( (char)0 << 2 ) ^ ( (char)1 << 1) ) ); /*start byte - 5 high,RW,RS*/
-//    while(pcData[i] != '\0')
+//    unsigned int counter;
+//    for (counter = 0; pcData[counter] != '\0'; counter++)
 //    {
-//        spi_vSendChar(reverse(pcData[i]) & 0xF0);
-//        spi_vSendChar((reverse(pcData[i]) & 0x0F) << 4);
-//        i++;
+//
+//        dispCtrl_vSendInstruction(0,1,pcData[counter]);
+//
 //    }
+    Uint16 i = 0;
+    spi_vSendChar( (0xF8 ^ ( (char)0 << 2 ) ^ ( (char)1 << 1) ) ); /*start byte - 5 high,RW,RS*/
+    while(pcData[i] != '\0')
+    {
+        spi_vSendChar(reverse(pcData[i]) & 0xF0);
+        spi_vSendChar((reverse(pcData[i]) & 0x0F) << 4);
+        i++;
+    }
 }
 
 void dispCtrl_vSetPosition(Uint16 u16PosX, Uint16 u16PosY)
@@ -183,14 +183,17 @@ void DisplayRefresh(void)
 {
 //    char buffer[12] = {};
     static U32 ref_ticks_U32 = 0;
-    static U16 display_refresh_state = 0;
+    //static U16 display_refresh_state = 0;
 
                 if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(100)) )
                 {
                     ref_ticks_U32 = ATB_GetTicks_U32();
                     dispCtrl_vSetPosition(1,3);
                     float_to_char_array(MDA_GetData_ps()->angular_position__rad__F32, &buffer, 1);
+                    GpioDataRegs.GPCSET.bit.GPIO72 = 1;
                     dispCtrl_u16PutString(&buffer);
+                    GpioDataRegs.GPCCLEAR.bit.GPIO72 = 1;
+
                 }
 
 //    switch(display_refresh_state)
