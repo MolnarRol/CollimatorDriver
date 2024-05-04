@@ -49,6 +49,7 @@ void main(void)
     SCI_Init();
     FOC_CommutationAlignment();
     MDA_Init();
+    MTCL_Init();
     TEST_PinInit();
     MDA_CalibratePhaseCurrentsOffsets();
 
