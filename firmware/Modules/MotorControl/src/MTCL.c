@@ -134,7 +134,7 @@ inline void MTCL_Homing(F32 * requested_position_pF32)
             break;
 
         default:
-            MTCL_HomingState_e = MTCL_HOMING_MAX_e;
+            MTCL_HomingState_e = MTLC_HOMING_IDLE_e;
             break;
     }
 }
