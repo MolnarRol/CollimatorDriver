@@ -27,14 +27,14 @@ void MTCL_MainHandler(void)
     {
         reference_position__rad__F32 = 0.0f;
 
-        if( (MDA_GetData_ps()->angular_position__rad__F32 > -0.1f)
-             && (MDA_GetData_ps()->angular_position__rad__F32 < 0.1f))
+        if( (MDA_GetData_ps()->angular_position__rad__F32) < 0.00001f)
         {
             s_Torque_check_s.error_state_torque_exceed_counter_U16++;
-            if(s_Torque_check_s.error_state_torque_exceed_counter_U16 == 1000)
+            if(s_Torque_check_s.error_state_torque_exceed_counter_U16 == 2000)
             {
                 s_MTCL_Control_s.over_torque_error_f1 = 0;
                 FOC_SetEnableState(False_b);
+                PC_Reset_Data(1);
                 s_Torque_check_s.error_state_torque_exceed_counter_U16 = 0;
             }
         }
@@ -169,7 +169,6 @@ static void MTCL_CalculateTrajectory(F32 Requested_Position__rad__F32, F32 MaxMe
         {
             s_PC_data_s.tj.Position__rad__F32 = Minus_Check*2.0f*start_ramp_rad + DeltaMdlPosition__rad__F32;
         }
-        s_MTCL_Control_s.over_torque_error_f1 = 0;
         PC_Reset_Data(False_b);
     }
 }
