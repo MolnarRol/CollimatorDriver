@@ -14,7 +14,7 @@
 #include <AC_interface.h>
 #include <ByteConversions.h>
 #include <MDA_interface.h>
-
+#include <ATB_interface.h>
 
 U32 receive_data_U32 = (U32)0;          /* Debug variable */
 
@@ -23,6 +23,27 @@ F32 max_speed_F32 = 40.0f;
 F32 max_accel_F32 = 20.0f;
 F32 max_force_F32 = 0.25f;
 F32 refPos_F32 = 0.0f;
+
+S16 test_var = 0;
+S16 test_counter = 0;
+
+void AC_ManualControlInit(void)
+{
+    EALLOW;
+    /* GPIO69 - Button1 */
+    GpioCtrlRegs.GPCDIR.bit.GPIO69 = 0;     /* Pin as input. */
+    GpioCtrlRegs.GPCPUD.bit.GPIO69 = 0;     /* Enable internal pull up. */
+
+    /* GPIO70 - Button2 */
+    GpioCtrlRegs.GPCDIR.bit.GPIO70 = 0;     /* Pin as input. */
+    GpioCtrlRegs.GPCPUD.bit.GPIO70 = 0;     /* Enable internal pull up. */
+    EDIS;
+}
+
+void AC_ManualControlHandler(void)
+{
+
+}
 
 void AC_ExecuteCommand( const U16 * const command_payload_pU16,
                         const U16 payload_size_U16,

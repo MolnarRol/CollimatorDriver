@@ -58,6 +58,7 @@ void main(void)
     MDA_Init();
     TEST_PinInit();
     MDA_CalibratePhaseCurrentsOffsets();
+    AC_ManualControlInit();
 
     //dispCtrl_clear();
     dispCtrl_vSetPosition(1,1);
@@ -87,6 +88,7 @@ void main(void)
     {
         PWM_SetOutputEnable(output_en);
         ECOM_MainHandler();
+        AC_ManualControlHandler();
         DisplayRefresh();
 //        counter++;
 //        if(counter > 100000){
