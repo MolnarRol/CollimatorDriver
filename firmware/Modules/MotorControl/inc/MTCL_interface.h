@@ -45,4 +45,6 @@ void    MTCL_MainHandler(void);
 void    MTCL_Init(void);
 const   PC_Data_struct* PC_GetData_ps(void);
 const   MTCL_Control_struct* MTCL_GetControlState_ps(void);
+U32     MTCL_GetMaximumPosition_U32(void);
+void    MTCL_ResetErrorFlags(void);
 #endif /* MODULES_MOTORCONTROL_INC_MTCL_INTERFACE_H_ */

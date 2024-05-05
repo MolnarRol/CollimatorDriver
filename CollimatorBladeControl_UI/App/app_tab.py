@@ -23,7 +23,7 @@ def stop():
 
 def set_position():
     global position
-    data = struct.pack('>BI', 4, int(position*1000))
+    data = struct.pack('>BI', SET_REFERENCE_POSITION_e, int(position*1000))
     bytes = construct_message(HeaderId.COMMAND_e, data)
     serial_handler.new_transaction(bytes, priority=0)
 

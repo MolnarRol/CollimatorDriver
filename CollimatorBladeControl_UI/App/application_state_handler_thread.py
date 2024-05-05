@@ -13,6 +13,7 @@ motor_homing_toplevel = False
 
 torque_error_toplevel = None
 torque_error_toplevel_active = False
+info_img = ImageTk.PhotoImage(Image.open('img/info.png').resize((60, 60)))
 err_img = ImageTk.PhotoImage(Image.open('img/error.png').resize((60, 60)))
 
 def start_application_handler_thread():
@@ -43,8 +44,10 @@ def application_data_recieved(data):
             homing_toplevel.title('Collimator homing')
             homing_toplevel.resizable(False, False)
             homing_toplevel.protocol("WM_DELETE_WINDOW", disable_close)
+            info_icon = tk.Label(homing_toplevel, image=info_img)
+            info_icon.grid(row=0, column=00, sticky='NSEW', padx=10, pady=10)
             homing_text = tk.Label(homing_toplevel, text="Motor is homing, wait for finish.", font='Verdana 14')
-            homing_text.grid(row=0, column=0, sticky='NSEW')
+            homing_text.grid(row=0, column=1, sticky='NSEW')
             motor_homing_toplevel = True
             homing_toplevel.grab_set()
 
@@ -81,12 +84,26 @@ def application_data_recieved(data):
         set_transaction_lock(True)
         pass
 
+
+def clear_error_transaction_callback(data):
+    try:
+        resp_dec = deconstruct_message(data)
+        print(resp_dec.payload)
+        if resp_dec.payload[0] == 0x0:
+            global torque_error_toplevel_active
+            torque_error_toplevel_active = False
+            torque_error_toplevel.destroy()
+    except:
+        pass
+
+
 def command_clear_error():
-    global torque_error_toplevel_active
-    print('Error cleared')
-    torque_error_toplevel_active = False
-    torque_error_toplevel.destroy()
+    data = struct.pack('>B', RESET_ERROR_FLAGS_e)
+    bytes = construct_message(HeaderId.COMMAND_e, data)
+    serial_handler.new_transaction(bytes, priority=0, callback=clear_error_transaction_callback)
+    print('Clearing')
     pass
+
 
 def disable_close():
     pass

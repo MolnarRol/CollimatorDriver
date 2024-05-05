@@ -192,3 +192,35 @@ static void AC_CMD_SetReferncePosition( const void* const payload_p,
             ? RESPONSE_OK_e : INVALID_INPUT_e;
 }
 
+static void AC_CMD_GetMaximumPosition( const void* const payload_p,
+                                       const U16 payload_size_U16,
+                                       U16 * response_data_pU16,
+                                       U16 * response_data_size_pU16)
+{
+    if(payload_size_U16 != 0)
+    {
+        response_data_pU16[0] = INVALID_INPUT_e;
+        *response_data_size_pU16 = 1;
+        return;
+    }
+    response_data_pU16[0] = RESPONSE_OK_e;
+    *response_data_size_pU16 = 5;
+    U32 max_position_U32 = MTCL_GetMaximumPosition_U32();
+    BC_32BitDataTo4Bytes(&max_position_U32, &response_data_pU16[1]);
+}
+
+static void AC_CMD_ResetErrorFlags( const void* const payload_p,
+                                    const U16 payload_size_U16,
+                                    U16 * response_data_pU16,
+                                    U16 * response_data_size_pU16)
+{
+    if(payload_size_U16 != 0)
+    {
+        response_data_pU16[0] = INVALID_INPUT_e;
+        *response_data_size_pU16 = 1;
+        return;
+    }
+    MTCL_ResetErrorFlags();
+    response_data_pU16[0] = RESPONSE_OK_e;
+    *response_data_size_pU16 = 1;
+}

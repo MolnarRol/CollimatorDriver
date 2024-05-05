@@ -17,6 +17,14 @@ class HeaderId(Enum):
     NOT_VALID_e = 5
 
 
+GET_MOVEMENT_PARAMETERS_e = 0x0
+SET_MOVEMENT_PARAMETERS_e = 0x1
+SET_REFERENCE_POSITION_e = 0x2
+GET_MECHANICAL_DATA_e = 0x3
+GET_ELECTRICAL_DATA_e = 0x4
+GET_MAXIMUM_POSITION_e = 0x5
+RESET_ERROR_FLAGS_e = 0x6
+
 @dataclass
 class Message:
     header_id: HeaderId

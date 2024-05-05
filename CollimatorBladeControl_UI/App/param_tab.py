@@ -31,7 +31,7 @@ def save_cmd():
         messagebox.showerror('Value error: Parameter are floating point numbers.', err_string)
     else:
         data = struct.pack('>BIII',
-                           3,
+                           SET_MOVEMENT_PARAMETERS_e,
                            int(parameters['max_speed']),
                            int(parameters['max_accel']),
                            int(parameters['max_force']))
@@ -50,7 +50,7 @@ def load_cmd_callback(data):
 
 def load_cmd():
     global parameters
-    data = struct.pack('>B', 2)
+    data = struct.pack('>B', GET_MOVEMENT_PARAMETERS_e)
     bytes = construct_message(HeaderId.COMMAND_e, data)
     serial_handler.new_transaction(bytes, priority=1, callback=load_cmd_callback)
 

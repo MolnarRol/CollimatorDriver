@@ -359,3 +359,13 @@ inline const MTCL_Control_struct* MTCL_GetControlState_ps(void)
 {
     return &s_MTCL_Control_s;
 }
+
+inline U32 MTCL_GetMaximumPosition_U32(void)
+{
+    return s_MTCL_MaxPosition__rad__F32;
+}
+
+inline void MTCL_ResetErrorFlags(void)
+{
+    s_MTCL_Control_s.over_torque_error_f1 = 0;
+}
