@@ -29,7 +29,7 @@ void MTCL_MainHandler(void)
     F32 reference_position__rad__F32 = s_MTCL_ReferencePosition__rad__F32;
     if(MTCL_HomingState_e != MTCL_HOMING_COMPLETE_e)
     {
-        MTCL_Homing(&reference_position__rad__F32);
+//        MTCL_Homing(&reference_position__rad__F32);
     }
 
     if(s_MTCL_Control_s.over_torque_error_f1 == 1)
@@ -131,6 +131,7 @@ inline void MTCL_Homing(F32 * requested_position_pF32)
         case MTCL_HOMING_COMPLETE_e:
             s_MTCL_MaxSpeed__rad_s__F32 = DEFAULT_RUN_SPEED__rad_s__dF32;
             s_MTCL_MaxAccel__rad_s2__F32 = DEFAULT_RUN_ACCEL__rad_s2__dF32;
+            s_MTCL_Control_s.motor_homed_f1 = 1;
             break;
 
         default:
@@ -349,4 +350,9 @@ static inline void PC_Reset_Data(boolean Full_Reset)
     s_PC_data_s.tj.Acceleration__rad_s_2__F32 = 0.0f;
     s_PC_data_s.tj.Speed__rad_s__F32 = 0.0f;
     if(Full_Reset) s_PC_data_s.tj.Position__rad__F32 = 0.0f;
+}
+
+inline const MTCL_Control_struct* MTCL_GetControlState_ps(void)
+{
+    return &s_MTCL_Control_s;
 }

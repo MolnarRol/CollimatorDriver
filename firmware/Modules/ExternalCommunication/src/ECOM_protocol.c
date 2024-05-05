@@ -7,6 +7,7 @@
 #include <ECOM_core.h>
 #include <AC_interface.h>
 #include <CRC.h>
+#include <MTCL_interface.h>
 
 U16 s_ECOM_protocol_state_machine_state_U16 = ECOM_PROTO_SM_STATE_IDLE_dU16;
 ECOM_Packet_struct s_rx_packet;
@@ -78,7 +79,7 @@ static void ECOM_ProtocolRespond(const ECOM_Packet_struct * const packet_ps)
     {
         case HELLO_MSG_e:
         {
-            s_response_data_aU16[0] = 0;
+            s_response_data_aU16[0] = *(U16*)MTCL_GetControlState_ps();
             s_response_data_size_U16 = 1;
             ECOM_CreatePacket(HELLO_MSG_e, s_response_packet_aU16, s_response_data_aU16, s_response_data_size_U16);
             break;

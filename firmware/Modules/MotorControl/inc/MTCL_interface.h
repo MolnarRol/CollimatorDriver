@@ -13,9 +13,8 @@ typedef struct
 {
     U16 movement_enabled_f1      :1;
     U16 motor_moving_f1          :1;
-    U16 motor_control_type       :2;
     U16 over_torque_error_f1     :1;
-    U16 __reserved               :11;
+    U16 motor_homed_f1           :1;
 } MTCL_Control_struct;
 
 typedef enum
@@ -45,5 +44,5 @@ boolean MTCL_SetReferencePosition(const F32 new_position__rad__F32);
 void    MTCL_MainHandler(void);
 void    MTCL_Init(void);
 const   PC_Data_struct* PC_GetData_ps(void);
-
+const   MTCL_Control_struct* MTCL_GetControlState_ps(void);
 #endif /* MODULES_MOTORCONTROL_INC_MTCL_INTERFACE_H_ */

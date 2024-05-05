@@ -10,7 +10,11 @@ void ECOM_WriteDataToBuffer(ECOM_Buffer_struct * const buffer_ps, const U16 * da
 {
     while(write_size_U16 != (U16)0)
     {
-        if(buffer_ps->top_U16 >= ECOM_BUFFER_SIZE_dU16) break;
+        if(buffer_ps->top_U16 >= ECOM_BUFFER_SIZE_dU16)
+        {
+            ECOM_ResetBuffer(buffer_ps);
+            break;
+        }
         write_size_U16 -= (U16)1;
         buffer_ps->data_aU16[buffer_ps->top_U16] = *data_pU16;                           /* Copy data to the buffer. */
         data_pU16++;                                                                   /* Increment data pointer to the next value. */
