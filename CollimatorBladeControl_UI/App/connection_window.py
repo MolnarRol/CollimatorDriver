@@ -64,7 +64,7 @@ class ConnectionWindow:
         self.auto_reconnect_checkbox.grid(row=2, column=1, sticky='W')
 
         # Button widgets
-        refresh_btn = Button(self.connection_window, text='Refresh', image = self.refresh_btn_img,
+        refresh_btn = Button(self.connection_window, text='Refresh', image=self.refresh_btn_img,
                              command=self.__refresh_serial_devices_connections__)
         refresh_btn.grid(row=0, column=2, sticky='NSEW')
 

@@ -41,9 +41,11 @@ void MTCL_MainHandler(void)
             s_Torque_check_s.error_state_torque_exceed_counter_U16++;
             if(s_Torque_check_s.error_state_torque_exceed_counter_U16 == 2000)
             {
-                s_MTCL_Control_s.over_torque_error_f1 = 0;
+                /* Commented for debug */
+                //s_MTCL_Control_s.over_torque_error_f1 = 0;
                 FOC_SetEnableState(False_b);
                 PC_Reset_Data(1);
+
                 s_Torque_check_s.error_state_torque_exceed_counter_U16 = 0;
             }
         }
@@ -51,7 +53,8 @@ void MTCL_MainHandler(void)
 
     MTCL_CalculateTrajectory(reference_position__rad__F32, s_MTCL_MaxSpeed__rad_s__F32, s_MTCL_MaxAccel__rad_s2__F32);
     FOC_CalculateOutput(&s_PC_data_s);
-    MTCL_TorqueExceedCheck();
+    /* Commented for debug */
+    //MTCL_TorqueExceedCheck();
 }
 
 void MTCL_Init(void)

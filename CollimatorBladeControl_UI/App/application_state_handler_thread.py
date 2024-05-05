@@ -1,0 +1,92 @@
+import App.global_vars
+from App.global_vars import *
+from Communication.Protocol import *
+import threading
+import struct
+from time import sleep
+import tkinter as tk
+from tkinter import ttk
+from PIL import ImageTk, Image
+
+homing_toplevel = None
+motor_homing_toplevel = False
+
+torque_error_toplevel = None
+torque_error_toplevel_active = False
+err_img = ImageTk.PhotoImage(Image.open('img/error.png').resize((60, 60)))
+
+def start_application_handler_thread():
+    thrd = threading.Thread(target=application_handler_thread, daemon=True)
+    thrd.start()
+
+
+def application_handler_thread():
+    while True:
+        if serial_handler.is_open:
+            bytes = construct_message(HeaderId.HELLO_MSG_e, [])
+            serial_handler.new_transaction(bytes, priority=0, callback=application_data_recieved)
+            pass
+        sleep(0.1)
+    pass
+
+
+def application_data_recieved(data):
+    global motor_homing_toplevel, homing_toplevel, torque_error_toplevel, torque_error_toplevel_active
+    try:
+        reconstructed = deconstruct_message(data)
+        payload_data = struct.unpack('>B', reconstructed.payload)
+        torque_error = bool(payload_data[0] & (1 << 2))
+        homed = bool(payload_data[0] & (1 << 3))
+
+        if not homed and not motor_homing_toplevel:
+            homing_toplevel = tk.Toplevel(root)
+            homing_toplevel.title('Collimator homing')
+            homing_toplevel.resizable(False, False)
+            homing_toplevel.protocol("WM_DELETE_WINDOW", disable_close)
+            homing_text = tk.Label(homing_toplevel, text="Motor is homing, wait for finish.", font='Verdana 14')
+            homing_text.grid(row=0, column=0, sticky='NSEW')
+            motor_homing_toplevel = True
+            homing_toplevel.grab_set()
+
+        if homed and motor_homing_toplevel:
+            homing_toplevel.destroy()
+            motor_homing_toplevel = False
+            homing_toplevel.grab_release()
+
+        if torque_error and not torque_error_toplevel_active:
+            torque_error_toplevel_active = True
+            torque_error_toplevel = tk.Toplevel(root)
+            torque_error_toplevel.title('Collimator blocked')
+            torque_error_toplevel.resizable(False, False)
+            torque_error_toplevel.protocol("WM_DELETE_WINDOW", disable_close)
+
+            global err_img
+            error_icon = tk.Label(torque_error_toplevel, image=err_img)
+            error_icon.grid(row=0, column=0, rowspan=2, sticky='NSEW', padx=10, pady=10)
+
+            error_label = tk.Label(torque_error_toplevel,
+                                   text='Collimator is blocked.\nAcknowledge this error to resume operation.',
+                                   font='Verdana 12')
+            error_label.grid(row=0, column=1, sticky='NSEW')
+            ack_btn = tk.Button(torque_error_toplevel, text='Acknowledge error', command=command_clear_error,
+                                justify='center', font='Verdana 14 bold')
+            ack_btn.grid(row=1, column=1, sticky='NSE')
+
+        if not torque_error and torque_error_toplevel_active:
+            torque_error_toplevel_active = False
+            torque_error_toplevel.destroy()
+
+        set_transaction_lock(False)
+    except:
+        set_transaction_lock(True)
+        pass
+
+def command_clear_error():
+    global torque_error_toplevel_active
+    print('Error cleared')
+    torque_error_toplevel_active = False
+    torque_error_toplevel.destroy()
+    pass
+
+def disable_close():
+    pass

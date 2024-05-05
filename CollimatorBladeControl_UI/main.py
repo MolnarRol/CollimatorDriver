@@ -1,31 +1,16 @@
 import struct
 from tkinter import *
 from tkinter import ttk
-
 from App.connection_window import *
-
 from App.param_tab import parameter_tab
 from App.data_disp import data_display
 from App.app_tab import application_ctrl_tab
 from tkinter import messagebox
 from Communication.Protocol import *
-
 from App.global_vars import *
-
-INFO_String = ('Collimator blade control interface.\n'
-               'Version: 0.1\n'
-               'Company: ES3\n'
-               'Authors:\n'
-               '- Roland Molnar (Team leader)\n\temail: roland.molnar.3@student.tuke.sk\n'
-               '- Bc. Samuel Fertal (Developer)\n\t email: samuel.fertal@student.tuke.sk\n'
-               '- Bc. Vadym Holysh (Developer)\n\t email: vadym.holysh@student.tuke.sk')
+from App.application_state_handler_thread import *
 
 # Application variables
-
-
-# Root tkinter element
-root = Tk()
-# root.geometry('640x480')
 root.resizable(False, False)
 root.title('Collimator control interface')
 icon = ImageTk.PhotoImage(Image.open('img/logo_small.png'))
@@ -72,4 +57,5 @@ if __name__ == '__main__':
     data_display_frame.grid(row=1, column=1, sticky='NSEW')
 
     root.config(menu=top_bar_menu)
+    start_application_handler_thread()
     root.mainloop()
