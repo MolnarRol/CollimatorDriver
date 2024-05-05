@@ -97,3 +97,4 @@ class TwoStateBtn:
         self.textVar.set(self.btn_texts[self.state])
         if self.callbacks[self.state] is not None:
             self.callbacks[self.state]()
+
