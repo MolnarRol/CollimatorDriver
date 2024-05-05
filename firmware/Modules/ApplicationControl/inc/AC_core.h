@@ -20,6 +20,23 @@
 #define AC_BTN1_PRESSED_db          ( (boolean)!GpioDataRegs.GPCDAT.bit.GPIO69 )
 #define AC_BTN2_PRESSED_db          ( (boolean)!GpioDataRegs.GPCDAT.bit.GPIO70 )
 
+typedef struct
+{
+    U32 rising_edge_ticks_U32;
+    U32 falling_edge_ticks_U32;
+    boolean last_state_b;
+    boolean debounced_state_b;
+} AC_BtnDebounce_struct;
+
+typedef enum
+{
+    DEBOUNCE_NO_CHANGE_e    = 0,
+    DEBOUNCE_RISING_EDGE_e  = 1,
+    DEBOUNCE_FALLING_EDGE_e = 2
+} AC_BtnDebouncedState_enum;
+
+U16 AC_BtnDebounce_U16(AC_BtnDebounce_struct* debounce_ps, boolean current_state_b);
+
 typedef void (*AC_ControlFunction_pF)(const void* const, const U16, U16*, U16*);
 
 typedef enum
