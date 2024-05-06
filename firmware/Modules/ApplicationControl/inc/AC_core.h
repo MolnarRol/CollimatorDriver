@@ -17,8 +17,8 @@
 
 #define AC_CORE_CHECK_INDEX_BOUND_dM_b(idx)   ( idx < (sizeof(AC_Functions) / sizeof(AC_ControlFunction_pF)) )
 
-#define AC_BTN1_PRESSED_db          ( (boolean)!GpioDataRegs.GPCDAT.bit.GPIO69 )
-#define AC_BTN2_PRESSED_db          ( (boolean)!GpioDataRegs.GPCDAT.bit.GPIO70 )
+#define AC_BTN1_PRESSED_db          ( (boolean)!GpioDataRegs.GPCDAT.bit.GPIO70 )
+#define AC_BTN2_PRESSED_db          ( (boolean)!GpioDataRegs.GPCDAT.bit.GPIO69 )
 
 typedef struct
 {

@@ -92,7 +92,7 @@ inline void MTCL_Homing(F32 * requested_position_pF32)
                         MDA_GetData_ps()->angular_position__rad__F32;           /* Saving temporary maximum position. */
                 FOC_SetEnableState(False_b);                                    /* Immediately stop FOC - stops motor. */
                 s_time_tick_F32 = ATB_GetTicks_U32();                           /* Saving reference time for delay. */
-                PC_Reset_Data(False_b);
+                PC_Reset_Data(True_b);
                 MTCL_HomingState_e = MTCL_HOMING_MAX_COMPLETE_e;                /* Go to the next state. */
             }
             break;
