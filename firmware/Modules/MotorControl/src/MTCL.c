@@ -18,7 +18,7 @@ F32 s_MTCL_MaxSpeed__rad_s__F32             = DEFAULT_RUN_SPEED__rad_s__dF32;
 F32 s_MTCL_MaxAccel__rad_s2__F32            = DEFAULT_RUN_ACCEL__rad_s2__dF32;
 F32 s_MTCL_MaxTorque__Nm__F32               = DEFAULT_RUN_TORQUE__Nm__dF32;
 
-const F32 s_MTCL_MaxPosition__rad__F32      = 0.0f;
+const F32 s_MTCL_MaxPosition__rad__F32      = 10000.0f;
 F32 prev_request_pos__F32__                 = 0.0f;
 
 /* Homing related variables. */
