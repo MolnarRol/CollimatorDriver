@@ -104,42 +104,6 @@ void AC_ExecuteCommand( const U16 * const command_payload_pU16,
     }
 }
 
-/* Application functions */
-static void AC_TestFunction(const void* const payload_p,
-                            const U16 payload_size_U16,
-                            U16 * response_data_pU16,
-                            U16 * response_data_size_pU16)
-{
-    if(payload_size_U16 != 4)
-    {
-        return;
-    }
-}
-
-/* TestFunction */
-static void AC_AddOne(const void* const payload_p,
-                      const U16 payload_size_U16,
-                      U16 * response_data_pU16,
-                      U16 * response_data_size_pU16)
-{
-    U16 num;
-    /* Check command input validity. */
-    if(payload_size_U16 != 2){
-        response_data_pU16[0] = INVALID_INPUT_e;
-        *response_data_size_pU16 = 1;
-        return;
-    }
-    /* Input is OK -> Respond with data */
-    else
-    {
-        num = BC_2BytesTo16BitData(payload_p).val_U16;
-        num += 1;
-        response_data_pU16[0] = RESPONSE_OK_e;
-        response_data_pU16[1] = num;
-        *response_data_size_pU16 = 2;
-    }
-}
-
 static void AC_CMD_GetMovementParameters( const void* const payload_p,
                                           const U16 payload_size_U16,
                                           U16 * response_data_pU16,

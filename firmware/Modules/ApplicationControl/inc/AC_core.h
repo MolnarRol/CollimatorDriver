@@ -47,16 +47,6 @@ typedef enum
     ERROR_e         = 3
 } ControlFunctionResponseStatus_enum;
 
-static void AC_TestFunction(const void* const payload_p,
-                            const U16 payload_size_U16,
-                            U16 * response_data_pU16,
-                            U16 * response_data_size_pU16);
-
-static void AC_AddOne(const void* const payload_p,
-                             const U16 payload_size_U16,
-                             U16 * response_data_pU16,
-                             U16 * response_data_size_pU16);
-
 static void AC_CMD_GetMovementParameters( const void* const payload_p,
                                           const U16 payload_size_U16,
                                           U16 * response_data_pU16,
