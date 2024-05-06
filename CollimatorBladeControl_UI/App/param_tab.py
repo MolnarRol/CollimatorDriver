@@ -40,13 +40,15 @@ def save_cmd():
 
 
 def load_cmd_callback(data):
-    resp_dec = deconstruct_message(data)
-    loc_parameters = struct.unpack('>III', resp_dec.payload[1:])
-    (parameters['max_speed'], parameters['max_accel'], parameters['max_force']) = struct.unpack('>III',
-                                                                                                resp_dec.payload[1:])
-    for key in parameters_strings:
-        parameters_strings[key].set(str(parameters[key] / 1000))
-
+    try:
+        resp_dec = deconstruct_message(data)
+        loc_parameters = struct.unpack('>III', resp_dec.payload[1:])
+        (parameters['max_speed'], parameters['max_accel'], parameters['max_force']) = struct.unpack('>III',
+                                                                                                    resp_dec.payload[1:])
+        for key in parameters_strings:
+            parameters_strings[key].set(str(parameters[key] / 1000))
+    except:
+        pass
 
 def load_cmd():
     global parameters

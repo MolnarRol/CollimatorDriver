@@ -26,4 +26,7 @@ void AC_ExecuteCommand( const U16 * const command_payload_pU16,
                         U16 * response_data_pU16,
                         U16 * response_data_size_pU16 );
 
+void AC_ManualControlInit(void);
+void AC_ManualControlHandler(void);
+
 #endif /* INC_AC_INTERFACE_H_ */

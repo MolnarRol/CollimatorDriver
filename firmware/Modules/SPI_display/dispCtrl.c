@@ -1,22 +1,33 @@
 /*
  * dispCtrl.c
  *
- *  Created on: 10 mar. 2024 ã.
+ *  Created on: 10 mar. 2024 ï¿½.
  *      Author: vadym
  */
 #include "dispCtrl.h"
 
+ char buffer[12] = {};
+ F32 test_F32 = 0;
  unsigned char reverse(unsigned char b) {
-   b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
-   b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
-   b = (b & 0xAA) >> 1 | (b & 0x55) << 1;
+//   b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
+//   b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
+//   b = (b & 0xAA) >> 1 | (b & 0x55) << 1;
+     b = (b * 0x0202020202ULL & 0x010884422010ULL) % 1023;
    return b;
 }
 
-void dispCtrl_vSendInstruction(Uint16 u16RW, Uint16 u16RS, char data){
+void dispCtrl_vSendInstruction(Uint16 u16RW, Uint16 u16RS, char cData){
+
+//    unsigned int Instruction[3];
+//    Instruction[0] = (0xF8|((u16RW) << 2)|((u16RS) << 1)) << 8; //FIRST BYTE
+//    Instruction[1] = (0x00|((cData&0x1) << 7)|((cData&0x2) << 5)|((cData&0x4) << 3)|((cData&0x8) << 1)) << 8; //SECOND BYTE
+//    Instruction[2] = (0x00|((cData&0x10) << 3)|((cData&0x20) << 1)|((cData&0x40) >> 1)|((cData&0x80) >> 3)) <<8; //THIRD BYTE
+//    spi_vSendChar(Instruction[0]); //SENDCHAR FOR SENDING 1 BYTE
+//    spi_vSendChar(Instruction[1]);
+//    spi_vSendChar(Instruction[2]);
 
     char packet_3_byte [4];
-    char reverse_data = reverse(data);
+    char reverse_data = reverse(cData);
     packet_3_byte[0] = (0xF8^(u16RW << 2)^(u16RS << 1));
     packet_3_byte[1] = (reverse_data & 0xF0);
     packet_3_byte[2] = (reverse_data & 0x0F) << 4;
@@ -39,6 +50,11 @@ void dispCtrl_vInitDisplay(void){
 
     DELAY_US(7000);
     /* set RESET pin for display*/
+
+    GpioCtrlRegs.GPCGMUX1.bit.GPIO72 = 1;
+    GpioCtrlRegs.GPCGMUX1.bit.GPIO72 = 0;
+    GpioCtrlRegs.GPCDIR.bit.GPIO72 = 1;
+    GpioDataRegs.GPCCLEAR.bit.GPIO72 = 1;
 
     GpioCtrlRegs.GPAGMUX2.bit.GPIO30 = 1;
     GpioCtrlRegs.GPAGMUX2.bit.GPIO30 = 0;
@@ -82,12 +98,18 @@ void dispCtrl_vInitDisplay(void){
     dispCtrl_vSendInstruction(0,0,(char)0x80); /*set DDRAM on position 0:0*/
     DELAY_US(1000);
 
-    DELAY_US(5000);
+    DELAY_US(55000);
 
 }
 
 void dispCtrl_u16PutString(char* pcData){
-
+//    unsigned int counter;
+//    for (counter = 0; pcData[counter] != '\0'; counter++)
+//    {
+//
+//        dispCtrl_vSendInstruction(0,1,pcData[counter]);
+//
+//    }
     Uint16 i = 0;
     spi_vSendChar( (0xF8 ^ ( (char)0 << 2 ) ^ ( (char)1 << 1) ) ); /*start byte - 5 high,RW,RS*/
     while(pcData[i] != '\0')
@@ -98,12 +120,18 @@ void dispCtrl_u16PutString(char* pcData){
     }
 }
 
-void dispCtrl_vSetPosition(Uint16 u16PosX, Uint16 u16PosY){
+void dispCtrl_vSetPosition(Uint16 u16PosX, Uint16 u16PosY)
+{
     char cAddress = (char)( ( ( (Uint16)u16PosY - 1 )*(Uint16)32 ) + ( (Uint16)u16PosX - 1 ) ) ;
     dispCtrl_vSendInstruction(0,0,((char)0x80 + (char)cAddress)); /*set DDRAM on position 0:0*/
     //DELAY_US(1000);
 }
 
+
+void dispCtrl_clear()
+{
+    dispCtrl_vSendInstruction(0,0,0x01);
+}
 
 void float_to_char_array(F32 f, char* buffer, U16 precision) {
     // Handle negative numbers
@@ -149,4 +177,74 @@ void float_to_char_array(F32 f, char* buffer, U16 precision) {
 
     // Null-terminate the string
     *buffer = '\0';
+}
+
+void DisplayRefresh(void)
+{
+//    char buffer[12] = {};
+    static U32 ref_ticks_U32 = 0;
+    //static U16 display_refresh_state = 0;
+
+                if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(100)) )
+                {
+                    ref_ticks_U32 = ATB_GetTicks_U32();
+                    dispCtrl_vSetPosition(1,3);
+                    float_to_char_array(MDA_GetData_ps()->angular_position__rad__F32, &buffer, 1);
+                    GpioDataRegs.GPCSET.bit.GPIO72 = 1;
+                    dispCtrl_u16PutString(&buffer);
+                    dispCtrl_u16PutString("     ");
+                    GpioDataRegs.GPCCLEAR.bit.GPIO72 = 1;
+
+                }
+
+//    switch(display_refresh_state)
+//    {
+//        case 0:
+//            if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(100)) )
+//            {
+//                ref_ticks_U32 = ATB_GetTicks_U32();
+//                display_refresh_state = 1;
+//            }
+//            break;
+//        case 1:
+//            if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(100)) )
+//            {
+//                ref_ticks_U32 = ATB_GetTicks_U32();
+//                dispCtrl_vSetPosition(1,3);
+//                float_to_char_array(MDA_GetData_ps()->angular_position__rad__F32, &buffer, 1);
+//                display_refresh_state = 2;
+//            }
+//            break;
+//        case 2:
+//            if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(300)) )
+//            {
+//                ref_ticks_U32 = ATB_GetTicks_U32();
+//                GpioDataRegs.GPCSET.bit.GPIO72 = 1;
+//                dispCtrl_u16PutString(&buffer);
+//                GpioDataRegs.GPCCLEAR.bit.GPIO72 = 1;
+//                display_refresh_state = 0;
+//            }
+//            break;
+//        default:
+//            display_refresh_state = 0;
+//            break;
+//
+//    }
+
+
+    //if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(100)) )
+    //if(CpuTimer1Regs.TCR.bit.TIF == 1)
+    //{
+        //ref_ticks_U32 = ATB_GetTicks_U32();
+        //CpuTimer1Regs.TCR.bit.TIF = 1;
+        /* 100ms */
+//        GpioDataRegs.GPCSET.bit.GPIO72 = 1;
+//        dispCtrl_vSetPosition(1,3);
+//        float_to_char_array(test_F32, &buffer, 1);
+//        dispCtrl_u16PutString(&buffer);
+////        GpioDataRegs.GPCCLEAR.bit.GPIO72 = 1;
+//        dispCtrl_u16PutString(" mm  ");
+//        DELAY_US(100000);
+
+    //}
 }

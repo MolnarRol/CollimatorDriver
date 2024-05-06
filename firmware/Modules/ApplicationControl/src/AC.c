@@ -16,6 +16,106 @@
 #include <MDA_interface.h>
 #include <MTCL_interface.h>
 
+S16 test_var = 0;
+S16 test_counter = 0;
+
+void AC_ManualControlInit(void)
+{
+    EALLOW;
+    /* GPIO69 - Button1 */
+    GpioCtrlRegs.GPCDIR.bit.GPIO69 = 0;     /* Pin as input. */
+    GpioCtrlRegs.GPCPUD.bit.GPIO69 = 0;     /* Enable internal pull up. */
+
+    /* GPIO70 - Button2 */
+    GpioCtrlRegs.GPCDIR.bit.GPIO70 = 0;     /* Pin as input. */
+    GpioCtrlRegs.GPCPUD.bit.GPIO70 = 0;     /* Enable internal pull up. */
+    EDIS;
+}
+
+AC_BtnDebounce_struct AC_Btn1Debounce_s = {0};
+AC_BtnDebounce_struct AC_Btn2Debounce_s = {0};
+
+U16 AC_BtnDebounce_U16(AC_BtnDebounce_struct* debounce_ps, boolean current_state_b)
+{
+    U16 return_state_U16 = DEBOUNCE_NO_CHANGE_e;
+
+    if(current_state_b != debounce_ps->last_state_b)
+    {
+        if(current_state_b)
+        {
+            debounce_ps->rising_edge_ticks_U32 = ATB_GetTicks_U32();
+        }
+        else
+        {
+            debounce_ps->falling_edge_ticks_U32 = ATB_GetTicks_U32();
+        }
+    }
+
+    if(current_state_b && ATB_CheckTicksPassed_U16(debounce_ps->rising_edge_ticks_U32, ATB_MS_TO_TICKS_dM_U32(50)))
+    {
+        if(debounce_ps->debounced_state_b == False_b)
+        {
+            debounce_ps->debounced_state_b = True_b;
+            return_state_U16 = DEBOUNCE_RISING_EDGE_e;
+        }
+    }
+    else if(!current_state_b && ATB_CheckTicksPassed_U16(debounce_ps->falling_edge_ticks_U32, ATB_MS_TO_TICKS_dM_U32(50)))
+    {
+        if(debounce_ps->debounced_state_b == True_b)
+        {
+            debounce_ps->debounced_state_b = False_b;
+            return_state_U16 = DEBOUNCE_FALLING_EDGE_e;
+        }
+    }
+    debounce_ps->last_state_b = current_state_b;
+
+    return return_state_U16;
+}
+
+void AC_ManualControlHandler(void)
+{
+//    static boolean btn1_lstate_b = False_b;
+//    static boolean btn1_set_b = False_b;
+//    static U32 btn1_rising_edge_ticks_U32 = 0;
+//    static U32 btn1_falling_edge_ticks_U32 = 0;
+
+    if(AC_BtnDebounce_U16(&AC_Btn1Debounce_s, AC_BTN1_PRESSED_db) == DEBOUNCE_RISING_EDGE_e)
+    {
+        test_var += 1;
+    }
+
+    if(AC_BtnDebounce_U16(&AC_Btn2Debounce_s, AC_BTN2_PRESSED_db) == DEBOUNCE_RISING_EDGE_e)
+    {
+        test_var -= 1;
+    }
+
+
+//    if(btn1_state_b != btn1_lstate_b)
+//    {
+//        if(btn1_state_b)
+//        {
+//            btn1_rising_edge_ticks_U32 = ATB_GetTicks_U32();
+//        }
+//        else
+//        {
+//            btn1_falling_edge_ticks_U32 = ATB_GetTicks_U32();
+//            btn1_set_b = False_b;
+//        }
+//    }
+//
+//    if(btn1_state_b && ATB_CheckTicksPassed_U16(btn1_rising_edge_ticks_U32, ATB_MS_TO_TICKS_dM_U32(25)))
+//    {
+//        if(!btn1_set_b)
+//        {
+//            test_var += 1;
+//            btn1_set_b = True_b;
+//        }
+//    }
+//
+//    btn1_lstate_b = btn1_state_b;
+
+}
+
 void AC_ExecuteCommand( const U16 * const command_payload_pU16,
                         const U16 payload_size_U16,
                         U16 * response_data_pU16,
