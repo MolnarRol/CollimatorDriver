@@ -27,7 +27,7 @@ def application_handler_thread():
             bytes = construct_message(HeaderId.HELLO_MSG_e, [])
             serial_handler.new_transaction(bytes, priority=0, callback=application_data_recieved)
             pass
-        sleep(0.1)
+        sleep(0.25)
     pass
 
 

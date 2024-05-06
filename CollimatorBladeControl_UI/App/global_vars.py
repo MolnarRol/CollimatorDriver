@@ -11,6 +11,28 @@ serial_handler = SerialInterface(config_handler.config['serial_port']['port'],
 root = tk.Tk()
 
 transaction_lock = True
+remote_position = 0.0
+remote_max_position = 0.0
+
+
+def set_remote_max_position(max_pos):
+    global remote_max_position
+    remote_max_position = max_pos
+
+
+def get_remote_max_position_():
+    global remote_max_position
+    return remote_max_position
+
+
+def set_remote_position(pos):
+    global remote_position
+    remote_position = pos
+
+
+def get_remote_position():
+    global remote_position
+    return remote_position
 
 
 def set_transaction_lock(new_lock: bool):

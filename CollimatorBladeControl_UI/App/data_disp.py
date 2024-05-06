@@ -47,7 +47,7 @@ def update_data_electrical():
         data = struct.pack('>B', GET_ELECTRICAL_DATA_e)
         bytes = construct_message(HeaderId.COMMAND_e, data)
         serial_handler.new_transaction(bytes, priority=2, callback=write_new_electrical_data)
-    data_disp_el.after(100, update_data)
+    data_disp_el.after(200, update_data)
 
 
 def update_data():
@@ -55,13 +55,13 @@ def update_data():
         data = struct.pack('>B', GET_MECHANICAL_DATA_e)
         bytes = construct_message(HeaderId.COMMAND_e, data)
         serial_handler.new_transaction(bytes, priority=2, callback=write_new_mech_data)
-    data_disp_el.after(100, update_data_electrical)
+    data_disp_el.after(200, update_data_electrical)
 
 
 def data_display(root):
     global data_disp_el
     data_disp_el = ttk.LabelFrame(root, text='Data', width=350)
-    data_disp_el.after(100, update_data)
+    data_disp_el.after(200, update_data)
 
     for key in parameters_strings:
         parameters_strings[key] = StringVar()

@@ -1,3 +1,4 @@
+import time
 from tkinter import *
 from tkinter import ttk
 
@@ -21,11 +22,24 @@ def stop():
     print('stop')
 
 
+
+def set_position_callback(data):
+    try:
+        resp_dec = deconstruct_message(data)
+        if resp_dec.payload[0] != 0:
+            print('Failed')
+    except:
+        print('Failed')
+
+
 def set_position():
     global position
     data = struct.pack('>BI', SET_REFERENCE_POSITION_e, int(position*1000))
     bytes = construct_message(HeaderId.COMMAND_e, data)
-    serial_handler.new_transaction(bytes, priority=0)
+    state = serial_handler.new_transaction(bytes, priority=0, callback=set_position_callback)
+    if state is False:
+        serial_handler.flush_transactions()
+        serial_handler.new_transaction(bytes, priority=0, callback=set_position_callback)
 
 
 def write_position(val):
