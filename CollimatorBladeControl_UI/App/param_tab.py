@@ -77,7 +77,7 @@ def parameter_tab(root):
     save_btn = Button(btn_frame, text='Save', command=save_cmd)
     save_btn.grid(row=0, column=2)
 
-    param_grp1 = ttk.LabelFrame(param_tab_el, text='Param group 1')
+    param_grp1 = ttk.LabelFrame(param_tab_el, text='Movement parameters')
     param_grp1.grid(row=0, column=0, columnspan=2, sticky='NSEW')
 
     param1 = ParamField(param_grp1, name='Max. speed [rad/s]', variable=parameters_strings['max_speed'])

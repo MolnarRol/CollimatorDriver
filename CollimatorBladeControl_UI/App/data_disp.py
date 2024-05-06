@@ -7,6 +7,7 @@ import struct
 from Communication.Protocol import *
 from App.global_vars import serial_handler
 from App.global_vars import get_transaction_lock
+from App.global_vars import set_remote_position
 
 data_disp_el = None
 
@@ -27,6 +28,7 @@ def write_new_mech_data(data):
         parameters_strings['speed'].set(str(loc_parameters[0] / 1000))
         parameters_strings['pos'].set(str(loc_parameters[1] / 1000))
         parameters_strings['rotor_pos'].set(str(loc_parameters[2] / 1000))
+        set_remote_position(loc_parameters[1] / 1000)
     except:
         pass
 

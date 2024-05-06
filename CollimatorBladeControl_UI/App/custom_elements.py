@@ -46,6 +46,7 @@ class InputSlider:
     def __init__(self, root, limits=(0, 100), callback=None):
         self.elmnt = ttk.Frame(root)
         self.elmnt.columnconfigure(0, weight=1)
+        self.elmnt.rowconfigure(0, weight=1)
         self.limits = limits
         self.varString = StringVar()
         self.varFloat = DoubleVar()
@@ -58,10 +59,10 @@ class InputSlider:
         self.slider = ttk.Scale(slider_frame, command=self.__slider_moved__, variable=self.varFloat,
                                 from_=limits[0], to=limits[1])
         self.slider.grid(row=0, column=0, columnspan=3, sticky='NSEW')
-        lower_limit_label = Label(slider_frame, text=str(limits[0]), justify=LEFT)
-        lower_limit_label.grid(row=1, column=0)
-        higher_limit_label = Label(slider_frame, text=str(limits[1]), justify=RIGHT)
-        higher_limit_label.grid(row=1, column=2)
+        self.lower_limit_label = Label(slider_frame, text=str(limits[0]), justify=LEFT)
+        self.lower_limit_label.grid(row=1, column=0)
+        self.higher_limit_label = Label(slider_frame, text=str(limits[1]), justify=RIGHT)
+        self.higher_limit_label.grid(row=1, column=2)
 
         self.input_box = DoubleEntry(self.elmnt, self.__input_edited__)
         self.input_box.elmnt.configure(width=8)
@@ -73,13 +74,16 @@ class InputSlider:
         if self.callback is not None:
             self.callback(self.varFloat.get())
 
-
     def __input_edited__(self, val):
         if self.limits[0] <= val <= self.limits[1]:
             self.varFloat.set(val)
         if self.callback is not None:
             self.callback(self.varFloat.get())
 
+    def update_limits(self, limits=(0, 100)):
+        self.limits = limits
+        self.lower_limit_label.config(text=str(limits[0]))
+        self.higher_limit_label.config(text=str(limits[1]))
 
 
 class TwoStateBtn:
