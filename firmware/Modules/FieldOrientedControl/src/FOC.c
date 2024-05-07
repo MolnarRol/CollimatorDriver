@@ -100,6 +100,14 @@ void FOC_VoltageLimiter(TRAN_struct * const tran_values_s)
  */
 void FOC_SetEnableState(boolean new_state_b)
 {
+
+
+    if(new_state_b != s_FOC_EnableState_b){
+        PI_ctrl_Init(&PI_id_current_controller);
+        PI_ctrl_Init(&PI_iq_current_controller);
+        PI_ctrl_Init(&PI_speed_controller);
+        PI_ctrl_Init(&PI_position_controller);
+    }
     s_FOC_EnableState_b = new_state_b;
 }
 
