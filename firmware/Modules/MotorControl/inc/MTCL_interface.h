@@ -37,7 +37,7 @@ typedef struct
 
 }PC_Data_struct;
 
-
+extern F32 s_MTCL_ReferencePosition__rad__F32;
 boolean MTCL_SetMovementParams(const F32 max_speed__rad_s__F32, const F32 max_accel__rad_s2__F32, const F32 max_torque__Nm__F32);
 void    MTCL_GetMovementParams(F32 * const max_speed__rad_s__F32, F32 * const max_accel__rad_s2__F32, F32 * const max_torque__Nm__F32);
 boolean MTCL_SetReferencePosition(const F32 new_position__rad__F32);

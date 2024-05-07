@@ -107,6 +107,7 @@ void FOC_SetEnableState(boolean new_state_b)
         PI_ctrl_Init(&PI_iq_current_controller);
         PI_ctrl_Init(&PI_speed_controller);
         PI_ctrl_Init(&PI_position_controller);
+        s_MTCL_ReferencePosition__rad__F32 = MDA_GetData_ps()->angular_position__rad__F32;
     }
     s_FOC_EnableState_b = new_state_b;
 }

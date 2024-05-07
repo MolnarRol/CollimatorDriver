@@ -32,6 +32,7 @@ extern boolean alarm_state;
 
 Uint16 u16buffer_counter;
 Uint16 FOC_counter;
+F32 k = 0;
 //U32 counter = 0;
 //char buffer[12] = {};
 
@@ -79,6 +80,11 @@ void main(void)
     /* Main loop */
     while(1)
     {
+        if(k)
+        {
+            FOC_SetEnableState(True_b);
+            k = 0;
+        }
         PWM_SetOutputEnable(True_b);
         ECOM_MainHandler();
         AC_ManualControlHandler();
