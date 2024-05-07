@@ -87,8 +87,8 @@ def application_ctrl_tab(root):
     set_position_btn = Button(app_tab_el, text='Set', command=set_position)
     set_position_btn.grid(row=0, column=1, sticky='NSEW')
 
-    # start_stop_btn = TwoStateBtn(app_tab_el, callbacks=(start, stop), default_state=1)
-    # start_stop_btn.elmnt.grid(row=0, column=2, sticky='NSEW')
+    start_stop_btn = TwoStateBtn(app_tab_el, callbacks=(start, stop), default_state=1)
+    start_stop_btn.elmnt.grid(row=0, column=2, sticky='NSEW')
 
     pos_indicator = ttk.Progressbar(pos_input.elmnt, orient=HORIZONTAL)
     pos_indicator.grid(row=1, column=0, sticky='NSEW')
