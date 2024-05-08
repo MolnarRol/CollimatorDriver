@@ -29,5 +29,7 @@ void dispCtrl_vSetPosition(Uint16 u16PosX, Uint16 u16PosY);
 
 void float_to_char_array(F32 f, char* buffer, U16 precision);
 
+F32 ceiling_F32(F32 number);
+
 void DisplayRefresh(void);
 #endif /* DISPCTRL_H_ */
