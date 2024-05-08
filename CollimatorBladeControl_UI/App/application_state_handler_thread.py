@@ -15,6 +15,7 @@ torque_error_toplevel = None
 torque_error_toplevel_active = False
 info_img = ImageTk.PhotoImage(Image.open('img/info.png').resize((60, 60)))
 err_img = ImageTk.PhotoImage(Image.open('img/error.png').resize((60, 60)))
+err_img_copy = err_img
 
 total_error_toplevel = None
 total_error_prev_state = False
@@ -37,6 +38,7 @@ def application_handler_thread():
 def application_data_recieved(data):
     global motor_homing_toplevel, homing_toplevel, torque_error_toplevel, torque_error_toplevel_active
     global total_error_prev_state, total_error_toplevel
+    global err_img, info_img, err_img_copy
 
     try:
         reconstructed = deconstruct_message(data)
@@ -51,7 +53,7 @@ def application_data_recieved(data):
             total_error_toplevel = tk.Toplevel(root)
             total_error_toplevel.title('Error: Homing procedure interrupted.')
             total_error_toplevel.resizable(False, False)
-            err_icon = tk.Label(homing_toplevel, image=err_img)
+            err_icon = tk.Label(homing_toplevel, image=err_img_copy)
             err_icon.grid(row=0, column=00, sticky='NSEW', padx=10, pady=10)
             homing_text = tk.Label(homing_toplevel, text="Daj prec ruky z motora Chuju.", font='Verdana 14')
             homing_text.grid(row=0, column=1, sticky='NSEW')
