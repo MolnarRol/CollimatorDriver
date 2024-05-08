@@ -49,6 +49,8 @@ void main(void)
     MDA_CalibratePhaseCurrentsOffsets();
     AC_ManualControlInit();
 
+
+
     //dispCtrl_clear();
     dispCtrl_vSetPosition(1,1);
     dispCtrl_u16PutString("Collimator Blade");
