@@ -25,8 +25,10 @@ F32 requestspeed=0;
 F32 requestposition = 0;
 
 /**
- * @brief
- * @details
+ * @brief Function for calculating and generating PWM according to user desired trajectory specifications
+ * @param trajectory_data_ps Actual data of desired position, speed, acceleration calculated in MTCL module, pre-correction regulator inputs
+ * @details Function processes pre-correction regulator inputs, calculates action values as regulation outputs functions, compensates non-linearities of PMSM, transforms
+ * desired voltages in rotational 2-phase system to 3-phase stator system, generates desired PWM output, limits desired voltage action values
  */
 void FOC_CalculateOutput(const PC_Data_struct* trajectory_data_ps)
 {
@@ -78,6 +80,13 @@ void FOC_CalculateOutput(const PC_Data_struct* trajectory_data_ps)
                          PWM_DUTY_TO_CMP_dMU16( (s_trans_s.abc_s.b_F32 / motor_data_ps->dc_link_voltage__V__F32) + 0.5f ),
                          PWM_DUTY_TO_CMP_dMU16( (s_trans_s.abc_s.c_F32 / motor_data_ps->dc_link_voltage__V__F32) + 0.5f ));
 }
+
+/**
+ * @brief Limitation of ud and ug voltage
+ * @details Function limits desired 2-phase rotary voltage values due to the maximal voltage of DC bus circuit
+ * @param tran_values_s Structure, which holds desired ud and uq voltage values
+ */
+
 
 void FOC_VoltageLimiter(TRAN_struct * const tran_values_s)
 {

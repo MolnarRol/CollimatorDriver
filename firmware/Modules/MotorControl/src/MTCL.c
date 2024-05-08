@@ -1,16 +1,17 @@
 /**
  * @file MTCL.c
- * @brief Motor control submodule.
- * @details Manages motor position requests and motor control states.
  *
+ * @section MTCL MTCL Motor control module
+ * @brief Motor control module
+ * @details Module for controlling actual motor data and caluclating motor desired data
  * =================================================================
  * @author Bc. Roland Molnar
  * @author Bc. Vadym Holysh
- *
+ * @author Bc. Samuel Fertal
  * =================================================================
  * KEM, FEI, TUKE
  * @date 29.02.2024
- * @defgroup MTCL Motor control
+ * @defgroup MTCL Motor control module
  * @{
  */
 
@@ -166,11 +167,13 @@ inline void MTCL_Homing(F32 * requested_position_pF32)
 }
 
 /**
- * @brief Trajectory calculation handler for FOC
- * @param Requested_Position__rad__F32 is a user or application requested position in radians
- * @param MaxMechSpeed_rad_s1_F32 is a maximum achievable mechanical speed
- * @param MaxAcc_rad_s2_F32 is a maximum acceleration - steepness of speed increase
- */
+ * @brief Function for calculating and generating desired trajectory
+ * @param Requested_Position__rad__F32 Desired position according to user linear input, calculated from GUI or button input
+ * @param MaxMechSpeed_rad_s1_F32 Maximal possible reachable speed according to user input from GUI in radians per second,
+ * @param MaxAcc_rad_s2_F32 Acceleration value, which motor accelerates or deccelaretes with, in radians per second^2
+ * @details The function is responsible for generating desired trajectory based on discrete integration each interrupt cycle, considers possible mathematical
+ * scenarios and calculates fastest way to reach desired position according to user inputs
+ * */
 static void MTCL_CalculateTrajectory(F32 Requested_Position__rad__F32, F32 MaxMechSpeed_rad_s1_F32, F32 MaxAcc_rad_s2_F32)
 {
     static F32 DeltaMdlPosition__rad__F32 = 0.0f;
@@ -299,9 +302,12 @@ static void MTCL_CalculateTrajectory(F32 Requested_Position__rad__F32, F32 MaxMe
 }
 
 /**
- * @brief Routine for checking if motor torque exceeded maximum value.
- * @returns allways true. Value is not used.
- */
+ * @brief Function for possible trajectory obstacle checking
+ * @details The function is responsible for instant flagging of torque exceeding scenraios which is caused
+ * by obstacle in trajectory of blades of mechanism or forced braking or accelerating of mechanism, in case of multiple forced braking,
+ * function stops PWM pulses which leads to initial stop of mechanism
+ *
+ * */
 boolean MTCL_TorqueExceedCheck(void)
 {
     const F32 motor_torque__Nm__F32 = FOC_GetTorque__Nm__F32();
