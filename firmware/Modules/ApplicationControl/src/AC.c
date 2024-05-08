@@ -9,6 +9,8 @@
  * =================================================================
  * KEM, FEI, TUKE
  * @date 29.02.2024
+ * @defgroup AC Application control
+ * @{
  */
 #include <AC_core.h>
 #include <AC_interface.h>
@@ -17,9 +19,10 @@
 #include <MTCL_interface.h>
 #include <ATB_interface.h>
 #include <FOC.h>
-S16 test_counter = 0;
-S16 test_var = 0;
 
+/**
+ * @brief Control button initialization.
+ */
 void AC_ManualControlInit(void)
 {
     EALLOW;
@@ -277,3 +280,7 @@ static void AC_CMD_SetMovmentEnableState( const void* const payload_p,
     response_data_pU16[0] = RESPONSE_OK_e;
     *response_data_size_pU16 = 1;
 }
+
+/**
+ * @}
+ */

@@ -9,6 +9,8 @@
  * =================================================================
  * KEM, FEI, TUKE
  * @date 29.02.2024
+ * @addtogroup AC Application control core
+ * @{
  */
 #include <app_types.h>
 
@@ -17,9 +19,10 @@
 
 #define AC_CORE_CHECK_INDEX_BOUND_dM_b(idx)   ( idx < (sizeof(AC_Functions) / sizeof(AC_ControlFunction_pF)) )
 
-#define AC_BTN1_PRESSED_db          ( (boolean)!GpioDataRegs.GPCDAT.bit.GPIO70 )
-#define AC_BTN2_PRESSED_db          ( (boolean)!GpioDataRegs.GPCDAT.bit.GPIO69 )
+#define AC_BTN1_PRESSED_db          ( (boolean)!GpioDataRegs.GPCDAT.bit.GPIO70 )    /**< Check if button 1 is pressed. */
+#define AC_BTN2_PRESSED_db          ( (boolean)!GpioDataRegs.GPCDAT.bit.GPIO69 )    /**< Check if button 1 is pressed. */
 
+/* Button debouncing structure. */
 typedef struct
 {
     U32 rising_edge_ticks_U32;
@@ -28,6 +31,7 @@ typedef struct
     boolean debounced_state_b;
 } AC_BtnDebounce_struct;
 
+/* Debounced button state. */
 typedef enum
 {
     DEBOUNCE_NO_CHANGE_e    = 0,
@@ -39,6 +43,7 @@ U16 AC_BtnDebounce_U16(AC_BtnDebounce_struct* debounce_ps, boolean current_state
 
 typedef void (*AC_ControlFunction_pF)(const void* const, const U16, U16*, U16*);
 
+/* External communication responses. */
 typedef enum
 {
     RESPONSE_OK_e   = 0,
@@ -101,3 +106,7 @@ static AC_ControlFunction_pF AC_Functions[] =
 
 
 #endif /* AC_CORE_H_ */
+
+/**
+ * @}
+ */

@@ -1,3 +1,19 @@
+/**
+ * @file ATB_interface.h
+ *
+ * @section ATB ATB Application time base module
+ * @brief Application time base module
+ * @details Module for keeping up time. It can be used for precise enough non critical execution of functions in non blocking manner.
+ *
+ * =================================================================
+ * @author Bc. Roland Molnar
+ *
+ * =================================================================
+ * KEM, FEI, TUKE
+ * @date 29.02.2024
+ * @addtogroup ATB Application time base module interface
+ * @{
+ */
 #ifndef ATB_IF_H
 #define ATB_IF_H
 
@@ -24,3 +40,7 @@ U32         ATB_GetTicks_U32(void);
 U16         ATB_CheckTicksPassed_U16(const uint32_t ref_ticks_U32, const uint32_t checked_ticks_passed_U32);
 
 #endif  /* ATB_IF_H */
+
+/**
+ * @}
+ */
