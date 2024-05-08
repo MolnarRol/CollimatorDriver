@@ -61,7 +61,9 @@ def write_max_position_callback(data):
     try:
         resp_dec = deconstruct_message(data)
         max_pos = struct.unpack('>I', resp_dec.payload[1:])
-        set_remote_max_position(max_pos[0])
+        max_pos = float(max_pos[0]) / 1000.0
+        max_pos = round(max_pos, 2)
+        set_remote_max_position(max_pos)
         pass
     except:
         pass

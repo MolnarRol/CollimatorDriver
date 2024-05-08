@@ -174,7 +174,7 @@ static void AC_CMD_GetMechanicalData( const void* const payload_p,
     const MDA_Data_struct* data_ps = MDA_GetData_ps();
 
     U32 speed__rad_s2__U32 = (U32)(data_ps->rotor_mech_speed__rad_s1__F32 * 1000.0f);
-    U32 linear_position_mm_U32 = (U32)(data_ps->angular_position__rad__F32 * 1000.0f);
+    U32 linear_position_mm_U32 = (U32)((data_ps->angular_position__rad__F32 / 0.058448f) * 1000.0f);
     U32 rotor_position_rad_U32 = (U32)(data_ps->rotor_mech_angle__rad__F32 * 1000.0f);
 
     BC_32BitDataTo4Bytes(&speed__rad_s2__U32, &response_data_pU16[1]);
@@ -222,8 +222,11 @@ static void AC_CMD_SetReferncePosition( const void* const payload_p,
     }
 
     *response_data_size_pU16 = 1;
-    response_data_pU16[0] = MTCL_SetReferencePosition((F32)BC_4BytesTo32BitData(&((U16*)payload_p)[0]).val_U32 / 1000.0f)
-            ? RESPONSE_OK_e : INVALID_INPUT_e;
+    // 0.058448f
+    F32 reference_position = (F32)BC_4BytesTo32BitData(&((U16*)payload_p)[0]).val_U32 / 1000.0f;
+    reference_position = reference_position * 0.058448f;
+
+    response_data_pU16[0] = MTCL_SetReferencePosition(reference_position) ? RESPONSE_OK_e : INVALID_INPUT_e;
 }
 
 static void AC_CMD_GetMaximumPosition( const void* const payload_p,
@@ -239,7 +242,7 @@ static void AC_CMD_GetMaximumPosition( const void* const payload_p,
     }
     response_data_pU16[0] = RESPONSE_OK_e;
     *response_data_size_pU16 = 5;
-    U32 max_position_U32 = MTCL_GetMaximumPosition_F32();
+    U32 max_position_U32 = MTCL_GetMaximumPosition_F32() * 1000.0f / 0.058448f;
     BC_32BitDataTo4Bytes(&max_position_U32, &response_data_pU16[1]);
 }
 
