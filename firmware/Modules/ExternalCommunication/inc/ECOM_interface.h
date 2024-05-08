@@ -1,8 +1,16 @@
-/*
- * ECOM_interface.h
+/**
+ * @file ECOM_inetface.h
+ * @brief External communication buffer submodule.
+ * @details Manages communication buffers.
  *
- *  Created on: Mar 2, 2024
- *      Author: roland
+ * =================================================================
+ * @author Bc. Roland Molnar
+ *
+ * =================================================================
+ * KEM, FEI, TUKE
+ * @date 29.02.2024
+ * @addtogroup ECOM External communication interface
+ * @{
  */
 #include <app_types.h>
 
@@ -22,3 +30,7 @@ ECOM_RequestStatus_enum ECOM_TxRequest(const U16* data_pU16, const U16 data_len_
 void ECOM_DataRecievedCallback(void);
 
 #endif /* ECOM_INTERFACE_H_ */
+
+/**
+ * @}
+ */

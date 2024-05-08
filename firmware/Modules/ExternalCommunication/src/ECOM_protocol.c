@@ -1,8 +1,16 @@
-/*
- * ECOM_PROTO.c
+/**
+ * @file ECOM_protocol.c
+ * @brief External communication submodule.
+ * @details Manages motor position requests and motor control states.
  *
- *  Created on: Mar 31, 2024
- *      Author: roland
+ * =================================================================
+ * @author Bc. Roland Molnar
+ *
+ * =================================================================
+ * KEM, FEI, TUKE
+ * @date 29.02.2024
+ * @addtogroup ECOM External communication protocol
+ * @{
  */
 #include <ECOM_core.h>
 #include <AC_interface.h>
@@ -20,6 +28,10 @@ extern ECOM_Buffer_struct s_ECOM_rx_buffer_s;
 
 static U16* s_response_paU16 = (U16*)0;
 
+
+/**
+ * @brief Callback for serial data reception.
+ */
 void ECOM_DataRecievedCallback(void)
 {
     /* Check if protocol state machine is available. */
@@ -30,6 +42,9 @@ void ECOM_DataRecievedCallback(void)
     }
 }
 
+/**
+ * @brief Communication protocol state machine.
+ */
 void ECOM_ProtocolStateMachineHandler(void)
 {
     switch(s_ECOM_protocol_state_machine_state_U16)
@@ -73,6 +88,10 @@ void ECOM_ProtocolStateMachineHandler(void)
     }
 }
 
+/**
+ * @brief External communication response control.
+ * @param packet_ps is a destination buffer for created packet.
+ */
 static void ECOM_ProtocolRespond(const ECOM_Packet_struct * const packet_ps)
 {
     switch(packet_ps->header_s.packet_id_e)
@@ -100,6 +119,16 @@ static void ECOM_ProtocolRespond(const ECOM_Packet_struct * const packet_ps)
     }
 }
 
+/**
+ * @brief Check incomming mesage from serial interface for errors.
+ * @param parsed_packet_ps is pointer to parsed packet.
+ * @param buffer_ps is a poitner to a raw rx buffer.
+ * @returns Error value of check.
+ * @retval 0 Packet OK.
+ * @retval 1 Invalid header detected.
+ * @retval 2 Received invalid length.
+ * @retval 3 Checksum failed.
+ */
 static U16 ECOM_ProtocolCheckMsg(const ECOM_Packet_struct * const parsed_packet_ps, const ECOM_Buffer_struct * const buffer_ps)
 {
     U16 ret_status_code_U16 = (U16)0;
@@ -119,15 +148,16 @@ static U16 ECOM_ProtocolCheckMsg(const ECOM_Packet_struct * const parsed_packet_
     {
         ret_status_code_U16 = (U16)3;
     }
-    else
-    {
-        /* Checking crc checksum. */
-
-    }
 
     return ret_status_code_U16;
 }
 
+/**
+ * @brief Parse incomming data as transmittion packet.
+ * @param parsed_packet_s is poitner to parsed output.
+ * @param packet_raw_U16 are the raw bytes received.
+ * @param packet_size_U16 is the total number of received bytes.
+ */
 static void ECOM_ParsePacket(ECOM_Packet_struct * const parsed_packet_s, U16* packet_raw_U16, const U16 packet_size_U16)
 {
     parsed_packet_s->header_s.packet_id_e = (ECOM_ProtocolHeader_enum)packet_raw_U16[0];
@@ -136,6 +166,13 @@ static void ECOM_ParsePacket(ECOM_Packet_struct * const parsed_packet_s, U16* pa
     parsed_packet_s->crc8_U16 = packet_raw_U16[packet_size_U16 - 1];
 }
 
+/**
+ * @brief Create packet from parameters.
+ * @param header_e is a header identification ID.
+ * @param dst_buff_pU16 is a pointer to destination byte buffer for packet.
+ * @param payload_pU16 is a pointer to raw data bytes to be included as payload.
+ * @param payload_size_U16 is total number of bytes in payload buffer.
+ */
 static void ECOM_CreatePacket(const ECOM_ProtocolHeader_enum header_e, U16 * dst_buff_pU16, const U16 * payload_pU16, const U16 payload_size_U16)
 {
     U16 * const dst_base_pU16 = dst_buff_pU16;
@@ -154,3 +191,7 @@ static void ECOM_CreatePacket(const ECOM_ProtocolHeader_enum header_e, U16 * dst
     /* Packet tail. */
     *(dst_buff_pU16) = CRC8_CCITT_U16(dst_base_pU16, payload_size_U16 + 2);
 }
+
+/**
+ * @}
+ */

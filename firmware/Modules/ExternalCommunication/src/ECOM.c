@@ -1,8 +1,16 @@
-/*
- * ECOM.c
+/**
+ * @file ECOM.c
+ * @brief External communication submodule.
+ * @details Manages motor position requests and motor control states.
  *
- *  Created on: Mar 2, 2024
- *      Author: roland
+ * =================================================================
+ * @author Bc. Roland Molnar
+ *
+ * =================================================================
+ * KEM, FEI, TUKE
+ * @date 29.02.2024
+ * @defgroup ECOM External communication
+ * @{
  */
 #include <ECOM_core.h>
 
@@ -13,7 +21,7 @@ ECOM_Buffer_struct s_ECOM_rx_buffer_s = {0};        /**< Receiver extended buffe
 ECOM_Buffer_struct s_ECOM_tx_buffer_s = {0};        /**< Transmitter extended buffer structure. */
 
 /**
- * @brief
+ * @brief Communication handler.
  */
 void ECOM_MainHandler(void)
 {
@@ -53,7 +61,7 @@ static void ECOM_RxHandler(void)
 }
 
 /**
- * @brief
+ * @brief Transmit handler
  */
 static void ECOM_TxHandler(void)
 {
@@ -78,6 +86,12 @@ static void ECOM_TxHandler(void)
     }
 }
 
+/**
+ * @brief Request transmit
+ * @param data_pU16 is a pointer to source buffer.
+ * @param data_len_U16 is a source buffer size.
+ * @returns Request status
+ */
 ECOM_RequestStatus_enum ECOM_TxRequest(const U16* data_pU16, const U16 data_len_U16)
 {
     ECOM_RequestStatus_enum ret_val_e = OK_e;
@@ -107,3 +121,7 @@ void ECOM_DataRecievedCallback(void)
 {
     /* Up to user implementation. */
 }
+
+/**
+ * @}
+ */
