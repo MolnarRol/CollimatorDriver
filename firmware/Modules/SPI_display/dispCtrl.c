@@ -5,9 +5,14 @@
  *      Author: vadym
  */
 #include "dispCtrl.h"
+#include "MTCL_interface.h"
+#include "FOC.h"
 
  char buffer[12] = {};
  F32 test_F32 = 0;
+ U16 states = 0;
+ U16 f2_error_display_state_U16 = 0;
+
  unsigned char reverse(unsigned char b) {
 //   b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
 //   b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
@@ -184,67 +189,65 @@ void DisplayRefresh(void)
 //    char buffer[12] = {};
     static U32 ref_ticks_U32 = 0;
     //static U16 display_refresh_state = 0;
+    if(s_MTCL_Control_s.over_torque_error_f1 == 1 && states == 0)
+    {
+        dispCtrl_vSetPosition(1,2);
+        dispCtrl_u16PutString("     ERROR:     ");
+        dispCtrl_vSetPosition(1,3);
+        dispCtrl_u16PutString(" Route obstacle ");
+        dispCtrl_vSetPosition(1,4);
+        dispCtrl_u16PutString("  Motor homing  ");
+        states = 1;
+    }
 
-                if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(100)) )
+                if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(100)) && s_MTCL_Control_s.over_torque_error_f1 == 0 )
                 {
                     ref_ticks_U32 = ATB_GetTicks_U32();
-                    dispCtrl_vSetPosition(1,3);
-                    float_to_char_array(MDA_GetData_ps()->angular_position__rad__F32, &buffer, 1);
-                    GpioDataRegs.GPCSET.bit.GPIO72 = 1;
-                    dispCtrl_u16PutString(&buffer);
-                    dispCtrl_u16PutString(" mm   ");
-                    GpioDataRegs.GPCCLEAR.bit.GPIO72 = 1;
+                    if(s_MTCL_Control_s.over_torque_error_f2 && states == 1)
+                    {
+                        dispCtrl_vSetPosition(1,1);
+                        dispCtrl_u16PutString("HOMING PROCEDURE");
+                        dispCtrl_vSetPosition(1,2);
+                        dispCtrl_u16PutString("  INTERRUPTED,  ");
+                        dispCtrl_vSetPosition(1,3);
+                        dispCtrl_u16PutString(" SERVICE CHECK  ");
+                        dispCtrl_vSetPosition(1,4);
+                        dispCtrl_u16PutString("     NEEDED     ");
+                        s_MTCL_Control_s.over_torque_error_f2 = 0;
+                        f2_error_display_state_U16 = 1;
+                    }
+
+                    if(FOC_GetEnableState())
+                    {
+                        dispCtrl_vSetPosition(1,3);
+                        float_to_char_array(MDA_GetData_ps()->angular_position__rad__F32, &buffer, 1);
+                        dispCtrl_u16PutString(&buffer);
+                        dispCtrl_u16PutString(" mm   ");
+                        dispCtrl_vSetPosition(14,3);
+                        dispCtrl_u16PutString(" ON");
+                        f2_error_display_state_U16 = 0;
+                    }
+                    else if ( !FOC_GetEnableState() && f2_error_display_state_U16 == 0)
+                    {
+                        dispCtrl_vSetPosition(1,3);
+                        float_to_char_array(MDA_GetData_ps()->angular_position__rad__F32, &buffer, 1);
+                        dispCtrl_u16PutString(&buffer);
+                        dispCtrl_u16PutString(" mm   ");
+                        dispCtrl_vSetPosition(14,3);
+                        dispCtrl_u16PutString("OFF");
+                    }
+
+                    if(states && f2_error_display_state_U16 == 0){
+                            dispCtrl_vSetPosition(1,1);
+                            dispCtrl_u16PutString("Collimator Blade");
+                            dispCtrl_vSetPosition(1,2);
+                            dispCtrl_u16PutString("Position:      ");
+                            dispCtrl_vSetPosition(1,3);
+                            dispCtrl_u16PutString("                ");
+                            dispCtrl_vSetPosition(1,4);
+                            dispCtrl_u16PutString("<-1 mm    +1 mm>");
+                            states = 0;
+                    }
 
                 }
-
-//    switch(display_refresh_state)
-//    {
-//        case 0:
-//            if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(100)) )
-//            {
-//                ref_ticks_U32 = ATB_GetTicks_U32();
-//                display_refresh_state = 1;
-//            }
-//            break;
-//        case 1:
-//            if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(100)) )
-//            {
-//                ref_ticks_U32 = ATB_GetTicks_U32();
-//                dispCtrl_vSetPosition(1,3);
-//                float_to_char_array(MDA_GetData_ps()->angular_position__rad__F32, &buffer, 1);
-//                display_refresh_state = 2;
-//            }
-//            break;
-//        case 2:
-//            if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(300)) )
-//            {
-//                ref_ticks_U32 = ATB_GetTicks_U32();
-//                GpioDataRegs.GPCSET.bit.GPIO72 = 1;
-//                dispCtrl_u16PutString(&buffer);
-//                GpioDataRegs.GPCCLEAR.bit.GPIO72 = 1;
-//                display_refresh_state = 0;
-//            }
-//            break;
-//        default:
-//            display_refresh_state = 0;
-//            break;
-//
-//    }
-
-
-    //if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(100)) )
-    //if(CpuTimer1Regs.TCR.bit.TIF == 1)
-    //{
-        //ref_ticks_U32 = ATB_GetTicks_U32();
-        //CpuTimer1Regs.TCR.bit.TIF = 1;
-        /* 100ms */
-//        GpioDataRegs.GPCSET.bit.GPIO72 = 1;
-//        dispCtrl_vSetPosition(1,3);
-//        float_to_char_array(test_F32, &buffer, 1);
-//        dispCtrl_u16PutString(&buffer);
-////        GpioDataRegs.GPCCLEAR.bit.GPIO72 = 1;
-//        dispCtrl_u16PutString(" mm  ");
-//        DELAY_US(100000);
-
-    //}
 }

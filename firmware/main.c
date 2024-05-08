@@ -29,12 +29,8 @@
 extern TRAN_struct tran_s;
 extern boolean alarm_state;
 
-
 Uint16 u16buffer_counter;
 Uint16 FOC_counter;
-F32 k = 0;
-//U32 counter = 0;
-//char buffer[12] = {};
 
 void main(void)
 {
@@ -55,17 +51,12 @@ void main(void)
 
     //dispCtrl_clear();
     dispCtrl_vSetPosition(1,1);
-    DELAY_US(100);
     dispCtrl_u16PutString("Collimator Blade");
-    DELAY_US(100);
     dispCtrl_vSetPosition(1,2);
-    DELAY_US(100);
     dispCtrl_u16PutString("Position: ");
-    DELAY_US(100);
     dispCtrl_vSetPosition(1,4);
-    DELAY_US(100);
-    dispCtrl_u16PutString("<-5 mm    +5 mm>");
-    DELAY_US(100);
+    dispCtrl_u16PutString("<-1 mm    +1 mm>");
+
 
     /*Redundant reset of PI controller structures*/
 
@@ -80,11 +71,7 @@ void main(void)
     /* Main loop */
     while(1)
     {
-        if(k)
-        {
-            FOC_SetEnableState(True_b);
-            k = 0;
-        }
+
         PWM_SetOutputEnable(True_b);
         ECOM_MainHandler();
         AC_ManualControlHandler();

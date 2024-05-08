@@ -10,7 +10,7 @@
 #include <ATB_interface.h>
 #include <TEST.h>
 
-MTCL_Control_struct s_MTCL_Control_s        = {0,0,0,1};
+MTCL_Control_struct s_MTCL_Control_s        = {0,0,0,1,0};
 MTCL_TorqueCheck_struct s_Torque_check_s    = {0};
 PC_Data_struct s_PC_data_s                  = {0};
 
@@ -304,6 +304,7 @@ boolean MTCL_TorqueExceedCheck(void)
                 s_Torque_check_s.torque_exceed_counter_U16 = 0;
                 PC_Reset_Data(False_b);
                 s_MTCL_Control_s.over_torque_error_f1 = 0;
+                s_MTCL_Control_s.over_torque_error_f2 = 1;
                 FOC_SetEnableState(False_b);
                 PWM_SetCompareValues(0,0,0);
                 s_MTCL_ReferencePosition__rad__F32 = MDA_GetData_ps()->angular_position__rad__F32;
