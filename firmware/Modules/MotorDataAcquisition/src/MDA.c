@@ -144,6 +144,9 @@ static inline void MDA_QepInit(void)
     EDIS;
 }
 
+/**
+ * @brief Routine for calibrating phase current sensors DC offset
+ */
 void MDA_CalibratePhaseCurrentsOffsets(void)
 {
     if(s_MDA_phase_currents_calibrated_b == True_b)
@@ -231,6 +234,12 @@ static inline void MDA_UpdateData(void)
     s_MDA_data_s.dc_link_voltage__V__F32 = MDA_DC_LINK_VOLTAGE_FROM_ADC_VAL_dMF32(MDA_ADC_DC_LINK_CONV_RES_d);
 }
 
+/**
+ * @brief Calculation of unsigned 16 bit integer delta value
+ * @param current_count_U16 is a current QEP count
+ * @param prev_count_U16 is previous QEP count
+ * @returns delta value.
+ */
 static inline U16 MDA_EncoderGetPulseDelta_U16(const U16 prev_count_U16, const U16 current_count_U16)
 {
 
@@ -245,19 +254,14 @@ static inline U16 MDA_EncoderGetPulseDelta_U16(const U16 prev_count_U16, const U
             if(current_count_U16 <= prev_count_U16) delta_U16 = prev_count_U16 - current_count_U16;
             else                                    delta_U16 = EQep1Regs.QPOSMAX - current_count_U16 + prev_count_U16;
         }
-//    S32  MDA_delta_pos__pulses__ = current_count_U16 - prev_count_U16;
-//
-//    if(EQep1Regs.QEPSTS.bit.QDF == 1 && MDA_delta_pos__pulses__ < 0){
-//        MDA_delta_pos__pulses__ += EQep1Regs.QPOSMAX;
-//    }
-//    if(EQep1Regs.QEPSTS.bit.QDF == 0 && MDA_delta_pos__pulses__ > 0){
-//            MDA_delta_pos__pulses__ -= EQep1Regs.QPOSMAX;
-//    }
-
     return delta_U16;
 }
 
 #pragma FUNC_ALWAYS_INLINE ( MDA_GetRawRotorMechAngle_U16 )
+/**
+ * @brief Get current motor shaft angle from position of origin.
+ * @returns Mechanical angle in Unsigned 16-bit integer form. 0xFFFF/2 = 180 degrees
+ */
 static inline U16 MDA_GetRawRotorMechAngle_U16(void)
 {
     static U16 s_prev_pos_U16 = (U16)0;
@@ -271,37 +275,6 @@ static inline U16 MDA_GetRawRotorMechAngle_U16(void)
 
     return (U16)( ((U32)current_pos_U16 * (U32)U16_MAX) / (U32)(MDA_ENC_CPR_dU16 - (U16)1) );
 }
-
-/**
- * @brief Calculates mechanical speed using delta pulse count with fixed sampling interval.
- * @details
- *      /  2 x PI \       1
- * w = | ----------| x ---------
- *      \   CPR   /     delta_t
- *     '___________'
- *           '-> constant k
- * @param pulse_delta_count_U16/
- * @returns calculated speed in rad/s.
- */
-//#pragma RETAIN ( MDA_CalcRawMechSpeedFromTimeDelta__rad_s1__F32 )
-//#pragma FUNC_ALWAYS_INLINE ( MDA_CalcRawMechSpeedFromTimeDelta__rad_s1__F32 )
-//static F32 MDA_CalcRawMechSpeedFromTimeDelta__rad_s1__F32(const F32 time_delta__s__F32)
-//{
-//    F32 k_F32 = ((F32)2.0 * (F32)M_PI) / (F32)MDA_ENC_CPR_dU16;
-//    return (k_F32 * ((F32)1.0 / time_delta__s__F32));
-//}
-
-/**
- * @brief Calculates mechanical speed using delta pulse count with fixed sampling interval.
- * @details
- *      /     2 x PI        \
- * w = |---------------------| x PULSE_DELTA_COUNT
- *      \ CPR x SAMPLE_TIME /
- *     '_____________________'
- *               '-> constant k
- * @param pulse_delta_count_U16/
- * @returns calculated speed in rad/s.
- */
 
 S32 MDA_delta_pos__pulses__S32(){
     static  S32 MDA_prev_pos__pulses__S32 = 0;   //predch. pozicia
@@ -321,14 +294,23 @@ S32 MDA_delta_pos__pulses__S32(){
     return MDA_delta_pos__pulses__;
 }
 
+/**
+ * @brief Calculate mechanical speed from QEP pulse delta.
+ * @param delta_pos__pulses__S32 is a QEP counter delta.
+ * @retval Mechanical speed in rad/s.
+ */
 F32 MDA_get_mech_speed_rads1_F32(S32 delta_pos__pulses__S32){
     F32 delta_angle__rad__F32 = (F32)delta_pos__pulses__S32*TWO_PI_dF32/(F32)(MDA_ENC_CPR_dU16);
 
     return delta_angle__rad__F32/SPEED_SAMPLE_TIMEdF32;
 }
 
-
-//#pragma FUNC_ALWAYS_INLINE ( MDA_GetRawPhaseCurrents )
+/**
+ * @brief Writes phase currents value to parameter adresses
+ * @param u_pF32 is a pointer to phase U current value.
+ * @param v_pF32 is a pointer to phase V current value.
+ * @param w_pF32 is a pointer to phase W current value.
+ */
 void MDA_GetRawPhaseCurrents(F32 * const u_pF32, F32 * const v_pF32, F32 * const w_pF32)
 {
     *u_pF32 = MDA_PHASE_CURRENT_FROM_ADC_VAL_dMF32(MDA_ADC_U_CURRENT_CONV_RES_d) - s_MDA_phase_u_offset_current__A__dF32;
@@ -359,7 +341,8 @@ inline const MDA_Data_struct* MDA_GetData_ps(void)
 }
 
 /**
- * @brief
+ * @brief Resets linear position
+ * @deprecated
  */
 inline void MDA_ResetLinearPosition(void)
 {

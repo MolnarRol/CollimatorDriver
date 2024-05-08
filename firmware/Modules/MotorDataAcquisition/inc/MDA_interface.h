@@ -18,6 +18,7 @@
 #include <main.h>
 #include <MDA_config.h>
 
+/* Motor data structure. */
 typedef struct
 {
     F32 dc_link_voltage__V__F32;                /**< DC link voltage. */

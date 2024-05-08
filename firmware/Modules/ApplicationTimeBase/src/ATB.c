@@ -20,7 +20,6 @@ static volatile U64 s_ATB_ticks_U64;                                /**< Applica
 static U16 s_ATB_Initialized_U16 = 0;                               /**< Module initialization status. */
 
 
-
 /**
  * @brief   ATB module initialization function.
  * @details Configures timer to overflow with period of 10us to execute ATB_ISR.

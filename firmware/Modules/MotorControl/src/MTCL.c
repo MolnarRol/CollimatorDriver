@@ -10,28 +10,31 @@
 #include <ATB_interface.h>
 #include <TEST.h>
 
-MTCL_Control_struct s_MTCL_Control_s        = {0,0,0,1,0,0};
-MTCL_TorqueCheck_struct s_Torque_check_s    = {0};
-PC_Data_struct s_PC_data_s                  = {0};
+MTCL_Control_struct s_MTCL_Control_s        = {0,0,0,1,0,0};                                                        /**< Motor control struct. */
+MTCL_TorqueCheck_struct s_Torque_check_s    = {0};                                                                  /**< Motor torque error check struct. */
+PC_Data_struct s_PC_data_s                  = {0};                                                                  /**< Motor trajectory data struct. */
 
-F32 s_MTCL_ReferencePosition__rad__F32      = 0.0f;
-F32 s_MTCL_MaxSpeed__rad_s__F32             = DEFAULT_RUN_SPEED__rad_s__dF32;
-F32 s_MTCL_MaxAccel__rad_s2__F32            = DEFAULT_RUN_ACCEL__rad_s2__dF32;
-F32 s_MTCL_MaxTorque__Nm__F32               = DEFAULT_RUN_TORQUE__Nm__dF32;
+F32 s_MTCL_ReferencePosition__rad__F32      = 0.0f;                                                                 /**< User requested position. */
+F32 s_MTCL_MaxSpeed__rad_s__F32             = DEFAULT_RUN_SPEED__rad_s__dF32;                                       /**< Current value of maximum speed. */
+F32 s_MTCL_MaxAccel__rad_s2__F32            = DEFAULT_RUN_ACCEL__rad_s2__dF32;                                      /**< Current value of maximum acceleration. */
+F32 s_MTCL_MaxTorque__Nm__F32               = DEFAULT_RUN_TORQUE__Nm__dF32;                                         /**< Current value of maximum Torque. - not used. */
 
-const F32 s_MTCL_MaxPosition__rad__F32      = 5.8448f;  // 10 cm in rad
-F32 prev_request_pos__F32__                 = 0.0f;
-F32 i =0 ;
-F32 speed;
-/* Homing related variables. */
-MTCL_HomingState_enum MTCL_HomingState_e    = MTLC_HOMING_IDLE_e;
+const F32 s_MTCL_MaxPosition__rad__F32      = 5.8448f;  // 10 cm in rad                                             /**< Maximum position for valid request. */
+F32 prev_request_pos__F32__                 = 0.0f;                                                                 /**< Previously requested position. */
+F32 i =0 ;                                                                                                          /**< Debug variable. */
+F32 speed;                                                                                                          /**< Debug variable. */
 
+MTCL_HomingState_enum MTCL_HomingState_e    = MTLC_HOMING_IDLE_e;                                                   /**< Homing related variables. - not used. */
+
+/**
+ * @brief Main handling function for motor control
+ * @details Manages trajectory calculation and FOC requests.
+ */
 void MTCL_MainHandler(void)
 {
     F32 reference_position__rad__F32 = s_MTCL_ReferencePosition__rad__F32;
-    if(MTCL_HomingState_e != MTCL_HOMING_COMPLETE_e)
+    if(MTCL_HomingState_e != MTCL_HOMING_COMPLETE_e)                                                                /* Not used. */
     {
-//        MTCL_Homing(&reference_position__rad__F32);
         s_MTCL_Control_s.motor_homed_f1 = 1;
         MTCL_HomingState_e = MTCL_HOMING_COMPLETE_e;
     }
@@ -46,7 +49,6 @@ void MTCL_MainHandler(void)
             s_Torque_check_s.error_state_torque_exceed_counter_U16++;
             if(s_Torque_check_s.error_state_torque_exceed_counter_U16 == 2000)
             {
-                /* Commented for debug */
                 s_MTCL_Control_s.tracking_to_zero = 0;
                 FOC_SetEnableState(False_b);
                 PC_Reset_Data(0);
@@ -58,10 +60,12 @@ void MTCL_MainHandler(void)
 
     MTCL_CalculateTrajectory(reference_position__rad__F32, s_MTCL_MaxSpeed__rad_s__F32, s_MTCL_MaxAccel__rad_s2__F32);
     FOC_CalculateOutput(&s_PC_data_s);
-    /* Commented for debug */
     MTCL_TorqueExceedCheck();
 }
 
+/**
+ * @brief GPIO init function for end switches
+ */
 void MTCL_Init(void)
 {
     EALLOW;
@@ -77,6 +81,10 @@ void MTCL_Init(void)
     EDIS;
 }
 
+/**
+ * @brief Motor end switch homing routine
+ * @deprecated
+ */
 inline void MTCL_Homing(F32 * requested_position_pF32)
 {
     static F32 s_max_angular_position__rad__F32;
