@@ -102,3 +102,8 @@ class TwoStateBtn:
         if self.callbacks[self.state] is not None:
             self.callbacks[self.state]()
 
+    def overwrite_state(self, new_state):
+        if new_state > 1:
+            return
+        self.state = new_state
+        self.textVar.set(self.btn_texts[self.state])

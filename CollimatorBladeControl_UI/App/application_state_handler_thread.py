@@ -36,8 +36,10 @@ def application_data_recieved(data):
     try:
         reconstructed = deconstruct_message(data)
         payload_data = struct.unpack('>B', reconstructed.payload)
+        movement_enabld = bool(payload_data[0] & 1)
         torque_error = bool(payload_data[0] & (1 << 2))
         homed = bool(payload_data[0] & (1 << 3))
+        set_movement_enable_state(movement_enabld)
 
         if not homed and not motor_homing_toplevel:
             homing_toplevel = tk.Toplevel(root)

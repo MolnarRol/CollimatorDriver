@@ -82,6 +82,10 @@ static void AC_CMD_ResetErrorFlags( const void* const payload_p,
                                     U16 * response_data_pU16,
                                     U16 * response_data_size_pU16);
 
+static void AC_CMD_SetMovmentEnableState( const void* const payload_p,
+                                          const U16 payload_size_U16,
+                                          U16 * response_data_pU16,
+                                          U16 * response_data_size_pU16);
 
 static AC_ControlFunction_pF AC_Functions[] =
 {
@@ -91,7 +95,8 @@ static AC_ControlFunction_pF AC_Functions[] =
      &AC_CMD_GetMechanicalData,
      &AC_CMD_GetElectricalData,
      &AC_CMD_GetMaximumPosition,
-     &AC_CMD_ResetErrorFlags
+     &AC_CMD_ResetErrorFlags,
+     &AC_CMD_SetMovmentEnableState
 };
 
 

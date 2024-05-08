@@ -7,22 +7,33 @@ from App.custom_elements import TwoStateBtn
 
 import struct
 from Communication.Protocol import *
-from App.global_vars import serial_handler, get_remote_position, get_remote_max_position_, set_remote_max_position
+from App.global_vars import *
 
 app_tab_el = None
 
 position = 0
 pos_indicator = None
 pos_input = None
+start_stop_btn = None
+last_pos = 0.0
 act_pos_entry_var = StringVar()
 
 def start():
-    print('start')
+    data = struct.pack('>BB', SET_MOVEMENT_STATE_e, 1)
+    bytes = construct_message(HeaderId.COMMAND_e, data)
+    state = serial_handler.new_transaction(bytes, priority=0, callback=None)
+    if state is False:
+        serial_handler.flush_transactions()
+        serial_handler.new_transaction(bytes, priority=0, callback=None)
 
 
 def stop():
-    print('stop')
-
+    data = struct.pack('>BB', SET_MOVEMENT_STATE_e, 0)
+    bytes = construct_message(HeaderId.COMMAND_e, data)
+    state = serial_handler.new_transaction(bytes, priority=0, callback=None)
+    if state is False:
+        serial_handler.flush_transactions()
+        serial_handler.new_transaction(bytes, priority=0, callback=None)
 
 def set_position_callback(data):
     try:
@@ -57,7 +68,7 @@ def write_max_position_callback(data):
 
 
 def update_positions():
-    global app_tab_el, act_pos_entry_var
+    global app_tab_el, act_pos_entry_var, last_pos
     max = get_remote_max_position_()
     if max == 0.0:
         data = struct.pack('>B', GET_MAXIMUM_POSITION_e)
@@ -71,12 +82,15 @@ def update_positions():
     pos_input.slider.config(to=max)
     pos_input.update_limits((0, max))
     pos_indicator.config(maximum=max)
-    pos_indicator.step(curr_pos)
+    if curr_pos != last_pos:
+        pos_indicator.step(curr_pos)
+    start_stop_btn.overwrite_state(not get_movement_enable_state())
+    last_pos = curr_pos
     app_tab_el.after(100, update_positions)
 
 
 def application_ctrl_tab(root):
-    global app_tab_el, pos_indicator, pos_input, act_pos_entry_var
+    global app_tab_el, pos_indicator, pos_input, act_pos_entry_var, start_stop_btn
     app_tab_el = ttk.LabelFrame(root, text='Position control')
     app_tab_el.columnconfigure(0, weight=1)
     app_tab_el.after(100, update_positions)

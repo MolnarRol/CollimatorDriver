@@ -15,7 +15,7 @@
  */
 #include <FOC.h>
 
-static boolean s_FOC_EnableState_b = False_b;
+boolean s_FOC_EnableState_b = False_b;
 static TRAN_struct s_trans_s = {0};
 
 /* Debug variables. */

@@ -13,6 +13,17 @@ root = tk.Tk()
 transaction_lock = True
 remote_position = 0.0
 remote_max_position = 0.0
+movement_enable_state = False
+
+
+def set_movement_enable_state(new_state):
+    global movement_enable_state
+    movement_enable_state = new_state
+
+
+def get_movement_enable_state():
+    global movement_enable_state
+    return movement_enable_state
 
 
 def set_remote_max_position(max_pos):
