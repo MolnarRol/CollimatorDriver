@@ -17,6 +17,7 @@ pos_input = None
 start_stop_btn = None
 last_pos = 0.0
 act_pos_entry_var = StringVar()
+pos_indicator_var = DoubleVar()
 
 def start():
     data = struct.pack('>BB', SET_MOVEMENT_STATE_e, 1)
@@ -79,20 +80,19 @@ def update_positions():
 
     curr_pos = get_remote_position()
     act_pos_entry_var.set(str(curr_pos))
-    if curr_pos > 0.1:
-        curr_pos -= 0.1
     pos_input.slider.config(to=max)
     pos_input.update_limits((0, max))
     pos_indicator.config(to=max)
-    if curr_pos != last_pos:
-        pos_indicator.set(curr_pos)
+    pos_indicator_var.set(curr_pos)
+    act_pos_entry_var.set(curr_pos)
+
     start_stop_btn.overwrite_state(not get_movement_enable_state())
     last_pos = curr_pos
     app_tab_el.after(100, update_positions)
 
 
 def application_ctrl_tab(root):
-    global app_tab_el, pos_indicator, pos_input, act_pos_entry_var, start_stop_btn
+    global app_tab_el, pos_indicator, pos_input, act_pos_entry_var, start_stop_btn, pos_indicator_var
     app_tab_el = ttk.LabelFrame(root, text='Position control')
     app_tab_el.columnconfigure(0, weight=1)
     app_tab_el.after(100, update_positions)
@@ -106,7 +106,7 @@ def application_ctrl_tab(root):
     start_stop_btn = TwoStateBtn(app_tab_el, callbacks=(start, stop), default_state=1)
     start_stop_btn.elmnt.grid(row=0, column=2, sticky='NSEW')
 
-    pos_indicator = ttk.Scale(pos_input.elmnt, orient=HORIZONTAL, state='disabled')
+    pos_indicator = ttk.Scale(pos_input.elmnt, orient=HORIZONTAL, state='disabled', variable=pos_indicator_var)
     pos_indicator.grid(row=1, column=0, sticky='NSEW')
 
     act_pos_entry = Entry(pos_input.elmnt, state='readonly', textvariable=act_pos_entry_var, justify='center', width= 8)
