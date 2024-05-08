@@ -213,7 +213,7 @@ void DisplayRefresh(void)
                         dispCtrl_u16PutString(" SERVICE CHECK  ");
                         dispCtrl_vSetPosition(1,4);
                         dispCtrl_u16PutString("     NEEDED     ");
-                        s_MTCL_Control_s.over_torque_error_f2 = 0;
+                        //s_MTCL_Control_s.over_torque_error_f2 = 0;
                         f2_error_display_state_U16 = 1;
                     }
 
@@ -225,6 +225,7 @@ void DisplayRefresh(void)
                         dispCtrl_u16PutString(" mm   ");
                         dispCtrl_vSetPosition(14,3);
                         dispCtrl_u16PutString(" ON");
+                        s_MTCL_Control_s.over_torque_error_f2 = 0;
                         f2_error_display_state_U16 = 0;
                     }
                     else if ( !FOC_GetEnableState() && f2_error_display_state_U16 == 0)
