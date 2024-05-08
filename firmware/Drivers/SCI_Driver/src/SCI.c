@@ -19,6 +19,14 @@ void SCI_Init(void)
     GpioCtrlRegs.GPCGMUX1.bit.GPIO65 = 1;
     GpioCtrlRegs.GPCMUX1.bit.GPIO65 = 2;
 
+//    /* SCIRXDA */
+//    GpioCtrlRegs.GPAGMUX2.bit.GPIO28 = 0;
+//    GpioCtrlRegs.GPAMUX2.bit.GPIO28 = 1;
+//
+//    /* SCITXDA */
+//    GpioCtrlRegs.GPAGMUX2.bit.GPIO29 = 0;
+//    GpioCtrlRegs.GPAMUX2.bit.GPIO29 = 1;
+
 
     // Clock config
     CpuSysRegs.PCLKCR7.bit.SCI_A = 1;
