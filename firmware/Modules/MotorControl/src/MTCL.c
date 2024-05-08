@@ -346,6 +346,15 @@ boolean MTCL_SetReferencePosition(const F32 new_position__rad__F32)
     boolean return_state_b = True_b;
     if( (new_position__rad__F32 < 0.0f) || (new_position__rad__F32 > s_MTCL_MaxPosition__rad__F32) )
     {
+        if((new_position__rad__F32 < 0.0f))
+        {
+        s_MTCL_ReferencePosition__rad__F32 = 0.0f;
+        }
+        else
+        {
+        s_MTCL_ReferencePosition__rad__F32 = s_MTCL_MaxPosition__rad__F32;
+        }
+
         return_state_b = False_b;
     }
     else
