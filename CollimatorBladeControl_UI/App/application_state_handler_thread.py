@@ -53,10 +53,10 @@ def application_data_recieved(data):
             total_error_toplevel = tk.Toplevel(root)
             total_error_toplevel.title('Error: Homing procedure interrupted.')
             total_error_toplevel.resizable(False, False)
-            err_icon = tk.Label(homing_toplevel, image=err_img_copy)
+            err_icon = tk.Label(total_error_toplevel, image=err_img_copy)
             err_icon.grid(row=0, column=00, sticky='NSEW', padx=10, pady=10)
-            homing_text = tk.Label(homing_toplevel, text="Daj prec ruky z motora Chuju.", font='Verdana 14')
-            homing_text.grid(row=0, column=1, sticky='NSEW')
+            error_text = tk.Label(total_error_toplevel, text="Daj prec ruky z motora Chuju.", font='Verdana 14')
+            error_text.grid(row=0, column=1, sticky='NSEW')
             motor_homing_toplevel = True
 
         total_error_prev_state = total_error
