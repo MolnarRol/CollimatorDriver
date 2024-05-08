@@ -47,7 +47,7 @@ void    MTCL_MainHandler(void);
 void    MTCL_Init(void);
 const   PC_Data_struct* PC_GetData_ps(void);
 const   MTCL_Control_struct* MTCL_GetControlState_ps(void);
-U32     MTCL_GetMaximumPosition_U32(void);
+F32     MTCL_GetMaximumPosition_F32(void);
 void    MTCL_ResetErrorFlags(void);
 
 extern MTCL_Control_struct s_MTCL_Control_s;

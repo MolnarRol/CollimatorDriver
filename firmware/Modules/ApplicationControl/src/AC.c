@@ -239,7 +239,7 @@ static void AC_CMD_GetMaximumPosition( const void* const payload_p,
     }
     response_data_pU16[0] = RESPONSE_OK_e;
     *response_data_size_pU16 = 5;
-    U32 max_position_U32 = MTCL_GetMaximumPosition_U32();
+    U32 max_position_U32 = MTCL_GetMaximumPosition_F32();
     BC_32BitDataTo4Bytes(&max_position_U32, &response_data_pU16[1]);
 }
 
