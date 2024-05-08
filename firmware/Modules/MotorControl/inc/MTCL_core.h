@@ -10,17 +10,17 @@
 #include <MTCL_interface.h>
 #include <mcu.h>
 
-#define MAX_SPEED__rad_s__dF32                  ( 200.0f )
-#define MIN_SPEED__rad_s__dF32                  ( 20.0f )
-#define MAX_ACCEL__rad_s2__dF32                 ( 80.0f )
-#define MIN_ACCEL__rad_s2__dF32                 ( 10.0f )
+#define MAX_SPEED__rad_s__dF32                  ( 400.0f )
+#define MIN_SPEED__rad_s__dF32                  ( 0.1f )
+#define MAX_ACCEL__rad_s2__dF32                 ( 100.0f )
+#define MIN_ACCEL__rad_s2__dF32                 ( 0.1f )
 #define MAX_TORQUE__Nm__dF32                    ( 1.0f )
 #define MIN_TORQUE__Nm__dF32                    ( 0.1f )
 
 #define TORQUE_EXCEED_ALARM_DURATION__s__dF32   ( 0.1f )
 
-#define DEFAULT_RUN_SPEED__rad_s__dF32          ( 80.0f )
-#define DEFAULT_RUN_ACCEL__rad_s2__dF32         ( 40.0f )
+#define DEFAULT_RUN_SPEED__rad_s__dF32          ( 2.0f )
+#define DEFAULT_RUN_ACCEL__rad_s2__dF32         ( 50.0f )
 #define DEFAULT_RUN_TORQUE__Nm__dF32            ( 0.2f )
 
 /* Homing */

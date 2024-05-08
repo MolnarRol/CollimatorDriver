@@ -12,19 +12,12 @@ void SCI_Init(void)
 
     EALLOW;
     /* SCIRXDA */
-//    GpioCtrlRegs.GPCGMUX1.bit.GPIO64 = 1;
-//    GpioCtrlRegs.GPCMUX1.bit.GPIO64 = 2;
-//
-//    /* SCITXDA */
-//    GpioCtrlRegs.GPCGMUX1.bit.GPIO65 = 1;
-//    GpioCtrlRegs.GPCMUX1.bit.GPIO65 = 2;
-
-    GpioCtrlRegs.GPAGMUX2.bit.GPIO28 = 0;
-    GpioCtrlRegs.GPAMUX2.bit.GPIO28 = 1;
+    GpioCtrlRegs.GPCGMUX1.bit.GPIO64 = 1;
+    GpioCtrlRegs.GPCMUX1.bit.GPIO64 = 2;
 
     /* SCITXDA */
-    GpioCtrlRegs.GPAGMUX2.bit.GPIO29 = 0;
-    GpioCtrlRegs.GPAMUX2.bit.GPIO29 = 1;
+    GpioCtrlRegs.GPCGMUX1.bit.GPIO65 = 1;
+    GpioCtrlRegs.GPCMUX1.bit.GPIO65 = 2;
 
 
     // Clock config

@@ -77,12 +77,12 @@ void AC_ManualControlHandler(void)
 {
     if(AC_BtnDebounce_U16(&AC_Btn1Debounce_s, AC_BTN1_PRESSED_db) == DEBOUNCE_RISING_EDGE_e)
     {
-        test_var += 1;
+        MTCL_SetReferencePosition(MDA_GetData_ps()->angular_position__rad__F32 + 0.058448f);
     }
 
     if(AC_BtnDebounce_U16(&AC_Btn2Debounce_s, AC_BTN2_PRESSED_db) == DEBOUNCE_RISING_EDGE_e)
     {
-        test_var -= 1;
+        MTCL_SetReferencePosition(MDA_GetData_ps()->angular_position__rad__F32 - 0.058448f);
     }
 }
 
@@ -239,7 +239,7 @@ static void AC_CMD_GetMaximumPosition( const void* const payload_p,
     }
     response_data_pU16[0] = RESPONSE_OK_e;
     *response_data_size_pU16 = 5;
-    U32 max_position_U32 = MTCL_GetMaximumPosition_U32();
+    U32 max_position_U32 = MTCL_GetMaximumPosition_F32();
     BC_32BitDataTo4Bytes(&max_position_U32, &response_data_pU16[1]);
 }
 

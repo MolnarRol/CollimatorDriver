@@ -8,8 +8,9 @@
 #include <MTCL_core.h>
 #include <FOC.h>
 #include <ATB_interface.h>
+#include <TEST.h>
 
-MTCL_Control_struct s_MTCL_Control_s        = {0};
+MTCL_Control_struct s_MTCL_Control_s        = {0,0,0,1,0,0};
 MTCL_TorqueCheck_struct s_Torque_check_s    = {0};
 PC_Data_struct s_PC_data_s                  = {0};
 
@@ -18,9 +19,10 @@ F32 s_MTCL_MaxSpeed__rad_s__F32             = DEFAULT_RUN_SPEED__rad_s__dF32;
 F32 s_MTCL_MaxAccel__rad_s2__F32            = DEFAULT_RUN_ACCEL__rad_s2__dF32;
 F32 s_MTCL_MaxTorque__Nm__F32               = DEFAULT_RUN_TORQUE__Nm__dF32;
 
-const F32 s_MTCL_MaxPosition__rad__F32      = 5000.0f;
+const F32 s_MTCL_MaxPosition__rad__F32      = 10000.0f;
 F32 prev_request_pos__F32__                 = 0.0f;
-
+F32 i =0 ;
+F32 speed;
 /* Homing related variables. */
 MTCL_HomingState_enum MTCL_HomingState_e    = MTLC_HOMING_IDLE_e;
 
@@ -35,7 +37,7 @@ void MTCL_MainHandler(void)
     }
     s_MTCL_Control_s.movement_enabled_f1 = FOC_GetEnableState();
 
-    if(s_MTCL_Control_s.over_torque_error_f1 == 1)
+    if(s_MTCL_Control_s.tracking_to_zero == 1)
     {
         reference_position__rad__F32 = 0.0f;
 
@@ -45,10 +47,10 @@ void MTCL_MainHandler(void)
             if(s_Torque_check_s.error_state_torque_exceed_counter_U16 == 2000)
             {
                 /* Commented for debug */
-//                s_MTCL_Control_s.over_torque_error_f1 = 0;
+                s_MTCL_Control_s.tracking_to_zero = 0;
                 FOC_SetEnableState(False_b);
-                PC_Reset_Data(1);
-
+                PC_Reset_Data(0);
+                s_MTCL_ReferencePosition__rad__F32 = MDA_GetData_ps()->angular_position__rad__F32;
                 s_Torque_check_s.error_state_torque_exceed_counter_U16 = 0;
             }
         }
@@ -57,7 +59,7 @@ void MTCL_MainHandler(void)
     MTCL_CalculateTrajectory(reference_position__rad__F32, s_MTCL_MaxSpeed__rad_s__F32, s_MTCL_MaxAccel__rad_s2__F32);
     FOC_CalculateOutput(&s_PC_data_s);
     /* Commented for debug */
-//    MTCL_TorqueExceedCheck();
+    MTCL_TorqueExceedCheck();
 }
 
 void MTCL_Init(void)
@@ -148,7 +150,6 @@ inline void MTCL_Homing(F32 * requested_position_pF32)
 
 static void MTCL_CalculateTrajectory(F32 Requested_Position__rad__F32, F32 MaxMechSpeed_rad_s1_F32, F32 MaxAcc_rad_s2_F32)
 {
-
     static F32 DeltaMdlPosition__rad__F32 = 0.0f;
     static F32 DeltaMdlTime__s__F32 = 0.0f;
     static S16 Minus_Check = 0;
@@ -159,7 +160,7 @@ static void MTCL_CalculateTrajectory(F32 Requested_Position__rad__F32, F32 MaxMe
 
     if(s_PC_data_s.Ticks__s__F32 == 0)
     {
-        if(Requested_Position__rad__F32 - prev_request_pos__F32__> 0.08f || Requested_Position__rad__F32 - prev_request_pos__F32__ < -0.08f)
+        if(Requested_Position__rad__F32 - prev_request_pos__F32__> 0.01f || Requested_Position__rad__F32 - prev_request_pos__F32__ < -0.01f)
         {
             s_PC_data_s.ticks_enabled = 1;
             prev_request_pos__F32__= Requested_Position__rad__F32;
@@ -190,9 +191,7 @@ static void MTCL_CalculateTrajectory(F32 Requested_Position__rad__F32, F32 MaxMe
             roof = True_b;
             FullTime__s__F32 = 2.0f*FM_sqrt_F32((Minus_Check*(Requested_Position__rad__F32 - MDA_GetData_ps()->angular_position__rad__F32))/MaxAcc_rad_s2_F32);
         }
-
     }
-
     /*new lines*/
     if(s_PC_data_s.ticks_enabled)
     {
@@ -201,8 +200,8 @@ static void MTCL_CalculateTrajectory(F32 Requested_Position__rad__F32, F32 MaxMe
     /*end of new lines*/
 
     /*not roof*/
-    if(roof == 0){
-
+    if(roof == 0)
+    {
         if( s_PC_data_s.Ticks__s__F32 <= ACCELERATOIN_TIME__s__df32(MaxMechSpeed_rad_s1_F32,MaxAcc_rad_s2_F32)
             && s_PC_data_s.Ticks__s__F32 > 0.0f)
         {
@@ -248,17 +247,19 @@ static void MTCL_CalculateTrajectory(F32 Requested_Position__rad__F32, F32 MaxMe
             s_PC_data_s.tj.Acceleration__rad_s_2__F32 = MaxAcc_rad_s2_F32 * Minus_Check;
             s_PC_data_s.tj.Speed__rad_s__F32 += s_PC_data_s.tj.Acceleration__rad_s_2__F32 * SAMPLING_TIME__s__df32 ;
             s_PC_data_s.tj.Position__rad__F32 += s_PC_data_s.tj.Speed__rad_s__F32 * SAMPLING_TIME__s__df32;
+            speed=  s_PC_data_s.tj.Speed__rad_s__F32;
         }
-
         else if ( ( s_PC_data_s.Ticks__s__F32 > ( FullTime__s__F32/2.0f ) ) && ( s_PC_data_s.Ticks__s__F32 <= FullTime__s__F32 ) )
         {
-            s_PC_data_s.tj.Acceleration__rad_s_2__F32 = MaxAcc_rad_s2_F32 * Minus_Check;
+            s_PC_data_s.tj.Acceleration__rad_s_2__F32 = -MaxAcc_rad_s2_F32 * Minus_Check;
             s_PC_data_s.tj.Speed__rad_s__F32 += s_PC_data_s.tj.Acceleration__rad_s_2__F32 * SAMPLING_TIME__s__df32 ;
             s_PC_data_s.tj.Position__rad__F32 += s_PC_data_s.tj.Speed__rad_s__F32 * SAMPLING_TIME__s__df32;
 
             if(s_PC_data_s.tj.Position__rad__F32*Minus_Check >= 2.0f*start_ramp_rad + Minus_Check*DeltaMdlPosition__rad__F32)
             {
                 s_PC_data_s.tj.Position__rad__F32 = Minus_Check*2.0f*start_ramp_rad + DeltaMdlPosition__rad__F32;
+                s_PC_data_s.tj.Speed__rad_s__F32 = 0.0f;
+                s_PC_data_s.tj.Acceleration__rad_s_2__F32 = 0.0f;
             }
         }
     }
@@ -271,6 +272,13 @@ static void MTCL_CalculateTrajectory(F32 Requested_Position__rad__F32, F32 MaxMe
             s_PC_data_s.tj.Position__rad__F32 = Minus_Check*2.0f*start_ramp_rad + DeltaMdlPosition__rad__F32;
         }
         PC_Reset_Data(False_b);
+    }
+
+    i++;
+    if(i > 10){
+    if(s_PC_data_s.tj.Speed__rad_s__F32 != 0.0f)
+    kukam_prud();
+    i=0;
     }
 }
 
@@ -285,8 +293,9 @@ boolean MTCL_TorqueExceedCheck(void)
              && (s_Torque_check_s.torque_exceed_counter_U16 > 3000) )
         {
             s_Torque_check_s.torque_exceed_counter_U16 = 0;
-            PC_Reset_Data(True_b);
+            PC_Reset_Data(1);
             s_MTCL_Control_s.over_torque_error_f1 = 1;
+            s_MTCL_Control_s.tracking_to_zero = 1;
         }
         else
         {
@@ -294,10 +303,12 @@ boolean MTCL_TorqueExceedCheck(void)
             if(s_Torque_check_s.torque_exceed_counter_U16 > 10000)
             {
                 s_Torque_check_s.torque_exceed_counter_U16 = 0;
-                PC_Reset_Data(True_b);
-                s_MTCL_Control_s.over_torque_error_f1 = 0;
+                PC_Reset_Data(False_b);
+                s_MTCL_Control_s.tracking_to_zero = 0;
+                s_MTCL_Control_s.over_torque_error_f2 = 1;
                 FOC_SetEnableState(False_b);
                 PWM_SetCompareValues(0,0,0);
+                s_MTCL_ReferencePosition__rad__F32 = MDA_GetData_ps()->angular_position__rad__F32;
             }
         }
     }
@@ -363,7 +374,7 @@ inline const MTCL_Control_struct* MTCL_GetControlState_ps(void)
     return &s_MTCL_Control_s;
 }
 
-inline U32 MTCL_GetMaximumPosition_U32(void)
+inline F32 MTCL_GetMaximumPosition_F32(void)
 {
     return s_MTCL_MaxPosition__rad__F32;
 }
