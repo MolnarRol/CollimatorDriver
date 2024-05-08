@@ -15,6 +15,8 @@
 #include "MDA_interface.h"
 #include "ATB_interface.h"
 
+unsigned char reverse(unsigned char b);
+
 void dispCtrl_vSendInstruction(Uint16 u16RW, Uint16 u16RS, char data);
 
 void dispCtrl_vSendInitInstruction(char data);
