@@ -88,7 +88,7 @@ def update_positions():
 
     start_stop_btn.overwrite_state(not get_movement_enable_state())
     last_pos = curr_pos
-    app_tab_el.after(100, update_positions)
+    app_tab_el.after(200, update_positions)
 
 
 def application_ctrl_tab(root):

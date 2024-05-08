@@ -188,6 +188,8 @@ void DisplayRefresh(void)
 {
 //    char buffer[12] = {};
     static U32 ref_ticks_U32 = 0;
+    static boolean over_torque_written_b = False_b;
+
     //static U16 display_refresh_state = 0;
     if(s_MTCL_Control_s.over_torque_error_f1 == 1 && states == 0)
     {
@@ -205,16 +207,23 @@ void DisplayRefresh(void)
                     ref_ticks_U32 = ATB_GetTicks_U32();
                     if(s_MTCL_Control_s.over_torque_error_f2 && states == 1)
                     {
-                        dispCtrl_vSetPosition(1,1);
-                        dispCtrl_u16PutString("HOMING PROCEDURE");
-                        dispCtrl_vSetPosition(1,2);
-                        dispCtrl_u16PutString("  INTERRUPTED,  ");
-                        dispCtrl_vSetPosition(1,3);
-                        dispCtrl_u16PutString(" SERVICE CHECK  ");
-                        dispCtrl_vSetPosition(1,4);
-                        dispCtrl_u16PutString("     NEEDED     ");
-                        //s_MTCL_Control_s.over_torque_error_f2 = 0;
-                        f2_error_display_state_U16 = 1;
+                        if(over_torque_written_b == False_b)
+                        {
+                            dispCtrl_vSetPosition(1,1);
+                            dispCtrl_u16PutString("HOMING PROCEDURE");
+                            dispCtrl_vSetPosition(1,2);
+                            dispCtrl_u16PutString("  INTERRUPTED,  ");
+                            dispCtrl_vSetPosition(1,3);
+                            dispCtrl_u16PutString(" SERVICE CHECK  ");
+                            dispCtrl_vSetPosition(1,4);
+                            dispCtrl_u16PutString("     NEEDED     ");
+                            f2_error_display_state_U16 = 1;
+                        }
+                        over_torque_written_b = True_b;
+                    }
+                    else
+                    {
+                        over_torque_written_b = False_b;
                     }
 
                     if(FOC_GetEnableState())

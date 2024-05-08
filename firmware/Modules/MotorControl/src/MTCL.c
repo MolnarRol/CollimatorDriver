@@ -391,4 +391,5 @@ inline F32 MTCL_GetMaximumPosition_F32(void)
 inline void MTCL_ResetErrorFlags(void)
 {
     s_MTCL_Control_s.over_torque_error_f1 = 0;
+    s_MTCL_Control_s.over_torque_error_f2 = 0;
 }
