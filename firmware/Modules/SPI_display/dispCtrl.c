@@ -200,7 +200,7 @@ void DisplayRefresh(void)
         states = 1;
     }
 
-                if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(100)) && s_MTCL_Control_s.over_torque_error_f1 == 0 )
+                if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(100)) && s_MTCL_Control_s.tracking_to_zero == 0 )
                 {
                     ref_ticks_U32 = ATB_GetTicks_U32();
                     if(s_MTCL_Control_s.over_torque_error_f2 && states == 1)

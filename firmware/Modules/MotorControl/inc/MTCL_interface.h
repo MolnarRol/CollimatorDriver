@@ -16,6 +16,7 @@ typedef struct
     U16 over_torque_error_f1     :1;
     U16 motor_homed_f1           :1;
     U16 over_torque_error_f2     :1;
+    U16 tracking_to_zero         :1;
 } MTCL_Control_struct;
 
 typedef enum

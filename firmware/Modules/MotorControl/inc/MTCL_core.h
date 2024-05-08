@@ -19,7 +19,7 @@
 
 #define TORQUE_EXCEED_ALARM_DURATION__s__dF32   ( 0.1f )
 
-#define DEFAULT_RUN_SPEED__rad_s__dF32          ( 20.0f )
+#define DEFAULT_RUN_SPEED__rad_s__dF32          ( 2.0f )
 #define DEFAULT_RUN_ACCEL__rad_s2__dF32         ( 50.0f )
 #define DEFAULT_RUN_TORQUE__Nm__dF32            ( 0.2f )
 

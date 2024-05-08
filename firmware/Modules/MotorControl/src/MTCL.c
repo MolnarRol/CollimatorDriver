@@ -10,7 +10,7 @@
 #include <ATB_interface.h>
 #include <TEST.h>
 
-MTCL_Control_struct s_MTCL_Control_s        = {0,0,0,1,0};
+MTCL_Control_struct s_MTCL_Control_s        = {0,0,0,1,0,0};
 MTCL_TorqueCheck_struct s_Torque_check_s    = {0};
 PC_Data_struct s_PC_data_s                  = {0};
 
@@ -37,7 +37,7 @@ void MTCL_MainHandler(void)
     }
     s_MTCL_Control_s.movement_enabled_f1 = FOC_GetEnableState();
 
-    if(s_MTCL_Control_s.over_torque_error_f1 == 1)
+    if(s_MTCL_Control_s.tracking_to_zero == 1)
     {
         reference_position__rad__F32 = 0.0f;
 
@@ -47,7 +47,7 @@ void MTCL_MainHandler(void)
             if(s_Torque_check_s.error_state_torque_exceed_counter_U16 == 2000)
             {
                 /* Commented for debug */
-                //s_MTCL_Control_s.over_torque_error_f1 = 0;
+                s_MTCL_Control_s.tracking_to_zero = 0;
                 FOC_SetEnableState(False_b);
                 PC_Reset_Data(0);
                 s_MTCL_ReferencePosition__rad__F32 = MDA_GetData_ps()->angular_position__rad__F32;
@@ -295,6 +295,7 @@ boolean MTCL_TorqueExceedCheck(void)
             s_Torque_check_s.torque_exceed_counter_U16 = 0;
             PC_Reset_Data(1);
             s_MTCL_Control_s.over_torque_error_f1 = 1;
+            s_MTCL_Control_s.tracking_to_zero = 1;
         }
         else
         {
@@ -303,7 +304,7 @@ boolean MTCL_TorqueExceedCheck(void)
             {
                 s_Torque_check_s.torque_exceed_counter_U16 = 0;
                 PC_Reset_Data(False_b);
-                //s_MTCL_Control_s.over_torque_error_f1 = 0;
+                s_MTCL_Control_s.tracking_to_zero = 0;
                 s_MTCL_Control_s.over_torque_error_f2 = 1;
                 FOC_SetEnableState(False_b);
                 PWM_SetCompareValues(0,0,0);
