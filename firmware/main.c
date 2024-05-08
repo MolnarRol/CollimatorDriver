@@ -23,19 +23,11 @@
 #include "FOC.h"
 #include "TEST.h"
 #include <PI_Controller.h>
+#include "spi.h"
+#include "dispCtrl.h"
 
 extern TRAN_struct tran_s;
-extern boolean enable_FOC;
-
-
-boolean output_en = True_b;
-/**
- * @brief Main function
- */
-
-//float BufferA[1000];
-//float BufferB[1000];
-//float BufferC[1000];
+extern boolean alarm_state;
 
 Uint16 u16buffer_counter;
 Uint16 FOC_counter;
@@ -45,34 +37,47 @@ void main(void)
     /* Initialization */
 
     mcu_vInitClocks();                                          /* Initialize uC clock system. */
+    spi_vInit(800000);
+    dispCtrl_vInitDisplay();
     ATB_Init();
     PWM_Init();
     SCI_Init();
-    CommutationAlignment();
+    FOC_CommutationAlignment();
     MDA_Init();
+    MTCL_Init();
     TEST_PinInit();
     MDA_CalibratePhaseCurrentsOffsets();
+    AC_ManualControlInit();
 
-    /*Redudant reset of PI controller structures*/
+
+
+    //dispCtrl_clear();
+    dispCtrl_vSetPosition(1,1);
+    dispCtrl_u16PutString("Collimator Blade");
+    dispCtrl_vSetPosition(1,2);
+    dispCtrl_u16PutString("Position: ");
+    dispCtrl_vSetPosition(1,4);
+    dispCtrl_u16PutString("<-1 mm    +1 mm>");
+
+
+    /*Redundant reset of PI controller structures*/
 
     PI_ctrl_Init(&PI_id_current_controller);
     PI_ctrl_Init(&PI_iq_current_controller);
     PI_ctrl_Init(&PI_speed_controller);
     PI_ctrl_Init(&PI_position_controller);
 
-    enable_FOC = 0;
+
+    FOC_SetEnableState(True_b);
 
     /* Main loop */
     while(1)
     {
 
-
-
-        PWM_SetOutputEnable(output_en);
-//        ECOM_MainHandler();
-//        AC_MainHandler();
-        /* Application control main handler. */
-
+        PWM_SetOutputEnable(True_b);
+        ECOM_MainHandler();
+        AC_ManualControlHandler();
+        DisplayRefresh();
     }
 }
 

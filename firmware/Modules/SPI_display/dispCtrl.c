@@ -1,22 +1,38 @@
 /*
  * dispCtrl.c
  *
- *  Created on: 10 mar. 2024 ã.
+ *  Created on: 10 mar. 2024 ï¿½.
  *      Author: vadym
  */
 #include "dispCtrl.h"
+#include "MTCL_interface.h"
+#include "FOC.h"
+
+ char buffer[12] = {};
+ F32 test_F32 = 0;
+ U16 states = 0;
+ U16 f2_error_display_state_U16 = 0;
 
  unsigned char reverse(unsigned char b) {
-   b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
-   b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
-   b = (b & 0xAA) >> 1 | (b & 0x55) << 1;
+//   b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
+//   b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
+//   b = (b & 0xAA) >> 1 | (b & 0x55) << 1;
+     b = (b * 0x0202020202ULL & 0x010884422010ULL) % 1023;
    return b;
 }
 
-void dispCtrl_vSendInstruction(Uint16 u16RW, Uint16 u16RS, char data){
+void dispCtrl_vSendInstruction(Uint16 u16RW, Uint16 u16RS, char cData){
+
+//    unsigned int Instruction[3];
+//    Instruction[0] = (0xF8|((u16RW) << 2)|((u16RS) << 1)) << 8; //FIRST BYTE
+//    Instruction[1] = (0x00|((cData&0x1) << 7)|((cData&0x2) << 5)|((cData&0x4) << 3)|((cData&0x8) << 1)) << 8; //SECOND BYTE
+//    Instruction[2] = (0x00|((cData&0x10) << 3)|((cData&0x20) << 1)|((cData&0x40) >> 1)|((cData&0x80) >> 3)) <<8; //THIRD BYTE
+//    spi_vSendChar(Instruction[0]); //SENDCHAR FOR SENDING 1 BYTE
+//    spi_vSendChar(Instruction[1]);
+//    spi_vSendChar(Instruction[2]);
 
     char packet_3_byte [4];
-    char reverse_data = reverse(data);
+    char reverse_data = reverse(cData);
     packet_3_byte[0] = (0xF8^(u16RW << 2)^(u16RS << 1));
     packet_3_byte[1] = (reverse_data & 0xF0);
     packet_3_byte[2] = (reverse_data & 0x0F) << 4;
@@ -39,6 +55,11 @@ void dispCtrl_vInitDisplay(void){
 
     DELAY_US(7000);
     /* set RESET pin for display*/
+
+    GpioCtrlRegs.GPCGMUX1.bit.GPIO72 = 1;
+    GpioCtrlRegs.GPCGMUX1.bit.GPIO72 = 0;
+    GpioCtrlRegs.GPCDIR.bit.GPIO72 = 1;
+    GpioDataRegs.GPCCLEAR.bit.GPIO72 = 1;
 
     GpioCtrlRegs.GPAGMUX2.bit.GPIO30 = 1;
     GpioCtrlRegs.GPAGMUX2.bit.GPIO30 = 0;
@@ -82,12 +103,18 @@ void dispCtrl_vInitDisplay(void){
     dispCtrl_vSendInstruction(0,0,(char)0x80); /*set DDRAM on position 0:0*/
     DELAY_US(1000);
 
-    DELAY_US(5000);
+    DELAY_US(55000);
 
 }
 
 void dispCtrl_u16PutString(char* pcData){
-
+//    unsigned int counter;
+//    for (counter = 0; pcData[counter] != '\0'; counter++)
+//    {
+//
+//        dispCtrl_vSendInstruction(0,1,pcData[counter]);
+//
+//    }
     Uint16 i = 0;
     spi_vSendChar( (0xF8 ^ ( (char)0 << 2 ) ^ ( (char)1 << 1) ) ); /*start byte - 5 high,RW,RS*/
     while(pcData[i] != '\0')
@@ -98,10 +125,149 @@ void dispCtrl_u16PutString(char* pcData){
     }
 }
 
-void dispCtrl_vSetPosition(Uint16 u16PosX, Uint16 u16PosY){
+void dispCtrl_vSetPosition(Uint16 u16PosX, Uint16 u16PosY)
+{
     char cAddress = (char)( ( ( (Uint16)u16PosY - 1 )*(Uint16)32 ) + ( (Uint16)u16PosX - 1 ) ) ;
     dispCtrl_vSendInstruction(0,0,((char)0x80 + (char)cAddress)); /*set DDRAM on position 0:0*/
-    DELAY_US(1000);
+    //DELAY_US(1000);
 }
 
+
+void dispCtrl_clear()
+{
+    dispCtrl_vSendInstruction(0,0,0x01);
+}
+
+void float_to_char_array(F32 f, char* buffer, U16 precision) {
+    // Handle negative numbers
+    if (f < 0) {
+        *buffer++ = '-';
+        f = -f;
+    }
+
+    // Extract integer part
+    int int_part = (int)f;
+
+    // Extract fractional part
+    float fractional_part = f - int_part;
+
+    // Convert integer part to characters
+    int digits = 0;
+    do {
+        *buffer++ = '0' + int_part % 10;
+        int_part /= 10;
+        digits++;
+    } while (int_part > 0);
+
+    // Reverse integer part in the buffer
+    char *start = buffer - digits;
+    char *end = buffer - 1;
+    while (start < end) {
+        char temp = *start;
+        *start++ = *end;
+        *end-- = temp;
+    }
+
+    // Add decimal point
+    *buffer++ = '.';
+
+    // Convert fractional part to characters
+    int i = 0;
+    for (i = 0; i < precision; i++) {
+        fractional_part *= 10;
+        int digit = (int)fractional_part;
+        *buffer++ = '0' + digit;
+        fractional_part -= digit;
+    }
+
+    // Null-terminate the string
+    *buffer = '\0';
+}
+
+void DisplayRefresh(void)
+{
+//    char buffer[12] = {};
+    static U32 ref_ticks_U32 = 0;
+    static boolean over_torque_written_b = False_b;
+
+    //static U16 display_refresh_state = 0;
+    if(s_MTCL_Control_s.over_torque_error_f1 == 1 && states == 0)
+    {
+        dispCtrl_vSetPosition(1,2);
+        dispCtrl_u16PutString("     ERROR:     ");
+        dispCtrl_vSetPosition(1,3);
+        dispCtrl_u16PutString(" Route obstacle ");
+        dispCtrl_vSetPosition(1,4);
+        dispCtrl_u16PutString("  Motor homing  ");
+        states = 1;
+    }
+
+                if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(100)) && s_MTCL_Control_s.tracking_to_zero == 0 )
+                {
+                    ref_ticks_U32 = ATB_GetTicks_U32();
+                    if(s_MTCL_Control_s.over_torque_error_f2 && states == 1)
+                    {
+                        if(over_torque_written_b == False_b)
+                        {
+                            dispCtrl_vSetPosition(1,1);
+                            dispCtrl_u16PutString("HOMING PROCEDURE");
+                            dispCtrl_vSetPosition(1,2);
+                            dispCtrl_u16PutString("  INTERRUPTED,  ");
+                            dispCtrl_vSetPosition(1,3);
+                            dispCtrl_u16PutString(" SERVICE CHECK  ");
+                            dispCtrl_vSetPosition(1,4);
+                            dispCtrl_u16PutString("     NEEDED     ");
+                            f2_error_display_state_U16 = 1;
+                        }
+                        over_torque_written_b = True_b;
+                    }
+                    else
+                    {
+                        over_torque_written_b = False_b;
+                    }
+
+                    if(FOC_GetEnableState())
+                    {
+                        dispCtrl_vSetPosition(1,3);
+                        float_to_char_array( ceiling_F32(( (MDA_GetData_ps()->angular_position__rad__F32 / 0.058448f) )), &buffer, 1);
+                        dispCtrl_u16PutString(&buffer);
+                        dispCtrl_u16PutString(" mm   ");
+                        dispCtrl_vSetPosition(14,3);
+                        dispCtrl_u16PutString(" ON");
+                        s_MTCL_Control_s.over_torque_error_f2 = 0;
+                        f2_error_display_state_U16 = 0;
+                    }
+                    else if ( !FOC_GetEnableState() && f2_error_display_state_U16 == 0)
+                    {
+                        dispCtrl_vSetPosition(1,3);
+                        float_to_char_array( ceiling_F32(( (MDA_GetData_ps()->angular_position__rad__F32 / 0.058448f) )), &buffer, 1);
+                        dispCtrl_u16PutString(&buffer);
+                        dispCtrl_u16PutString(" mm   ");
+                        dispCtrl_vSetPosition(14,3);
+                        dispCtrl_u16PutString("OFF");
+                    }
+
+                    if(states && f2_error_display_state_U16 == 0){
+                            dispCtrl_vSetPosition(1,1);
+                            dispCtrl_u16PutString("Collimator Blade");
+                            dispCtrl_vSetPosition(1,2);
+                            dispCtrl_u16PutString("Position:      ");
+                            dispCtrl_vSetPosition(1,3);
+                            dispCtrl_u16PutString("                ");
+                            dispCtrl_vSetPosition(1,4);
+                            dispCtrl_u16PutString("<-1 mm    +1 mm>");
+                            states = 0;
+                    }
+
+                }
+}
+
+
+F32 ceiling_F32(F32 number){
+    F32 whole_num= (F32)((U16)number);
+    if(number-whole_num > 0.94f){
+        number = whole_num+1.0f;
+    }
+    return number;
+}
 

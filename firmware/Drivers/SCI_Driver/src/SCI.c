@@ -12,12 +12,20 @@ void SCI_Init(void)
 
     EALLOW;
     /* SCIRXDA */
-    GpioCtrlRegs.GPAGMUX2.bit.GPIO28 = 0;
-    GpioCtrlRegs.GPAMUX2.bit.GPIO28 = 1;
+    GpioCtrlRegs.GPCGMUX1.bit.GPIO64 = 1;
+    GpioCtrlRegs.GPCMUX1.bit.GPIO64 = 2;
 
     /* SCITXDA */
-    GpioCtrlRegs.GPAGMUX2.bit.GPIO29 = 0;
-    GpioCtrlRegs.GPAMUX2.bit.GPIO29 = 1;
+    GpioCtrlRegs.GPCGMUX1.bit.GPIO65 = 1;
+    GpioCtrlRegs.GPCMUX1.bit.GPIO65 = 2;
+
+//    /* SCIRXDA */
+//    GpioCtrlRegs.GPAGMUX2.bit.GPIO28 = 0;
+//    GpioCtrlRegs.GPAMUX2.bit.GPIO28 = 1;
+//
+//    /* SCITXDA */
+//    GpioCtrlRegs.GPAGMUX2.bit.GPIO29 = 0;
+//    GpioCtrlRegs.GPAMUX2.bit.GPIO29 = 1;
 
 
     // Clock config
@@ -48,6 +56,7 @@ void SCI_Init(void)
     SciaRegs.SCITXBUF.all = 0;
 }
 
+#warning "Function deprecated!"
 void SCI_SendData(const U16 *data_pU16, U16 n_data_U16)
 {
 //    U16 data_counter_U16;
@@ -56,5 +65,39 @@ void SCI_SendData(const U16 *data_pU16, U16 n_data_U16)
     {
         while(!SciaRegs.SCICTL2.bit.TXRDY);
         SciaRegs.SCITXBUF.bit.TXDT = *(data_pU16++);
+    }
+}
+
+/**
+ * @brief
+ * @param enabled_b
+ */
+#pragma FUNC_ALWAYS_INLINE ( SCI_SetRxEnableState )
+inline void SCI_SetRxEnableState(boolean enabled_b)
+{
+    if(enabled_b != False_b)
+    {
+        SciaRegs.SCICTL1.bit.RXENA = (U16)1;
+    }
+    else
+    {
+        SciaRegs.SCICTL1.bit.RXENA = (U16)0;
+    }
+}
+
+/**
+ * @brief
+ * @param enabled_b
+ */
+#pragma FUNC_ALWAYS_INLINE ( SCI_SetTxEnableState )
+inline void SCI_SetTxEnableState(boolean enabled_b)
+{
+    if(enabled_b != False_b)
+    {
+        SciaRegs.SCICTL1.bit.TXENA = (U16)1;
+    }
+    else
+    {
+        SciaRegs.SCICTL1.bit.TXENA = (U16)0;
     }
 }
