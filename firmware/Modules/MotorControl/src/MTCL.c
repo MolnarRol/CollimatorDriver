@@ -32,7 +32,10 @@ void MTCL_MainHandler(void)
     if(MTCL_HomingState_e != MTCL_HOMING_COMPLETE_e)
     {
 //        MTCL_Homing(&reference_position__rad__F32);
+        s_MTCL_Control_s.motor_homed_f1 = 1;
+        MTCL_HomingState_e = MTCL_HOMING_COMPLETE_e;
     }
+    s_MTCL_Control_s.movement_enabled_f1 = FOC_GetEnableState();
 
     if(s_MTCL_Control_s.over_torque_error_f1 == 1)
     {

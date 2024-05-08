@@ -16,6 +16,7 @@
 #include <MDA_interface.h>
 #include <MTCL_interface.h>
 #include <ATB_interface.h>
+#include <FOC.h>
 S16 test_counter = 0;
 S16 test_var = 0;
 
@@ -103,7 +104,6 @@ void AC_ExecuteCommand( const U16 * const command_payload_pU16,
         *response_data_size_pU16 = 1;
     }
 }
-
 
 static void AC_CMD_GetMovementParameters( const void* const payload_p,
                                           const U16 payload_size_U16,
@@ -255,6 +255,22 @@ static void AC_CMD_ResetErrorFlags( const void* const payload_p,
         return;
     }
     MTCL_ResetErrorFlags();
+    response_data_pU16[0] = RESPONSE_OK_e;
+    *response_data_size_pU16 = 1;
+}
+
+static void AC_CMD_SetMovmentEnableState( const void* const payload_p,
+                                          const U16 payload_size_U16,
+                                          U16 * response_data_pU16,
+                                          U16 * response_data_size_pU16)
+{
+    if(payload_size_U16 != 1)
+    {
+        response_data_pU16[0] = INVALID_INPUT_e;
+        *response_data_size_pU16 = 1;
+        return;
+    }
+    FOC_SetEnableState(((U16*)payload_p)[0]);
     response_data_pU16[0] = RESPONSE_OK_e;
     *response_data_size_pU16 = 1;
 }

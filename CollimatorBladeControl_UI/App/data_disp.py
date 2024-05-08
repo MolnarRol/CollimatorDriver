@@ -7,6 +7,7 @@ import struct
 from Communication.Protocol import *
 from App.global_vars import serial_handler
 from App.global_vars import get_transaction_lock
+from App.global_vars import set_remote_position
 
 data_disp_el = None
 
@@ -27,6 +28,7 @@ def write_new_mech_data(data):
         parameters_strings['speed'].set(str(loc_parameters[0] / 1000))
         parameters_strings['pos'].set(str(loc_parameters[1] / 1000))
         parameters_strings['rotor_pos'].set(str(loc_parameters[2] / 1000))
+        set_remote_position(loc_parameters[1] / 1000)
     except:
         pass
 
@@ -47,7 +49,7 @@ def update_data_electrical():
         data = struct.pack('>B', GET_ELECTRICAL_DATA_e)
         bytes = construct_message(HeaderId.COMMAND_e, data)
         serial_handler.new_transaction(bytes, priority=2, callback=write_new_electrical_data)
-    data_disp_el.after(100, update_data)
+    data_disp_el.after(200, update_data)
 
 
 def update_data():
@@ -55,13 +57,13 @@ def update_data():
         data = struct.pack('>B', GET_MECHANICAL_DATA_e)
         bytes = construct_message(HeaderId.COMMAND_e, data)
         serial_handler.new_transaction(bytes, priority=2, callback=write_new_mech_data)
-    data_disp_el.after(100, update_data_electrical)
+    data_disp_el.after(200, update_data_electrical)
 
 
 def data_display(root):
     global data_disp_el
     data_disp_el = ttk.LabelFrame(root, text='Data', width=350)
-    data_disp_el.after(100, update_data)
+    data_disp_el.after(200, update_data)
 
     for key in parameters_strings:
         parameters_strings[key] = StringVar()

@@ -49,7 +49,12 @@ class SerialInterface:
                 response = self.serial_if.read(256)
                 if transaction[1] is not None:
                     transaction[1](response)
+                time.sleep(0.05)
             time.sleep(0.01)
+
+    def flush_transactions(self):
+        while self.transaction_queue.qsize() != 0:
+            self.transaction_queue.get()
 
 
 if __name__ == '__main__':
