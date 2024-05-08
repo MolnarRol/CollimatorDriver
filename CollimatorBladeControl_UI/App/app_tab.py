@@ -81,9 +81,9 @@ def update_positions():
         curr_pos -= 0.1
     pos_input.slider.config(to=max)
     pos_input.update_limits((0, max))
-    pos_indicator.config(maximum=max)
+    pos_indicator.config(to=max)
     if curr_pos != last_pos:
-        pos_indicator.step(curr_pos)
+        pos_indicator.set(curr_pos)
     start_stop_btn.overwrite_state(not get_movement_enable_state())
     last_pos = curr_pos
     app_tab_el.after(100, update_positions)
@@ -104,7 +104,7 @@ def application_ctrl_tab(root):
     start_stop_btn = TwoStateBtn(app_tab_el, callbacks=(start, stop), default_state=1)
     start_stop_btn.elmnt.grid(row=0, column=2, sticky='NSEW')
 
-    pos_indicator = ttk.Progressbar(pos_input.elmnt, orient=HORIZONTAL)
+    pos_indicator = ttk.Scale(pos_input.elmnt, orient=HORIZONTAL, state='disabled')
     pos_indicator.grid(row=1, column=0, sticky='NSEW')
 
     act_pos_entry = Entry(pos_input.elmnt, state='readonly', textvariable=act_pos_entry_var, justify='center', width= 8)

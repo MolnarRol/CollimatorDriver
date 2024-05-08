@@ -12,13 +12,10 @@ void SCI_Init(void)
 
     EALLOW;
     /* SCIRXDA */
-////    GpioCtrlRegs.GPAGMUX2.bit.GPIO64 = 0;
 //    GpioCtrlRegs.GPCGMUX1.bit.GPIO64 = 1;
 //    GpioCtrlRegs.GPCMUX1.bit.GPIO64 = 2;
 //
 //    /* SCITXDA */
-////    GpioCtrlRegs.GPAGMUX2.bit.GPIO65 = 0;
-////    GpioCtrlRegs.GPAMUX2.bit.GPIO65 = 1;
 //    GpioCtrlRegs.GPCGMUX1.bit.GPIO65 = 1;
 //    GpioCtrlRegs.GPCMUX1.bit.GPIO65 = 2;
 

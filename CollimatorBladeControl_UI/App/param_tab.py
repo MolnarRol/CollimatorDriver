@@ -86,7 +86,7 @@ def parameter_tab(root):
     param2 = ParamField(param_grp1, name='Max. acceleration [rad/s2]', variable=parameters_strings['max_accel'])
     param2.elmnt.grid(row=1, column=0, sticky='NSEW')
 
-    param3 = ParamField(param_grp1, name='Max. force [N]', variable=parameters_strings['max_force'])
-    param3.elmnt.grid(row=2, column=0, sticky='NSEW')
+    # param3 = ParamField(param_grp1, name='Max. force [N]', variable=parameters_strings['max_force'])
+    # param3.elmnt.grid(row=2, column=0, sticky='NSEW')
 
     return param_tab_el
