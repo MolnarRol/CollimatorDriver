@@ -64,6 +64,7 @@ def application_data_recieved(data):
             torque_error_toplevel.title('Collimator blocked')
             torque_error_toplevel.resizable(False, False)
             torque_error_toplevel.protocol("WM_DELETE_WINDOW", disable_close)
+            torque_error_toplevel.grab_set()
 
             global err_img
             error_icon = tk.Label(torque_error_toplevel, image=err_img)
@@ -79,6 +80,7 @@ def application_data_recieved(data):
 
         if not torque_error and torque_error_toplevel_active:
             torque_error_toplevel_active = False
+            torque_error_toplevel.grab_release()
             torque_error_toplevel.destroy()
 
         set_transaction_lock(False)
@@ -94,6 +96,7 @@ def clear_error_transaction_callback(data):
         if resp_dec.payload[0] == 0x0:
             global torque_error_toplevel_active
             torque_error_toplevel_active = False
+            torque_error_toplevel.grab_release()
             torque_error_toplevel.destroy()
     except:
         pass
