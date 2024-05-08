@@ -1,29 +1,32 @@
-/*
- * MTCL_interface.h
+/**
+ * @file MTCL_interface.h
+ * @brief Motor control submodule.
+ * @details Manages motor position requests and motor control states.
  *
- *  Created on: May 2, 2024
- *      Author: roland
+ * =================================================================
+ * @author Bc. Roland Molnar
+ *
+ * =================================================================
+ * KEM, FEI, TUKE
+ * @date 29.02.2024
+ * @addtogroup MTCL Motor control interface
+ * @{
  */
 
 #ifndef MODULES_MOTORCONTROL_INC_MTCL_INTERFACE_H_
 #define MODULES_MOTORCONTROL_INC_MTCL_INTERFACE_H_
 #include <app_types.h>
 
+/* Motor control - control struct. */
 typedef struct
 {
-    U16 movement_enabled_f1      :1;
-    U16 motor_moving_f1          :1;
-    U16 over_torque_error_f1     :1;
-    U16 motor_homed_f1           :1;
-    U16 over_torque_error_f2     :1;
-    U16 tracking_to_zero         :1;
+    U16 movement_enabled_f1      :1;            /**< Movement enable state. */
+    U16 motor_moving_f1          :1;            /**< Motor movement flag - not used. */
+    U16 over_torque_error_f1     :1;            /**< Motor was blocked. */
+    U16 motor_homed_f1           :1;            /**< Homing status - not used.  */
+    U16 over_torque_error_f2     :1;            /**< Motor was blocked during homing. */
+    U16 tracking_to_zero         :1;            /**< Flag for homing after blockage. */
 } MTCL_Control_struct;
-
-typedef enum
-{
-    SPEED_CTRL_e        = 0,
-    POSITION_CTRL_e     = 1,
-} MTCL_ControlType_enum;
 
 typedef struct
 {
@@ -35,9 +38,9 @@ typedef struct
         F32 Acceleration__rad_s_2__F32;
         F32 Speed__rad_s__F32;
         F32 Position__rad__F32;
-    }tj;
+    }tj;                                        /**< Calculated trajectories. */
 
-}PC_Data_struct;
+}PC_Data_struct;                                /**< Trajectory structure. */
 
 extern F32 s_MTCL_ReferencePosition__rad__F32;
 boolean MTCL_SetMovementParams(const F32 max_speed__rad_s__F32, const F32 max_accel__rad_s2__F32, const F32 max_torque__Nm__F32);
@@ -53,3 +56,7 @@ void    MTCL_ResetErrorFlags(void);
 extern MTCL_Control_struct s_MTCL_Control_s;
 
 #endif /* MODULES_MOTORCONTROL_INC_MTCL_INTERFACE_H_ */
+
+/**
+ * @}
+ */

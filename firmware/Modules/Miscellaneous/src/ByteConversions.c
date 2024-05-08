@@ -1,13 +1,24 @@
-/*
- * ByteConversions.c
+/**
+ * @file ByteConversions.c
  *
- *  Created on: Apr 12, 2024
- *      Author: roland
+ * @brief Covert communication bytes to values and vice versa.
+ * @details Converting is done in to big endian byte order.
+ *
+ * =================================================================
+ * @author Bc. Roland Molnar
+ *
+ * =================================================================
+ * KEM, FEI, TUKE
+ * @date 29.02.2024
+ * @defgroup BC Byte conversions
+ * @{
  */
 #include <ByteConversions.h>
 
 /**
- * @brief
+ * @brief Convert 2 bytes to 16 bit integer.
+ * @param bytes_p bytes to by converted.
+ * @returns union containing 16 bit integers.
  */
 Int16Bits_struct BC_2BytesTo16BitData(const U16 * const bytes_p)
 {
@@ -18,7 +29,9 @@ Int16Bits_struct BC_2BytesTo16BitData(const U16 * const bytes_p)
 }
 
 /**
- *
+ * @brief Convert 4 bytes to 32 bit integer.
+ * @param bytes_p bytes to by converted.
+ * @returns union containing 32 bit integers.
  */
 Int32Bits_struct BC_4BytesTo32BitData(const U16 * const bytes_p)
 {
@@ -33,7 +46,9 @@ Int32Bits_struct BC_4BytesTo32BitData(const U16 * const bytes_p)
 }
 
 /**
- *
+ * @brief Convert 16 bit data type to bytes.
+ * @param val_p pointer to targeted 16 bit variable.
+ * @param output_bytes_pU16 is a pointer to array of output bytes
  */
 void BC_16BitDataTo2Bytes(const void * const val_p, U16 *restrict output_bytes_pU16)
 {
@@ -42,7 +57,9 @@ void BC_16BitDataTo2Bytes(const void * const val_p, U16 *restrict output_bytes_p
 }
 
 /**
- *
+ * @brief Convert 32 bit data type to bytes.
+ * @param val_p pointer to targeted 16 bit variable.
+ * @param output_bytes_pU16 is a pointer to array of output bytes
  */
 void BC_32BitDataTo4Bytes(const void * const val_p, U16 *restrict output_bytes_pU16)
 {
@@ -52,3 +69,7 @@ void BC_32BitDataTo4Bytes(const void * const val_p, U16 *restrict output_bytes_p
         output_bytes_pU16[3 - byte_i_U32] = (*(U32*)val_p >> (U32)8 * byte_i_U32) & (U32)0x000000FF;
     }
 }
+
+/**
+ * @}
+ */

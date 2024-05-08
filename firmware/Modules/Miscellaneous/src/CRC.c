@@ -17,7 +17,13 @@
 #include <app_types.h>
 #include <CRC.h>
 
-
+/**
+ * @brief CRC6 Calculation from buffer.
+ * @param Data_U16 is a pointer to data.
+ * @param DataLength_U16 is the data length.
+ * @returns CRC6 checksum.
+ * @deprecated
+ */
 U16 CRC_CrcCalculation_U16(const U16 *Data_U16, U16 DataLength_U16){    // length in 16bitovych chlievikov
     U16 i=0;                                            /*index to for*/
 
@@ -50,6 +56,15 @@ U16 CRC_CrcCalculation_U16(const U16 *Data_U16, U16 DataLength_U16){    // lengt
     return CRC_CrcResult_U16;
 }
 
+/**
+ * @brief CRC6 checksum verification
+ * @param Data_U16 is a pointer to data.
+ * @param DataLength_U16 is the data length.
+ * @param CRC_CrcCompare_U16 is a CRC6 checksum to be compared.
+ * @returns Verification status
+ * @retval 0 Verification failed.
+ * @retval 1 Verification was successful.
+ */
 U16 CRC_CrcVerificationReceive_U16(const U16 *Data_U16,  U16 DataLength_U16, U16 CRC_CrcCompare_U16){
     U16 CRC_OwnResult_U16 = CRC_CrcCalculation_U16(Data_U16, DataLength_U16);
 
@@ -61,6 +76,7 @@ U16 CRC_CrcVerificationReceive_U16(const U16 *Data_U16,  U16 DataLength_U16, U16
 }
 
 /* Source: https://github.com/rqg0717/CRC/tree/master */
+/* CRC8 CCITT look up table. */
 U16 const CRC8_CCITT_LUT_U16[256]=
 {
         0x0, 0x7, 0xE, 0x9, 0x1C,0x1B,0x12,0x15,0x38,0x3F,0x36,0x31,0x24,\
@@ -87,6 +103,12 @@ U16 const CRC8_CCITT_LUT_U16[256]=
         0xF4,0xF3
 };
 
+/**
+ * @brief Calculate CRC8 CCITT checksum.
+ * @param data_pU16 pointer to data buffer.
+ * @param n_bytes_U16 data buffer size.
+ * @returns CRC8 checksum.
+ */
 U16 CRC8_CCITT_U16(const U16 * const data_pU16, const U16 n_bytes_U16)
 {
     U16 temp_U16 = (U16)0;
@@ -98,6 +120,15 @@ U16 CRC8_CCITT_U16(const U16 * const data_pU16, const U16 n_bytes_U16)
     return temp_U16;
 }
 
+/**
+ * @brief Verify CRC8 CCITT checksum.
+ * @param data_pU16 pointer to data buffer.
+ * @param n_bytes_U16 data buffer size.
+ * @param expected_crc_U16 is a crc received.
+ * @returns CRC8 verification status.
+ * @retval 0 Verification failed.
+ * @rerval 1 Verification was successful.
+ */
 boolean CRC8_CCITT_Verify_b(const U16 * const data_pU16, const U16 n_bytes_U16, const U16 expected_crc_U16)
 {
     boolean res_b = True_b;

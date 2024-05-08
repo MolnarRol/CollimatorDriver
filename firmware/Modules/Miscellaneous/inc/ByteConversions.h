@@ -1,8 +1,17 @@
-/*
- * ByteConversions.h
+/**
+ * @file ByteConversions.h
  *
- *  Created on: Apr 12, 2024
- *      Author: roland
+ * @brief Covert communication bytes to values and vice versa.
+ * @details Converting is done in to big endian byte order.
+ *
+ * =================================================================
+ * @author Bc. Roland Molnar
+ *
+ * =================================================================
+ * KEM, FEI, TUKE
+ * @date 29.02.2024
+ * @addtogroup BC Byte conversions
+ * @{
  */
 
 #ifndef MODULES_MISCELLANEOUS_INC_BYTECONVERSIONS_H_
@@ -28,3 +37,7 @@ void BC_32BitDataTo4Bytes(const void *restrict const val_U32, U16 * output_bytes
 
 
 #endif /* MODULES_MISCELLANEOUS_INC_BYTECONVERSIONS_H_ */
+
+/**
+ * @}
+ */

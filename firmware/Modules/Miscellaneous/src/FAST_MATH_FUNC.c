@@ -14,12 +14,12 @@
  */
 #include <FAST_MATH_FUNC.h>
 
-#define LUT_SIZE_d                  ( 64UL )                                                                                                /* Number of points in look up table. */
-#define LUT_ANGLE_STEP__rad__dF32   ( TWO_PI_dF32 / (float)LUT_SIZE_d )                                                                      /* Delta in angle between points. */
+#define LUT_SIZE_d                  ( 64UL )                                                                                                /**< Number of points in look up table. */
+#define LUT_ANGLE_STEP__rad__dF32   ( TWO_PI_dF32 / (float)LUT_SIZE_d )                                                                      /**< Delta in angle between points. */
 #define SQRT_NEWTON_ITERATIONS_dU16 ( (U16)6 )
 
 /* Static lookup tables */
-const static F32 s_FM_SIN_LOOKUP_TABLE_F32[LUT_SIZE_d] =                                                                                    /* Lookup table for cosine from [0, 2Pi] interval */
+const static F32 s_FM_SIN_LOOKUP_TABLE_F32[LUT_SIZE_d] =                                                                                    /**< Lookup table for cosine from [0, 2Pi] interval */
 {
     0.00000000f,   0.09801714f,   0.19509032f,   0.29028468f,   0.38268343f,   0.47139674f,   0.55557023f,   0.63439328f,
     0.70710678f,   0.77301045f,   0.83146961f,   0.88192126f,   0.92387953f,   0.95694034f,   0.98078528f,   0.99518473f,
@@ -31,7 +31,7 @@ const static F32 s_FM_SIN_LOOKUP_TABLE_F32[LUT_SIZE_d] =                        
     -0.70710678f,  -0.63439328f,  -0.55557023f,  -0.47139674f,  -0.38268343f,  -0.29028468f,  -0.19509032f,  -0.09801714f
 };
 
-const static F32 s_FM_COS_LOOKUP_TABLE_F32[LUT_SIZE_d] =                                                                                   /* Lookup table for cosine from [0, 2Pi] interval */
+const static F32 s_FM_COS_LOOKUP_TABLE_F32[LUT_SIZE_d] =                                                                                   /**< Lookup table for cosine from [0, 2Pi] interval */
 {
     1.00000000f,   0.99518473f,   0.98078528f,   0.95694034f,   0.92387953f,   0.88192126f,   0.83146961f,   0.77301045f,
     0.70710678f,   0.63439328f,   0.55557023f,   0.47139674f,   0.38268343f,   0.29028468f,   0.19509032f,   0.09801714f,

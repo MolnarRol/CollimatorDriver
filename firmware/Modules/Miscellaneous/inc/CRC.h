@@ -1,9 +1,15 @@
-/*
- * CRC_interface.h
+/**
+ * @file CRC.c
+ * @brief Cyclic redundancy checks
  *
- *  Created on: 3. 3. 2024
- *      Author: samof
+ * =================================================================
+ * @author Bc. Samuel Fertal
+ * @author Bc. Roland Molnar
+ * =================================================================
+ * KEM, FEI, TUKE
+ * @date 30.03.2024
  */
+
 
 #ifndef MODULES_CRC_INC_CRC_INTERFACE_H_
 #define MODULES_CRC_INC_CRC_INTERFACE_H_
