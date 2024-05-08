@@ -47,7 +47,7 @@ void MTCL_MainHandler(void)
             if(s_Torque_check_s.error_state_torque_exceed_counter_U16 == 2000)
             {
                 /* Commented for debug */
-                s_MTCL_Control_s.over_torque_error_f1 = 0;
+                //s_MTCL_Control_s.over_torque_error_f1 = 0;
                 FOC_SetEnableState(False_b);
                 PC_Reset_Data(0);
                 s_MTCL_ReferencePosition__rad__F32 = MDA_GetData_ps()->angular_position__rad__F32;
@@ -303,7 +303,7 @@ boolean MTCL_TorqueExceedCheck(void)
             {
                 s_Torque_check_s.torque_exceed_counter_U16 = 0;
                 PC_Reset_Data(False_b);
-                s_MTCL_Control_s.over_torque_error_f1 = 0;
+                //s_MTCL_Control_s.over_torque_error_f1 = 0;
                 s_MTCL_Control_s.over_torque_error_f2 = 1;
                 FOC_SetEnableState(False_b);
                 PWM_SetCompareValues(0,0,0);

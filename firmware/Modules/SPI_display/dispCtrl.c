@@ -220,7 +220,7 @@ void DisplayRefresh(void)
                     if(FOC_GetEnableState())
                     {
                         dispCtrl_vSetPosition(1,3);
-                        float_to_char_array(MDA_GetData_ps()->angular_position__rad__F32, &buffer, 1);
+                        float_to_char_array( ( (MDA_GetData_ps()->angular_position__rad__F32 / 0.058448f) ), &buffer, 1);
                         dispCtrl_u16PutString(&buffer);
                         dispCtrl_u16PutString(" mm   ");
                         dispCtrl_vSetPosition(14,3);
@@ -230,7 +230,7 @@ void DisplayRefresh(void)
                     else if ( !FOC_GetEnableState() && f2_error_display_state_U16 == 0)
                     {
                         dispCtrl_vSetPosition(1,3);
-                        float_to_char_array(MDA_GetData_ps()->angular_position__rad__F32, &buffer, 1);
+                        float_to_char_array( ( (MDA_GetData_ps()->angular_position__rad__F32 / 0.058448f) ), &buffer, 1);
                         dispCtrl_u16PutString(&buffer);
                         dispCtrl_u16PutString(" mm   ");
                         dispCtrl_vSetPosition(14,3);

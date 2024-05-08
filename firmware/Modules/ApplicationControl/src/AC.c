@@ -77,12 +77,12 @@ void AC_ManualControlHandler(void)
 {
     if(AC_BtnDebounce_U16(&AC_Btn1Debounce_s, AC_BTN1_PRESSED_db) == DEBOUNCE_RISING_EDGE_e)
     {
-        MTCL_SetReferencePosition(MDA_GetData_ps()->angular_position__rad__F32 + 0.0584f);
+        MTCL_SetReferencePosition(MDA_GetData_ps()->angular_position__rad__F32 + 0.058448f);
     }
 
     if(AC_BtnDebounce_U16(&AC_Btn2Debounce_s, AC_BTN2_PRESSED_db) == DEBOUNCE_RISING_EDGE_e)
     {
-        MTCL_SetReferencePosition(MDA_GetData_ps()->angular_position__rad__F32 - 0.0584f);
+        MTCL_SetReferencePosition(MDA_GetData_ps()->angular_position__rad__F32 - 0.058448f);
     }
 }
 
