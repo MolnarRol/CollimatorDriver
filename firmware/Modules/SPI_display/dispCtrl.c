@@ -1,35 +1,43 @@
-/*
- * dispCtrl.c
+/**
+ * @file dispCtrl.c
+ * @brief LCD display control using SPI communication
+ * @details Instruction for display DOGS164-A
  *
- *  Created on: 10 mar. 2024 �.
- *      Author: vadym
+ * =================================================================
+ * @author Bc. Vadym Holysh
+ *
+ * =================================================================
+ * KEM, FEI, TUKE
+ * @date 10.03.2024
+ * @defgroup dispCtrl Display control
+ * @{
  */
+
 #include "dispCtrl.h"
 #include "MTCL_interface.h"
 #include "FOC.h"
 
- char buffer[12] = {};
- F32 test_F32 = 0;
- U16 states = 0;
- U16 f2_error_display_state_U16 = 0;
+ char buffer[12] = {};                 /**< Buffer for message which send*/
+ U16 states = 0;                       /**< States display value*/
+ U16 f2_error_display_state_U16 = 0;   /**< State indicator for second over torque state*/
 
+ /**
+  * @brief Reverse data byte according with display manual.
+  * @param Byte.
+  * @return Reverse Byte
+  */
  unsigned char reverse(unsigned char b) {
-//   b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
-//   b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
-//   b = (b & 0xAA) >> 1 | (b & 0x55) << 1;
      b = (b * 0x0202020202ULL & 0x010884422010ULL) % 1023;
    return b;
 }
 
+ /**
+  * @brief Sending instruction to display.
+  * @param 1 - Read, 0 - Write.
+  * @param 1 - Configuration, 0 - Instruction.
+  * @param Data
+  */
 void dispCtrl_vSendInstruction(Uint16 u16RW, Uint16 u16RS, char cData){
-
-//    unsigned int Instruction[3];
-//    Instruction[0] = (0xF8|((u16RW) << 2)|((u16RS) << 1)) << 8; //FIRST BYTE
-//    Instruction[1] = (0x00|((cData&0x1) << 7)|((cData&0x2) << 5)|((cData&0x4) << 3)|((cData&0x8) << 1)) << 8; //SECOND BYTE
-//    Instruction[2] = (0x00|((cData&0x10) << 3)|((cData&0x20) << 1)|((cData&0x40) >> 1)|((cData&0x80) >> 3)) <<8; //THIRD BYTE
-//    spi_vSendChar(Instruction[0]); //SENDCHAR FOR SENDING 1 BYTE
-//    spi_vSendChar(Instruction[1]);
-//    spi_vSendChar(Instruction[2]);
 
     char packet_3_byte [4];
     char reverse_data = reverse(cData);
@@ -40,6 +48,10 @@ void dispCtrl_vSendInstruction(Uint16 u16RW, Uint16 u16RS, char cData){
     spi_u16SendData(packet_3_byte,3);
 }
 
+/**
+ * @brief Sending instruction to display without head.
+ * @param Data
+ */
 void dispCtrl_vSendInitInstruction(char data){
 
     char packet_3_byte [3];
@@ -50,7 +62,10 @@ void dispCtrl_vSendInitInstruction(char data){
     spi_u16SendData(packet_3_byte,2);
 }
 
-
+/**
+ * @brief Initialization display.
+ * @details Send instructions for configuration
+ */
 void dispCtrl_vInitDisplay(void){
 
     DELAY_US(7000);
@@ -107,14 +122,12 @@ void dispCtrl_vInitDisplay(void){
 
 }
 
+/**
+ * @brief Write string on display.
+ * @param Address to char array.
+ */
 void dispCtrl_u16PutString(char* pcData){
-//    unsigned int counter;
-//    for (counter = 0; pcData[counter] != '\0'; counter++)
-//    {
-//
-//        dispCtrl_vSendInstruction(0,1,pcData[counter]);
-//
-//    }
+
     Uint16 i = 0;
     spi_vSendChar( (0xF8 ^ ( (char)0 << 2 ) ^ ( (char)1 << 1) ) ); /*start byte - 5 high,RW,RS*/
     while(pcData[i] != '\0')
@@ -125,19 +138,31 @@ void dispCtrl_u16PutString(char* pcData){
     }
 }
 
+/**
+ * @brief Set display cursor position.
+ * @param Column 1-16.
+ * @param Line 1-4.
+ */
 void dispCtrl_vSetPosition(Uint16 u16PosX, Uint16 u16PosY)
 {
     char cAddress = (char)( ( ( (Uint16)u16PosY - 1 )*(Uint16)32 ) + ( (Uint16)u16PosX - 1 ) ) ;
     dispCtrl_vSendInstruction(0,0,((char)0x80 + (char)cAddress)); /*set DDRAM on position 0:0*/
-    //DELAY_US(1000);
 }
 
-
+/**
+ * @brief Clear display.
+ */
 void dispCtrl_clear()
 {
     dispCtrl_vSendInstruction(0,0,0x01);
 }
 
+/**
+ * @brief Convert float to char array.
+ * @param Converting float.
+ * @param Address to char array.
+ * @param Float precision.
+ */
 void float_to_char_array(F32 f, char* buffer, U16 precision) {
     // Handle negative numbers
     if (f < 0) {
@@ -184,13 +209,15 @@ void float_to_char_array(F32 f, char* buffer, U16 precision) {
     *buffer = '\0';
 }
 
+/**
+ * @brief Refresh display according with motor state.
+ * @details Executed in the main loop of the code.
+ */
 void DisplayRefresh(void)
 {
-//    char buffer[12] = {};
     static U32 ref_ticks_U32 = 0;
     static boolean over_torque_written_b = False_b;
 
-    //static U16 display_refresh_state = 0;
     if(s_MTCL_Control_s.over_torque_error_f1 == 1 && states == 0)
     {
         dispCtrl_vSetPosition(1,2);
@@ -201,7 +228,6 @@ void DisplayRefresh(void)
         dispCtrl_u16PutString("  Motor homing  ");
         states = 1;
     }
-
                 if( ATB_CheckTicksPassed_U16(ref_ticks_U32, ATB_MS_TO_TICKS_dM_U32(100)) && s_MTCL_Control_s.tracking_to_zero == 0 )
                 {
                     ref_ticks_U32 = ATB_GetTicks_U32();
@@ -258,11 +284,14 @@ void DisplayRefresh(void)
                             dispCtrl_u16PutString("<-1 mm    +1 mm>");
                             states = 0;
                     }
-
                 }
 }
 
-
+/**
+ * @brief Round float number.
+ * @param Float number.
+ * @return Rounded float
+ */
 F32 ceiling_F32(F32 number){
     F32 whole_num= (F32)((U16)number);
     if(number-whole_num > 0.94f){
@@ -271,3 +300,6 @@ F32 ceiling_F32(F32 number){
     return number;
 }
 
+/**
+ * @}
+ */

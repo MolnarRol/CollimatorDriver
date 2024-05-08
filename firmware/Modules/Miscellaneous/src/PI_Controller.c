@@ -1,32 +1,27 @@
-/*
- * Controller.c
+/**
+ * @file PI_Controller.c
+ * @brief Controller for motor regulation
+ * @details Module made PI controllers for currents, speed and position, calculating output controllers
  *
- *  Created on: 14 mar. 2024 �.
- *      Author: vadym
+ * =================================================================
+ * @author Bc. Vadym Holysh
+ *
+ * =================================================================
+ * KEM, FEI, TUKE
+ * @date 14.03.2024
+ * @defgroup PI Proportional Integration Controller
+ * @{
  */
 
 #include <PI_Controller.h>
-F32 Iq_error = 0;
-F32 Id_error = 0;
-F32 W_error = 0;
-F32 Phi_error = 0;
 
-F32 Iq_integrator = 0;
-F32 Id_integrator = 0;
-F32 W_integrator = 0;
-F32 Phi_integrator = 0;
-
-F32 Iq_out = 0;
-F32 Id_out = 0;
-F32 W_out = 0;
-F32 Phi_out = 0;
-
-F32 Wout_a[1000];
-F32 Werr_a[1000];
-F32 Iqout_a[1000];
-U16 idx_U16 = 0;
-
-
+/**
+ * @brief   PI controller calculation output.
+ * @details Calculate output for every controller using reference value, action value from previous controller and actual (measured) value.
+ * @param Address controller structure where saved action value, reference value and previous integration value
+ * @param Actual (measured) value which controlling
+ * @return Output value from controller it's action value for next controller
+ */
 F32 PI_ctrl_CalculateOutput(PI_CTRL_s *controller, F32 y_ref_f32){
 
     /*
@@ -49,37 +44,6 @@ F32 PI_ctrl_CalculateOutput(PI_CTRL_s *controller, F32 y_ref_f32){
     F32 u_out_f32 = controller->gain_s.Kp_f32 * error_f32 + integrator_f32;
 
     /* Limit output */
-
-    if(controller==&PI_id_current_controller){
-        Id_error = error_f32;
-        Id_integrator = integrator_f32;
-        Id_out = u_out_f32;
-    }
-    if(controller==&PI_iq_current_controller){
-        Iq_error = error_f32;
-        Iq_integrator = integrator_f32;
-        Iq_out = u_out_f32;
-
-        if(idx_U16 < 1000)
-        {
-            Wout_a[idx_U16] = W_out;
-            Werr_a[idx_U16] = W_error;
-            Iqout_a[idx_U16] = Iq_out;
-            idx_U16++;
-        }
-    }
-    if(controller==&PI_speed_controller){
-        W_error = error_f32;
-        W_integrator = integrator_f32;
-        W_out = u_out_f32;
-    }
-    if(controller==&PI_position_controller){
-        Phi_error = error_f32;
-        Phi_integrator = integrator_f32;
-        Phi_out = u_out_f32;
-    }
-
-
     if(u_out_f32 > controller->limit_s.out_max_f32)
     {
         u_out_f32 = controller->limit_s.out_max_f32;
@@ -91,11 +55,17 @@ F32 PI_ctrl_CalculateOutput(PI_CTRL_s *controller, F32 y_ref_f32){
         integrator_f32 = controller->I_previous_f32;
     }
 
+    /* Save previous integrator value */
     controller->I_previous_f32 = integrator_f32;
 
     return ((F32)u_out_f32);
 }
 
+/**
+ * @brief   PI controller initialization.
+ * @details Reset reference value, action value and previous integration value form controller
+ * @param Address to controller structure
+ */
 void PI_ctrl_Init(PI_CTRL_s *controller){
 
     controller->I_previous_f32 = (F32)0.0f;
@@ -103,6 +73,9 @@ void PI_ctrl_Init(PI_CTRL_s *controller){
     controller->ref_value_f32 = (F32)0.0f;
 }
 
+/**
+ * @brief   PI controller for Id current.
+ */
 PI_CTRL_s PI_id_current_controller =
 {
      .gain_s =
@@ -121,6 +94,9 @@ PI_CTRL_s PI_id_current_controller =
      .I_previous_f32 = ( (F32)0.0f )
 };
 
+/**
+ * @brief   PI controller for Iq current.
+ */
 PI_CTRL_s PI_iq_current_controller =
 {
      .gain_s =
@@ -139,6 +115,9 @@ PI_CTRL_s PI_iq_current_controller =
      .I_previous_f32 = ( (F32)0.0f )
 };
 
+/**
+ * @brief   PI controller for speed.
+ */
 PI_CTRL_s PI_speed_controller =
 {
      .gain_s =
@@ -157,6 +136,9 @@ PI_CTRL_s PI_speed_controller =
      .I_previous_f32 = ( (F32)0.0f )
 };
 
+/**
+ * @brief   PI controller for position.
+ */
 PI_CTRL_s PI_position_controller =
 {
      .gain_s =
@@ -174,3 +156,7 @@ PI_CTRL_s PI_position_controller =
      .action_value_f32 = ( (F32)0.0f ),
      .I_previous_f32 = ( (F32)0.0f )
 };
+
+/**
+ * @}
+ */

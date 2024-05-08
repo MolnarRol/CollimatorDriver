@@ -1,10 +1,25 @@
-/*
- * spi.c
+/**
+ * @file spi.c
+ * @brief Serial Peripheral Interface, communication standard for LCD display
+ * @details Initialization function, function for sending data
  *
- *  Created on: 6 mar. 2024 ã.
- *      Author: vadym
+ * =================================================================
+ * @author Bc. Vadym Holysh
+ *
+ * =================================================================
+ * KEM, FEI, TUKE
+ * @date 06.03.2024
+ * @defgroup SPI Serial Peripheral Interface
+ * @{
  */
+
 #include "spi.h"
+
+/**
+ * @brief Initialization SPI module with FIFO.
+ * @details 600 kHz < Baudrate < 920 kHz
+ * @param Reference Baudrate.
+ */
 
 void spi_vInit(float u16BaudRate){
 
@@ -74,6 +89,10 @@ void spi_vInit(float u16BaudRate){
     SpibRegs.SPICCR.bit.SPISWRESET = 1;
     }
 
+/**
+ * @brief Send data - one char using FIFO.
+ * @param Data.
+ */
 void spi_vSendChar(char cData){
 
 //    while (SpibRegs.SPISTS.bit.BUFFULL_FLAG == 1); //Overenie ci je buffer rdy
@@ -86,6 +105,11 @@ void spi_vSendChar(char cData){
 
 }
 
+/**
+ * @brief Send data - one string using FIFO.
+ * @param Address to char array.
+ * @param Length array
+ */
 void spi_u16SendData(char *pcData, Uint16 u16Length){
 
 //    int counter;
@@ -101,6 +125,11 @@ void spi_u16SendData(char *pcData, Uint16 u16Length){
     }
 }
 
+/**
+ * @brief Send data - one string using FIFO.
+ * @param Address to char array.
+ * @return Length char array.
+ */
 Uint16 spi_u16SendString(char *pcData){
 
     Uint16 i;
@@ -112,7 +141,9 @@ Uint16 spi_u16SendString(char *pcData){
     return (i);
 }
 
-
+/**
+ * @}
+ */
 
 
 
